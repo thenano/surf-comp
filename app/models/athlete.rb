@@ -42,6 +42,8 @@ class Athlete
   field :name, type: String
   field :image, type: String
 
+  has_and_belongs_to_many :heats
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |athlete|
       athlete.email = auth.info.email
