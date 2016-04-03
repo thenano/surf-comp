@@ -10,8 +10,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'jquery-rails'
 gem 'turbolinks', '~> 5.x'
 
-gem 'mongoid', git: 'https://github.com/estolfo/mongoid.git', branch: 'MONGOID-4218-rails-5'
-
 gem 'devise', '>= 4.0.0.rc2'
 gem 'omniauth-facebook'
 gem 'bootstrap', '~> 4.0.0.alpha3'
@@ -19,6 +17,7 @@ gem 'haml'
 
 group :development, :test do
   gem 'rspec'
+  gem 'sqlite3'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger
   # console
   gem 'byebug'

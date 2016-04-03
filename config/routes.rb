@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :athletes, :controllers => { :omniauth_callbacks => 'athletes/omniauth_callbacks' }
+  devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' }
 
   root to: 'home#show'
   resources :tournaments

@@ -19,3 +19,4 @@ tmp/*
 .idea
 .vagrant
 *.iml
+*.sqlite3
