@@ -1,0 +1,7 @@
+%h1 Create a new tournament
+
+= simple_form_for(@tournament, html: { class: 'form-horizontal' }) do |f|
+  = f.input :name
+  = f.input :date, as: :string, input_html: {type: :date}
+  = f.button :submit
+

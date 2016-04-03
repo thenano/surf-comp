@@ -4,7 +4,7 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "boxcutter/centos72"
   config.vm.network :forwarded_port, host_ip: "127.0.0.1", guest: 3000, host: 3000
-  config.vm.synced_folder ".", "/app"
+  config.vm.synced_folder ".", "/app", type: "rsync"
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box

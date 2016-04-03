@@ -1,8 +1,8 @@
-class Contest
+class Tournament
   include Mongoid::Document
 
   field :date, type: Date
-  field :allowed_divisions, type: Array
+  field :name, type: String
 
   embeds_many :divisions
 end

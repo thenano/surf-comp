@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
+gem 'simple_form'
 gem 'rails', '>= 5.0.0.beta3', '< 5.1'
 gem 'puma'
 gem 'sass-rails', '~> 5.0'

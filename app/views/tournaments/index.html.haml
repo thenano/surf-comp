@@ -1,0 +1,8 @@
+%ul
+  = link_to "Create New Tournament", new_tournament_path
+
+  - @upcoming.each do |tournament|
+    %li.tournament
+      %h4.name= tournament.name
+
+      %a{href: "#"} Register
