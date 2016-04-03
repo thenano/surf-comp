@@ -17,3 +17,4 @@ tmp/*
 .byebug_history
 
 .idea
+.vagrant
