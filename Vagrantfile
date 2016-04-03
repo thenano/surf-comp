@@ -22,7 +22,8 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo service docker start
+    sudo systemctl enable docker
+    sudo systemctl start docker
     sudo systemctl disable firewalld
     docker run --name database -p 27017:27017 -d mongo
   SHELL
