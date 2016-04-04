@@ -15,7 +15,7 @@ class TournamentsController < ApplicationController
   end
 
   def index
-    @upcoming = []
+    @upcoming = Tournament.all
   end
 
   def tournament_params

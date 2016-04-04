@@ -1,4 +1,7 @@
 #tournament
-  %h1.name= @tournament.name
+  %h1
+    = @tournament.name
+    \-
+    = @tournament.date.strftime('%b %e')
 
   %a{href: "#"} Register
