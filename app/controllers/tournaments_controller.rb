@@ -8,6 +8,9 @@ class TournamentsController < ApplicationController
 
   def new
     @tournament = Tournament.new
+    ['Open', 'Master', 'Grand master', 'Women', 'Micro', 'Junior'].each do |division|
+      @tournament.divisions.build(name: division)
+    end
   end
 
   def show
@@ -19,6 +22,6 @@ class TournamentsController < ApplicationController
   end
 
   def tournament_params
-    params.require(:tournament).permit(:date, :name)
+    params.require(:tournament).permit(:date, :name, divisions_attributes: [:name, :use])
   end
 end
