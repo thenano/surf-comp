@@ -7,6 +7,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import * as reducers from "./reducers"
 import { Application } from "./components/application";
 import { Home } from "./components/home";
+import { NotFound } from "./components/navigation";
 
 const store = createStore(combineReducers(reducers))
 
@@ -27,7 +28,9 @@ ReactDOM.render(
             React.createElement(
                 Route,
                 {path: "/", component: Home}
-            )
+            ),
+
+            r("*", NotFound)
         )
     ),
     document.getElementById("render")
