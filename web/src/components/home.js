@@ -9,8 +9,7 @@ export class Home extends React.Component {
         return d.div(
             {},
 
-            d.h1({}, "surf competitions"),
-            link("login", {to: "/login"})
+            d.h1({}, "surf competitions")
         );
     }
 }
