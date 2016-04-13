@@ -14,11 +14,21 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
-            { test: /\.less$/, exclude: /node_modules/, loader: "style!css!autoprefixer!less"}
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"}
         ]
     },
+
     devServer: {
+        proxy: {
+            '/api*': {
+                target: "http://127.0.0.1:3000",
+                secure: false,
+                rewrite: function(req) {
+                    req.url = req.url.replace(/^\/api/, '');
+                }
+            }
+        },
+
         contentBase: buildPath,
         host: "0.0.0.0",
         port: 8080,
