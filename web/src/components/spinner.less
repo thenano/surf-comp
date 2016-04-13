@@ -1,0 +1,29 @@
+@import "palette";
+
+.spinner {
+    width: 20px * 4;
+    text-align: center;
+
+    & > div {
+        margin-right: 5px;
+        width: 5px;
+        height: 20px;
+        background-color: @spinner-color;
+        display: inline-block;
+        animation: throbbing 1s ease-in-out 0s infinite both;
+    }
+
+    .two { animation-delay: 100ms; }
+    .three { animation-delay: 200ms; }
+    .four { animation-delay: 300ms; }
+}
+
+@keyframes throbbing {
+    0%, 50%, 100% {
+        transform: scaleY(0.5);
+    }
+
+    25% {
+        transform: scaleY(1.0);
+    }
+}

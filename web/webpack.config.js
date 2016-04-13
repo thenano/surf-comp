@@ -2,7 +2,10 @@ const path = require("path");
 const buildPath = path.join(__dirname, "public");
 
 module.exports = {
-    entry: ["./src/site.js", "webpack-dev-server/client?http://localhost:8080"],
+    entry: [
+        "./src/site.js",
+        "webpack-dev-server/client?http://localhost:8080"
+    ],
 
     output: {
         path: buildPath,
@@ -11,7 +14,8 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"}
+            { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
+            { test: /\.less$/, exclude: /node_modules/, loader: "style!css!autoprefixer!less"}
         ]
     },
     devServer: {

@@ -1,0 +1,131 @@
+@import "palette";
+@import "spinner";
+
+@field-separator: 35px;
+@transition-time: 200ms;
+
+.input {
+    display: inline-block;
+    width: 100%;
+}
+
+.submission {
+    display: flex;
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+
+    .spinner {
+        display: inline-block;
+    }
+}
+
+.submit {
+    display: inline-block;
+    position: relative;
+    font-size: 18px;
+
+    &.disabled, &.disabled:hover {
+        color: @disabled-button-text-color;
+        cursor: default;
+        background-color: @disabled-button-background-color;
+        border-color: darken(@disabled-button-background-color, 15%);
+    }
+}
+
+textarea {
+    resize: none;
+    overflow: auto;
+}
+
+.focus {
+    label {
+        color: @input-focus-color;
+    }
+
+    input, textarea {
+        border-color: @input-focus-color;
+
+        &:hover {
+            border-color: @input-focus-color;
+        }
+    }
+}
+
+.error {
+    label {
+        color: @error-color;
+    }
+
+    input, textarea {
+        border-color: @error-color;
+
+        &:hover {
+            border-color: @error-color;
+        }
+    }
+}
+
+input, textarea {
+    font-size: 18px;
+    outline: none;
+    padding: 15px 0;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: @input-border-color;
+    border-bottom-width: 2px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    width: 100%;
+    transition: border-color @transition-time;
+
+    &:hover {
+        border-color: darken(@input-border-color, 15%);
+    }
+
+    &[disabled] {
+        color: @disabled-input-text-color;
+    }
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    color: @label-color;
+    padding: 5px 0;
+    transition: color @transition-time;
+}
+
+.field {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: @field-separator;
+
+    .info-message {
+        color: @info-color;
+        font-size: 14px;
+        line-height: 22px;
+        width: 100%;
+        text-align: right;
+    }
+
+    .error-message {
+        font-size: 12px;
+        position: relative;
+        height: 0;
+        overflow: visible;
+        line-height: 22px;
+        width: 100%;
+        color: @error-color;
+
+        .error-icon {
+            position: absolute;
+            font-size: 14px;
+            line-height: 22px;
+            right: 0;
+        }
+    }
+}
+

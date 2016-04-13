@@ -1,0 +1,96 @@
+@import (inline) "./node_modules/normalize.css/normalize.css";
+@import (inline) "./node_modules/font-awesome/css/font-awesome.min.css";
+
+@import "palette";
+@import "buttons";
+@import "spinner";
+@import "notifications";
+@import "forms/index";
+
+@page-vert-padding: 15px;
+@page-horiz-padding: 35px;
+
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-weight: 400;
+}
+
+p {
+    line-height: 1.2;
+    font-size: 18px;
+}
+
+h1, h2, h3, h4 {
+    color: @heading-primary-color;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: @heading-secondary-color;
+}
+
+a {
+    color: @link-color;
+    text-decoration: none;
+
+    &:visited {
+        color: @link-visited-color;
+    }
+}
+
+@header-height: 50px;
+
+#site-header {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: @header-height;
+    background: white;
+    font-size: 18px;
+    font-weight: bold;
+
+    span {
+        line-height: @header-height;
+    }
+
+    & > div {
+        position: relative;
+    }
+
+    img {
+        vertical-align: middle;
+        max-height: @header-height - 15px;
+    }
+}
+
+body {
+    margin-top: @header-height;
+}
+
+#logo {
+    position: absolute;
+    left: 15px;
+}
+
+#account-actions {
+    position: absolute;
+    right: 15px;
+}
+
+.page {
+    padding: @page-vert-padding @page-horiz-padding;
+
+    h2 {
+        margin-bottom: 50px;
+    }
+}
