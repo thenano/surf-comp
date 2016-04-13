@@ -30,6 +30,12 @@ function r(path, component) {
     return React.createElement(Route, props);
 }
 
+const home = () => {
+    return React.createElement(IndexRoute, {
+        component: Home
+    });
+}
+
 ReactDOM.render(
     React.createElement(
         Provider,
@@ -41,12 +47,12 @@ ReactDOM.render(
 
             React.createElement(
                 Route,
-                {path: "/", component: Home, onEnter: Home.onEnter(store)}
-            ),
+                {path: "/", component: Application, onEnter: Application.onEnter(store)},
 
-            r("/login", LoginForm),
-
-            r("*", NotFound)
+                home(),
+                r("/login", LoginForm),
+                r("*", NotFound)
+            )
         )
     ),
     document.getElementById("render")
