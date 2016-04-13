@@ -1,3 +1,5 @@
+import './application.less';
+
 import * as UserActions from "../actions/user";
 import React from "react"
 import { fetch } from "../decorators";
