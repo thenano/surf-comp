@@ -8,10 +8,10 @@
 .bundle
 
 # Ignore all logfiles and tempfiles.
-log/*
-tmp/*
-!log/.keep
-!tmp/.keep
+api/log/*
+api/tmp/*
+!api/log/.keep
+!api/tmp/.keep
 
 # Ignore Byebug command history file.
 .byebug_history
@@ -21,3 +21,4 @@ tmp/*
 *.iml
 *.sqlite3
 node_modules
+npm-debug.log
