@@ -1,1 +1,1 @@
-export function noop(state) { return {}; }
+export { reducer as users } from "./users";

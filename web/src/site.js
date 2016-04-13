@@ -11,14 +11,22 @@ import { NotFound } from "./components/navigation"
 import { LoginForm } from "./components/login"
 import { api } from "./actions/api"
 import { promises } from "./reducers/middleware"
+import { addLoaded } from "./enhancers";
 
 const reducer = combineReducers(reducers);
 const store = compose(
+    addLoaded,
     applyMiddleware(promises(api()))
 )(createStore)(reducer, {});
 
 function r(path, component) {
+    let { onEnter } = component;
+
     let props = { path, component };
+    if (onEnter) {
+        props.onEnter = onEnter(store);
+    }
+
     return React.createElement(Route, props);
 }
 
@@ -33,7 +41,7 @@ ReactDOM.render(
 
             React.createElement(
                 Route,
-                {path: "/", component: Home}
+                {path: "/", component: Home, onEnter: Home.onEnter(store)}
             ),
 
             r("/login", LoginForm),
