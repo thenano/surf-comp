@@ -1,6 +1,6 @@
 import request from "axios";
 
-var base = "http://localhost:3000";
+var base = "http://localhost:8080/api";
 
 const CONFIG = {
     withCredentials: true
