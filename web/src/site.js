@@ -9,6 +9,7 @@ import { Application } from "./components/application"
 import { Home } from "./components/home"
 import { NotFound } from "./components/navigation"
 import { LoginForm } from "./components/login"
+import { SignUp } from "./components/sign-up"
 import { api } from "./actions/api"
 import { promises } from "./reducers/middleware"
 import { addLoaded } from "./enhancers";
@@ -51,6 +52,7 @@ ReactDOM.render(
 
                 home(),
                 r("/login", LoginForm),
+                r("/sign-up", SignUp),
                 r("*", NotFound)
             )
         )

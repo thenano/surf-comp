@@ -29,5 +29,7 @@ module SurfComp
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.action_controller.allow_forgery_protection = false
   end
 end

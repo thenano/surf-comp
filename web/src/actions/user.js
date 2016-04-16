@@ -22,6 +22,16 @@ export function logout() {
     };
 }
 
+export function registerFacebook(response) {
+    var cookie_name = "fbsr_1569714466676200";
+    document.cookie = `${cookie_name}=${response.authResponse.signedRequest}`;
+    return {
+        type: "REGISTER_FB_USER",
+        promise: api => api.post("users/auth/facebook/callback",
+                                 {})
+    };
+}
+
 export function register(email, name, pass) {
     return {
         type: "REGISTER_USER",

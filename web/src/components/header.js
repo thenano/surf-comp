@@ -62,8 +62,6 @@ export class Header extends React.Component {
                     ),
                     d.span(
                         {id: "account-actions"},
-                        React.createElement(Link, {href: "/sign-up", to: "/sign-up", className: "sign-up"}, "sign up"),
-                        " | ",
                         React.createElement(Link, {href: "/login", to: "/login", className: "login"}, "login")
                     )
                 )
