@@ -4,6 +4,7 @@ const defaultState = new Immutable.Map();
 
 export function reducer(state=defaultState, action) {
     switch (action.type) {
+    case "REGISTER_FB_USER":
     case "REGISTER_USER":
     case "GET_CURRENT_USER":
         return state

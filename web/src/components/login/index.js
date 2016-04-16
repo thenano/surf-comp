@@ -1,6 +1,5 @@
 import * as forms from "../forms";
 import React from "react";
-import FacebookLogin from "react-facebook-login";
 import * as UserActions from "../../actions/user";
 import { connect } from "react-redux";
 
@@ -45,11 +44,31 @@ export class LoginForm extends forms.ValidatedForm {
         });
     }
 
+    loginWithFacebook() {
+        this.setState({ submitting: true });
+        let { dispatch } = this.props;
+
+        return new Promise((resolve, reject) => {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    resolve(dispatch(UserActions.registerFacebook(response)));
+                } else {
+                    reject(response);
+                }
+            }, {scope: "public_profile,email"})
+        })
+        .then(() => {
+            this.props.history.pushState({}, `/`);
+        });
+    }
+
     render() {
         return d.div(
             {id: "login", className: "page"},
 
             d.h2({}, "Login"),
+
+            d.button({onClick: this.loginWithFacebook.bind(this)}, "Facebook"),
 
             d.form(
                 {},
@@ -88,17 +107,6 @@ export class LoginForm extends forms.ValidatedForm {
                 ),
 
                 forms.submit("Login", this.submit.bind(this), this.state.submitting)
-            ),
-
-            React.createElement(
-                FacebookLogin,
-                {
-                    appId: "1569714466676200",
-                    autoLoad: true,
-                    size: "small",
-                    scope: "email",
-                    callback: function() { console.debug("figure out what to do with facebook object") }
-                }
             )
         );
     }

@@ -3,6 +3,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @user = User.from_omniauth(request.env['omniauth.auth'])
 
     if @user.persisted?
+      sign_in @user
+
       render json: @user
     else
       session['devise.facebook_data'] = request.env['omniauth.auth']
