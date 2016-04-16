@@ -30,7 +30,8 @@ export class Header extends React.Component {
                         {id: "logo"},
                         React.createElement(
                             Link, {to: "/"},
-                            d.img({src: "/img/logo-small.png", alt: "surf"})
+                            "site-name"
+                            // d.img({src: "/img/logo-small.png", alt: "surf"})
                         )
                     ),
                     d.span(

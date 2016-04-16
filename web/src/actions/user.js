@@ -18,7 +18,7 @@ export function login(email, pass) {
 export function logout() {
     return {
         type: "LOGOUT_USER",
-        promise: api => api.post("users/logout")
+        promise: api => api.delete("users/sign_out")
     };
 }
 

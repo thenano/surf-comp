@@ -20,6 +20,13 @@ export function api(cookie) {
     let opts = Object.assign({}, CONFIG, { headers: headers });
 
     return {
+        delete: (resource) => {
+            return request.delete(
+                urlTo(resource),
+                opts
+            );
+        },
+
         get: (resource) => {
             return request.get(
                 urlTo(resource),
