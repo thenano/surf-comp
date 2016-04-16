@@ -9,7 +9,9 @@ export class Home extends React.Component {
         return d.div(
             {},
 
-            d.h1({}, "surf competitions")
+            d.h1({}, "surf competitions"),
+
+            link("Edit Heats", {to: "/heats"})
         );
     }
 }
