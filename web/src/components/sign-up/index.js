@@ -17,6 +17,7 @@ export class SignUp extends forms.ValidatedForm {
     }
 
     send(model) {
+        this.setState({ submitting: true });
         let { dispatch } = this.props;
 
         return dispatch(
@@ -26,12 +27,26 @@ export class SignUp extends forms.ValidatedForm {
                 model.get("password")
             )
         )
+        .catch(e => {
+            this.setState({ submitting: false });
+
+            if (e.status == 401) {
+                this.setState({
+                    error: "Incorrect email or password"
+                });
+            } else {
+                this.setState({
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            }
+        })
         .then(() => {
-            this.props.history.pushState({}, `/`);
+            this.props.history.pushState({}, "/");
         });
     }
 
     signUpWithFacebook() {
+        this.setState({ submitting: true });
         let { dispatch } = this.props;
 
         return new Promise((resolve, reject) => {

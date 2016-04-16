@@ -17,6 +17,8 @@ export class LoginForm extends forms.ValidatedForm {
     }
 
     send(model) {
+        this.setState({ submitting: true });
+
         let { dispatch } = this.props;
 
         return dispatch(

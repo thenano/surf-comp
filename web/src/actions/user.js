@@ -36,9 +36,12 @@ export function register(email, name, pass) {
     return {
         type: "REGISTER_USER",
         promise: api => api.post("users", {
-            email: email,
-            name: name,
-            password: pass
+            user: {
+                email: email,
+                name: name,
+                password: pass,
+                password_confirmation: pass
+            }
         })
     };
 }
