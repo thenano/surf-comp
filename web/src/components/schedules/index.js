@@ -3,7 +3,24 @@ import Immutable from "immutable";
 import { connect } from "react-redux";
 import { ShowHeat } from "./heats/show";
 
+import faker from "faker";
+
 var d = React.DOM;
+
+function athlete() {
+    return {
+        name: faker.name.findName()
+    }
+}
+
+function randomAthletes() {
+    let athletes = [];
+    for (var i=0; i < (Math.random() * 100) % 6; i++) {
+        athletes.push(athlete());
+    }
+
+    return athletes;
+}
 
 @connect(state => state)
 export class EditSchedule extends React.Component {
@@ -19,24 +36,44 @@ export class EditSchedule extends React.Component {
                 {
                     name: "groms",
                     heats: [
-                        { id: 1, athletes: [] },
-                        { id: 3, athletes: [] },
-                        { id: 2, athletes: [] }
+                        { id: 1, athletes: randomAthletes() },
+                        { id: 3, athletes: randomAthletes() },
+                        { id: 2, athletes: randomAthletes() }
                     ]
                 },
                 {
                     name: "open",
                     heats: [
-                        { id: 5, athletes: [] },
-                        { id: 4, athletes: [] },
-                        { id: 6, athletes: [] },
-                        { id: 7, athletes: [] },
-                        { id: 8, athletes: [] },
-                        { id: 9, athletes: [] },
+                        { id: 5, athletes: randomAthletes() },
+                        { id: 4, athletes: randomAthletes() },
+                        { id: 6, athletes: randomAthletes() },
+                        { id: 7, athletes: randomAthletes() },
+                        { id: 8, athletes: randomAthletes() },
+                        { id: 9, athletes: randomAthletes() },
                     ]
                 }
             ]
         };
+    }
+
+    athletesForHeatID(id) {
+        let divisions = Immutable.fromJS(this.state.divisions);
+
+        let heats = divisions.reduce((m, d) => {
+            return m.concat(d.get("heats"));
+        }, Immutable.List())
+
+        let heat = heats.find(h => h.get("id") == id);
+
+        return heat.get("athletes").toJS();
+    }
+
+    divisionForHeatID(id) {
+        let divisions = Immutable.fromJS(this.state.divisions);
+
+        return divisions.filter(d => {
+            return d.get("heats").filter(h => h.get("id") == id).size > 0;
+        }).first().get("name");
     }
 
     renderLanes(zipped) {
@@ -50,14 +87,24 @@ export class EditSchedule extends React.Component {
             if (left) {
                 leftHeat = React.createElement(
                     ShowHeat,
-                    {key: left, id: left, division: "todo"}
+                    {
+                        key: left,
+                        id: left,
+                        division: this.divisionForHeatID(left),
+                        athletes: this.athletesForHeatID(left)
+                    }
                 );
             }
 
             if (right) {
                 rightHeat = React.createElement(
                     ShowHeat,
-                    {key: right, id: right, division: "todo"}
+                    {
+                        key: right,
+                        id: right,
+                        division: this.divisionForHeatID(right),
+                        athletes: this.athletesForHeatID(right)
+                    }
                 );
             }
 
@@ -94,14 +141,12 @@ export class EditSchedule extends React.Component {
         return d.div(
             {id: "schedule-edit"},
 
-            d.h1({}, "edit yourself some heats"),
+            d.h2({}, "Heat Schedule"),
 
             d.div(
                 {id: "lanes"},
 
                 this.renderLanes(zipped)
-                // this.renderLane(this.state.schedule[0]),
-                // this.renderLane(this.state.schedule[1])
             )
         );
     }

@@ -2,6 +2,21 @@ import React from "react";
 
 var d = React.DOM;
 
+class ShowHeatAthlete extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+    }
+
+    render() {
+        let { athlete } = this.props;
+
+        return d.li(
+            {className: "athlete"},
+            athlete.name
+        );
+    }
+}
+
 export class ShowHeat extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -13,10 +28,20 @@ export class ShowHeat extends React.Component {
 
             d.header(
                 {className: "title"},
-                `Heat ${this.props.id} | Division ${this.props.division}`
+                `Heat ${this.props.id}`,
+                d.sup({}, this.props.division)
             ),
 
-            d.div({}, "athletes go here")
+            d.ol(
+                {className: "athletes"},
+
+                this.props.athletes.map((a, i) => {
+                    return React.createElement(
+                        ShowHeatAthlete,
+                        {key: i, athlete: a}
+                    );
+                })
+            )
         );
     }
 }

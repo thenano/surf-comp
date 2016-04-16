@@ -1,6 +1,9 @@
 @import (inline) "~normalize.css/normalize.css";
 //@import (inline) "~font-awesome/css/font-awesome.min.css";
 
+@import url(https://fonts.googleapis.com/css?family=Source+Serif+Pro);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700);
+
 @import "palette";
 @import "buttons";
 @import "spinner";
@@ -11,29 +14,30 @@
 @page-vert-padding: 15px;
 @page-horiz-padding: 35px;
 
+@serif: "Source Serif Pro";
+@sans-serif: "Source Sans Pro";
+
 * {
     box-sizing: border-box;
-    font-family: sans-serif;
-    font-weight: 400;
 }
 
 p {
     line-height: 1.2;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 h1, h2, h3, h4 {
     color: @heading-primary-color;
-    font-family: sans-serif;
+    font-family: "Source Serif Pro";
     font-weight: bold;
 }
 
 h1 {
-    font-size: 40px;
+    font-size: 32px;
 }
 
 h2 {
-    font-size: 32px;
+    font-size: 28px;
     margin-bottom: 10px;
     color: @heading-secondary-color;
 }
@@ -57,7 +61,7 @@ a {
     width: 100%;
     height: @header-height;
     background: white;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
 
     span {
@@ -76,6 +80,8 @@ a {
 
 body {
     margin-top: @header-height;
+    font-size: 16px;
+    font-family: @sans-serif;
 }
 
 #logo {
@@ -88,12 +94,10 @@ body {
     right: 15px;
 }
 
-.page {
+.wrapper {
     padding: @page-vert-padding @page-horiz-padding;
-
-    h2 {
-        margin-bottom: 50px;
-    }
+    margin: 0 auto;
+    max-width: 960px;
 }
 
 .clear {
