@@ -7,6 +7,7 @@ require 'rspec/rails'
 
 require 'factory_girl_rails'
 require 'support/factory_girl'
+require 'support/devise'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

@@ -21,7 +21,7 @@ class Division < ApplicationRecord
 
     users.each { |athlete| first_round[heat_cycle.next].users << athlete }
 
-    last_rounds.each_with_index { |heat, index| heat.position = number_of_heats + index}
+    last_rounds.each_with_index { |heat, index| heat.position = number_of_heats + index }
 
     heats << first_round + last_rounds
   end
