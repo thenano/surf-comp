@@ -1,0 +1,91 @@
+.timeline-wrapper {
+    position: relative;
+
+    .timeline-line {
+        position: absolute;
+        width: 5px;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: @beard-color;
+        z-index: -1;
+    }
+}
+
+.timeline {
+    width: 100%;
+    display: table;
+
+    .time-slot {
+        width: 100%;
+        display: table-row-group;
+    }
+
+    .time-row {
+        display: table-row;
+        width: 100%;
+
+        .time-point {
+            display: table-cell;
+            vertical-align: middle;
+            width: 5px;
+
+            .time-mark {
+                font-family: @serif;
+                font-weight: bold;
+                color: white;
+                width: 50px;
+                height: 50px;
+                background: @info-color;
+                border: 5px solid @info-color;
+                border-radius: 25px;
+                line-height: 40px;
+                vertical-align: middle;
+                text-align: center;
+            }
+        }
+    }
+
+    .time-cell {
+        display: table-cell;
+        width: 50%;
+    }
+
+    .empty {
+        min-height: 150px;
+    }
+
+    .heat {
+        min-height: 150px;
+        margin-right: 10px;
+        width: 100%;
+        float: left;
+
+        &.dragging {
+            opacity: 0.2;
+        }
+
+        .athletes {
+            margin: 5px 0;
+            padding: 0 10px;
+            list-style-type: none;
+        }
+
+        .title {
+            background: #eeeeee;
+            color: #6e6e76;
+            padding: 3px 10px;
+
+            sup {
+                padding-left: 5px;
+            }
+
+            &:hover {
+                background: #dddddd;
+                cursor: move;
+            }
+        }
+
+    }
+}
