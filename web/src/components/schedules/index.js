@@ -31,8 +31,8 @@ export class EditSchedule extends React.Component {
 
         this.state = {
             schedule: [
-                [1, 2],
-                [3, 4, 5]
+                [3, 4],
+                [5, null]
             ],
             divisions: {
                 1: {name: "groms"},
@@ -58,8 +58,25 @@ export class EditSchedule extends React.Component {
         let from = schedule[dragPosition[0]][dragPosition[1]],
             to = schedule[hoverPosition[0]][hoverPosition[1]];
 
-        copy[dragPosition[0]][dragPosition[1]] = to;
-        copy[hoverPosition[0]][hoverPosition[1]] = from;
+        if (dragPosition[0] == hoverPosition[0]) {
+            let column = copy[dragPosition[0]];
+            column.splice(dragPosition[1], 1);
+
+            if (dragPosition[1] < hoverPosition[1]) {
+                column = column.slice(0, hoverPosition[1]).concat(from, column.slice(hoverPosition[1]));
+            } else {
+                column = column.slice(0, hoverPosition[1]).concat(from, column.slice(hoverPosition[1]));
+            }
+
+            copy[dragPosition[0]] = column
+        } else {
+            let column = copy[hoverPosition[0]];
+            copy[dragPosition[0]].splice(dragPosition[1], 1);
+
+            column = column.slice(0, hoverPosition[1]).concat(from, column.slice(hoverPosition[1]));
+
+            copy[hoverPosition[0]] = column;
+        }
 
         this.setState({
             schedule: copy

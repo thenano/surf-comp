@@ -39,7 +39,9 @@ const heatCardTarget = {
 
         props.move(dragPos, hoverPos);
 
-        monitor.getItem().position = hoverPos;
+        if (monitor.getItem()) {
+            monitor.getItem().position = hoverPos;
+        }
     }
 };
 
