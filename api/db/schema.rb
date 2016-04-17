@@ -27,8 +27,9 @@ ActiveRecord::Schema.define(version: 20160416050410) do
   add_index "divisions_users", ["user_id", "division_id"], name: "index_divisions_users_on_user_id_and_division_id", unique: true
 
   create_table "heats", force: :cascade do |t|
-    t.string   "name"
+    t.string   "round"
     t.time     "time"
+    t.integer  "position"
     t.integer  "division_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false

@@ -6,7 +6,30 @@ RSpec.describe Division, :type => :model do
     describe 'with 24 athletes' do
       let(:division) { create(:division_with_athletes) }
 
-      it 'adds 6 athletes per heat by seed' do
+      it 'creates 7 heats' do
+        division.draw
+        expect(division.heats.size).to eq(7)
+      end
+
+      it 'creates an empty final' do
+        division.draw
+        expect(division.heats.last.round).to eq('Final')
+        expect(division.heats.last.users).to be_empty
+        expect(division.heats.last.position).to eq(6)
+      end
+
+      it 'creates two empty semifinals' do
+        division.draw
+        expect(division.heats[5].round).to eq('Semifinal')
+        expect(division.heats[5].users).to be_empty
+        expect(division.heats[5].position).to eq(5)
+
+        expect(division.heats[4].round).to eq('Semifinal')
+        expect(division.heats[4].users).to be_empty
+        expect(division.heats[4].position).to eq(4)
+      end
+
+      it 'adds 6 athletes per heat by seed and gives the quarterfinal heat name' do
         athletes = division.users
         division.draw
         expect(division.heats[0].users).to eq(
@@ -18,6 +41,7 @@ RSpec.describe Division, :type => :model do
                                                    athletes[16],
                                                    athletes[20],
                                                ])
+        expect(division.heats[0].round).to eq('Quarterfinal')
 
         expect(division.heats[1].users).to eq(
                                                [
@@ -28,6 +52,7 @@ RSpec.describe Division, :type => :model do
                                                    athletes[17],
                                                    athletes[21],
                                                ])
+        expect(division.heats[1].round).to eq('Quarterfinal')
 
         expect(division.heats[2].users).to eq(
                                                [
@@ -38,6 +63,7 @@ RSpec.describe Division, :type => :model do
                                                    athletes[18],
                                                    athletes[22],
                                                ])
+        expect(division.heats[2].round).to eq('Quarterfinal')
 
         expect(division.heats[3].users).to eq(
                                                [
@@ -48,13 +74,19 @@ RSpec.describe Division, :type => :model do
                                                    athletes[19],
                                                    athletes[23],
                                                ])
+        expect(division.heats[3].round).to eq('Quarterfinal')
       end
     end
 
     describe 'with 25' do
       let(:division) { create(:division_with_athletes, athletes_count: 25) }
 
-      it 'adds 5 athletes per heat by seed' do
+      it 'creates 12 heats' do
+        division.draw
+        expect(division.heats.size).to eq(12)
+      end
+
+      it 'adds 5 athletes per heat by seed and gives the round 1 heat name' do
         athletes = division.users
         division.draw
         expect(division.heats[0].users).to eq(
@@ -65,6 +97,7 @@ RSpec.describe Division, :type => :model do
                                                    athletes[15],
                                                    athletes[20]
                                                ])
+        expect(division.heats[0].round).to eq('Round 1')
 
         expect(division.heats[1].users).to eq(
                                                [
@@ -177,27 +210,32 @@ RSpec.describe Division, :type => :model do
 
       it 'names the heat "Final"' do
         division.draw
-        expect(division.heats.first.name).to eq('Final')
+        expect(division.heats.first.round).to eq('Final')
       end
     end
 
     describe 'with 12 athletes' do
       let(:division) { create(:division_with_athletes, athletes_count: 12) }
 
+      it 'creates 3 heats' do
+        division.draw
+        expect(division.heats.size).to eq(3)
+      end
+
       it 'creates an empty final' do
         division.draw
-        expect(division.heats.last.name).to eq('Final')
+        expect(division.heats.last.round).to eq('Final')
         expect(division.heats.last.users).to be_empty
       end
 
       it 'creates the first heat as semifinal 1' do
         division.draw
-        expect(division.heats.first.name).to eq('Semifinal 1')
+        expect(division.heats.first.round).to eq('Semifinal')
       end
 
       it 'creates the second heat as semifinal 2' do
         division.draw
-        expect(division.heats.second.name).to eq('Semifinal 2')
+        expect(division.heats.second.round).to eq('Semifinal')
       end
     end
   end
