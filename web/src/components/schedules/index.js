@@ -1,9 +1,11 @@
 import React from "react";
 import Immutable from "immutable";
-import { connect } from "react-redux";
-import { ShowHeat } from "./heats/show";
-
+import HTML5Backend from 'react-dnd-html5-backend';
 import faker from "faker";
+import update from 'react/lib/update';
+import { connect } from "react-redux";
+import { ShowEmptyHeat, ShowHeat } from "./heats/show";
+import { DragDropContext } from 'react-dnd';
 
 var d = React.DOM;
 
@@ -22,67 +24,58 @@ function randomAthletes() {
     return athletes;
 }
 
-@connect(state => state)
+@DragDropContext(HTML5Backend)
 export class EditSchedule extends React.Component {
     constructor(props, context) {
         super(props, context);
 
         this.state = {
             schedule: [
-                [1, 2, 4],
-                [3, 5, 6, 7, 8, 9]
+                [1, 2],
+                [3, 4, 5]
             ],
-            divisions: [
-                {
-                    name: "groms",
-                    heats: [
-                        { id: 1, athletes: randomAthletes() },
-                        { id: 3, athletes: randomAthletes() },
-                        { id: 2, athletes: randomAthletes() }
-                    ]
-                },
-                {
-                    name: "open",
-                    heats: [
-                        { id: 5, athletes: randomAthletes() },
-                        { id: 4, athletes: randomAthletes() },
-                        { id: 6, athletes: randomAthletes() },
-                        { id: 7, athletes: randomAthletes() },
-                        { id: 8, athletes: randomAthletes() },
-                        { id: 9, athletes: randomAthletes() },
-                    ]
-                }
-            ]
+            divisions: {
+                1: {name: "groms"},
+                2: {name: "opens"}
+            },
+            heats: {
+                1: { athletes: randomAthletes(), division: 1},
+                2: { athletes: randomAthletes(), division: 2},
+                3: { athletes: randomAthletes(), division: 2},
+                4: { athletes: randomAthletes(), division: 1},
+                5: { athletes: randomAthletes(), division: 2},
+            }
         };
     }
 
-    athletesForHeatID(id) {
-        let divisions = Immutable.fromJS(this.state.divisions);
+    moveHeat(dragPosition, hoverPosition) {
+        const { schedule } = this.state;
 
-        let heats = divisions.reduce((m, d) => {
-            return m.concat(d.get("heats"));
-        }, Immutable.List())
+        let left = schedule[0].slice(),
+            right = schedule[1].slice(),
+            copy = [left, right];
 
-        let heat = heats.find(h => h.get("id") == id);
+        let from = schedule[dragPosition[0]][dragPosition[1]],
+            to = schedule[hoverPosition[0]][hoverPosition[1]];
 
-        return heat.get("athletes").toJS();
+        copy[dragPosition[0]][dragPosition[1]] = to;
+        copy[hoverPosition[0]][hoverPosition[1]] = from;
+
+        this.setState({
+            schedule: copy
+        });
     }
 
-    divisionForHeatID(id) {
-        let divisions = Immutable.fromJS(this.state.divisions);
+    renderLanes() {
+        let { schedule } = this.state;
+        let slots = [];
+        let rowKey = 0;
 
-        return divisions.filter(d => {
-            return d.get("heats").filter(h => h.get("id") == id).size > 0;
-        }).first().get("name");
-    }
+        for (var i=0; i < Math.max(schedule[0].length, schedule[1].length); i++) {
+            let left = i < schedule[0].length ? schedule[0][i] : null,
+                right = i < schedule[1].length ? schedule[1][i] : null;
 
-    renderLanes(zipped) {
-        return zipped.map((heats) => {
-            let left = heats[0],
-                right = heats[1];
-
-            let leftHeat,
-                rightHeat;
+            let leftHeat, rightHeat;
 
             if (left) {
                 leftHeat = React.createElement(
@@ -90,10 +83,21 @@ export class EditSchedule extends React.Component {
                     {
                         key: left,
                         id: left,
-                        division: this.divisionForHeatID(left),
-                        athletes: this.athletesForHeatID(left)
+                        position: [0, i],
+                        move: this.moveHeat.bind(this),
+                        division: "groms",
+                        athletes: this.state.heats[left].athletes
                     }
                 );
+            } else {
+                leftHeat = React.createElement(
+                    ShowEmptyHeat,
+                    {
+                        key: `empty-${++rowKey}`,
+                        position: [0, i],
+                        move: this.moveHeat.bind(this),
+                    }
+                )
             }
 
             if (right) {
@@ -102,42 +106,32 @@ export class EditSchedule extends React.Component {
                     {
                         key: right,
                         id: right,
-                        division: this.divisionForHeatID(right),
-                        athletes: this.athletesForHeatID(right)
+                        position: [1, i],
+                        move: this.moveHeat.bind(this),
+                        division: "groms",
+                        athletes: this.state.heats[right].athletes
                     }
                 );
+            } else {
+                rightHeat = React.createElement(
+                    ShowEmptyHeat,
+                    {
+                        key: `empty-${++rowKey}`,
+                        position: [1, i],
+                        move: this.moveHeat.bind(this),
+                    }
+                )
             }
 
-            return d.div(
-                {className: "time-slot", key: `${left}:${right}`},
-                leftHeat, rightHeat,
-                d.div({className: "clear"})
-            );
-        });
-    }
-
-    zip(left, right) {
-        let len = Math.max(left.size, right.size);
-
-        let le = left,
-            re = right;
-
-        if (left.get(len-1, undefined) == undefined) {
-            le = left.set(len-1, undefined);
+            slots.push(leftHeat);
+            slots.push(rightHeat);
+            slots.push(d.div({key: `clear-${++rowKey}`, className: "clear"}));
         }
 
-        if (right.get(len-1, undefined) == undefined) {
-            re = right.set(len-1, undefined);
-        }
-
-        return le.zip(re);
+        return slots
     }
 
     render() {
-        let south = Immutable.fromJS(this.state.schedule[0]),
-            north = Immutable.fromJS(this.state.schedule[1]),
-            zipped = this.zip(north, south);
-
         return d.div(
             {id: "schedule-edit"},
 
@@ -146,7 +140,7 @@ export class EditSchedule extends React.Component {
             d.div(
                 {id: "lanes"},
 
-                this.renderLanes(zipped)
+                this.renderLanes()
             )
         );
     }
