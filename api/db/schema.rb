@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160414095912) do
+ActiveRecord::Schema.define(version: 20160416050410) do
 
   create_table "divisions", force: :cascade do |t|
     t.string   "name"
@@ -25,6 +25,23 @@ ActiveRecord::Schema.define(version: 20160414095912) do
   end
 
   add_index "divisions_users", ["user_id", "division_id"], name: "index_divisions_users_on_user_id_and_division_id", unique: true
+
+  create_table "heats", force: :cascade do |t|
+    t.string   "name"
+    t.time     "time"
+    t.integer  "division_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "heats", ["division_id"], name: "index_heats_on_division_id"
+
+  create_table "heats_users", id: false, force: :cascade do |t|
+    t.integer "heat_id", null: false
+    t.integer "user_id", null: false
+  end
+
+  add_index "heats_users", ["user_id", "heat_id"], name: "index_heats_users_on_user_id_and_heat_id", unique: true
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
