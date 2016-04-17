@@ -17,11 +17,7 @@ if (isDev) {
 }
 
 module.exports = {
-    entry: [
-        "./src/site.js",
-        "webpack-dev-server/client?http://localhost:8080"
-    ],
-    // entry: entry,
+    entry: entry,
 
     output: {
         path: buildPath,
