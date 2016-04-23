@@ -296,9 +296,17 @@ RSpec.describe Division, :type => :model do
     describe 'with 23 athletes' do
       let(:division) { create(:division_with_athletes, athletes_count: 23) }
 
+      it 'adds the athlete to the division' do
+        division.draw
+
+        new_athlete = create(:user)
+        division.add_athlete(new_athlete)
+
+        expect(division.users.find(new_athlete.id)).to eq(new_athlete)
+      end
+
       it 'should add the athlete to the last heat' do
         division.draw
-        division.save!
 
         expect(division.heats[3].users.size).to eq(5)
         new_athlete = create(:user)
@@ -311,14 +319,13 @@ RSpec.describe Division, :type => :model do
 
       it 'does not add more heats' do
         division.draw
-        division.save!
 
         draw_size = division.heats.size
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats.size).to eq(draw_size)
+        expect(division.heats(true).size).to eq(draw_size)
       end
     end
 
@@ -327,7 +334,6 @@ RSpec.describe Division, :type => :model do
 
       it 'should add the athlete to the second to last heat' do
         division.draw
-        division.save!
 
         expect(division.heats[2].users.size).to eq(5)
         expect(division.heats[3].users.size).to eq(5)
@@ -341,7 +347,6 @@ RSpec.describe Division, :type => :model do
 
       it 'does not add more heats' do
         division.draw
-        division.save!
 
         draw_size = division.heats.size
         new_athlete = create(:user)
@@ -357,7 +362,6 @@ RSpec.describe Division, :type => :model do
 
       it 'should add the athlete to the first heat' do
         division.draw
-        division.save!
 
         expect(division.heats.first.users.size).to eq(5)
         new_athlete = create(:user)
@@ -370,7 +374,6 @@ RSpec.describe Division, :type => :model do
 
       it 'does not add more heats' do
         division.draw
-        division.save!
 
         draw_size = division.heats.size
         new_athlete = create(:user)
@@ -386,13 +389,12 @@ RSpec.describe Division, :type => :model do
 
       before(:each) do
         division.draw
-        division.save!
 
         @new_athlete = create(:user)
         division.add_athlete(@new_athlete)
       end
 
-      it 'create a new round 1 heat with the athlete' do
+      it 'creates a new round 1 heat with the athlete' do
         first_round = division.heats.where('position < 10')
 
         expect(first_round.size).to eq(5)
@@ -442,7 +444,6 @@ RSpec.describe Division, :type => :model do
     describe 'with 12 athletes' do
       before(:each) do
         division.draw
-        division.save!
 
         @new_athlete = create(:user)
         division.add_athlete(@new_athlete)
@@ -479,6 +480,34 @@ RSpec.describe Division, :type => :model do
         expect(final.size).to eq(1)
 
         expect(final.first.position).to eq(20)
+      end
+    end
+
+    describe 'with 36 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 36) }
+
+      before(:each) do
+        division.draw
+
+        @new_athlete = create(:user)
+        division.add_athlete(@new_athlete)
+      end
+
+      it 'creates a new round 1 heat with the athlete' do
+        first_round = division.heats.where('position < 10')
+
+        expect(first_round.size).to eq(7)
+        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.round).to eq('Round 1')
+        expect(first_round.last.position).to eq(6)
+        expect(first_round.last.users.first).to eq(@new_athlete)
+      end
+
+      it 'create a new quarterfinal' do
+        quarters = division.heats.where(round: 'Quarterfinal')
+
+        expect(quarters.size).to eq(4)
+        expect(quarters.last.position).to eq(13)
       end
     end
   end
