@@ -290,4 +290,196 @@ RSpec.describe Division, :type => :model do
       end
     end
   end
+
+  describe '#add_athlete' do
+
+    describe 'with 23 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 23) }
+
+      it 'should add the athlete to the last heat' do
+        division.draw
+        division.save!
+
+        expect(division.heats[3].users.size).to eq(5)
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats[3].users.size).to eq(6)
+        expect(division.heats[3].users.last).to eq(new_athlete)
+      end
+
+      it 'does not add more heats' do
+        division.draw
+        division.save!
+
+        draw_size = division.heats.size
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats.size).to eq(draw_size)
+      end
+    end
+
+    describe 'with 22 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 22) }
+
+      it 'should add the athlete to the second to last heat' do
+        division.draw
+        division.save!
+
+        expect(division.heats[2].users.size).to eq(5)
+        expect(division.heats[3].users.size).to eq(5)
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats[2].users.size).to eq(6)
+        expect(division.heats[2].users.last).to eq(new_athlete)
+      end
+
+      it 'does not add more heats' do
+        division.draw
+        division.save!
+
+        draw_size = division.heats.size
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats.size).to eq(draw_size)
+      end
+    end
+
+    describe 'with 25 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 25) }
+
+      it 'should add the athlete to the first heat' do
+        division.draw
+        division.save!
+
+        expect(division.heats.first.users.size).to eq(5)
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats.first.users.size).to eq(6)
+        expect(division.heats.first.users.last).to eq(new_athlete)
+      end
+
+      it 'does not add more heats' do
+        division.draw
+        division.save!
+
+        draw_size = division.heats.size
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats.size).to eq(draw_size)
+      end
+    end
+
+    describe 'with 24 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 24) }
+
+      before(:each) do
+        division.draw
+        division.save!
+
+        @new_athlete = create(:user)
+        division.add_athlete(@new_athlete)
+      end
+
+      it 'create a new round 1 heat with the athlete' do
+        first_round = division.heats.where('position < 10')
+
+        expect(first_round.size).to eq(5)
+        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.round).to eq('Round 1')
+        expect(first_round.last.position).to eq(4)
+        expect(first_round.last.users.first).to eq(@new_athlete)
+      end
+
+      it 'renames the round of the first round heats' do
+        division.heats.where('position < 10').each do |heat|
+          expect(heat.round).to eq('Round 1')
+        end
+      end
+
+      it 'renames the round of the first round heats' do
+        division.heats.where('position < 10').each do |heat|
+          expect(heat.round).to eq('Round 1')
+        end
+      end
+
+      it 'creates a new round of quarterfinals' do
+        quarters = division.heats.where(round: 'Quarterfinal')
+        expect(quarters.size).to eq(3)
+
+        expect(quarters.first.position).to eq(10)
+        expect(quarters.second.position).to eq(11)
+        expect(quarters.last.position).to eq(12)
+      end
+
+      it 'updates the position of the semis' do
+        semis = division.heats.where(round: 'Semifinal')
+        expect(semis.size).to eq(2)
+
+        expect(semis.first.position).to eq(20)
+        expect(semis.second.position).to eq(21)
+      end
+
+      it 'updates the position of the final' do
+        final = division.heats.where(round: 'Final')
+        expect(final.size).to eq(1)
+
+        expect(final.first.position).to eq(30)
+      end
+    end
+
+    describe 'with 12 athletes' do
+      before(:each) do
+        division.draw
+        division.save!
+
+        @new_athlete = create(:user)
+        division.add_athlete(@new_athlete)
+      end
+
+      let(:division) { create(:division_with_athletes, athletes_count: 12) }
+
+      it 'create a new quarterfinal heat with the athlete' do
+        first_round = division.heats.where('position < 10')
+
+        expect(first_round.size).to eq(3)
+        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.round).to eq('Quarterfinal')
+        expect(first_round.last.position).to eq(2)
+        expect(first_round.last.users.first).to eq(@new_athlete)
+      end
+
+      it 'renames the round of the first round heats' do
+        division.heats.where('position < 10').each do |heat|
+          expect(heat.round).to eq('Quarterfinal')
+        end
+      end
+
+      it 'creates a new round of semifinals' do
+        semis = division.heats.where(round: 'Semifinal')
+        expect(semis.size).to eq(2)
+
+        expect(semis.first.position).to eq(10)
+        expect(semis.last.position).to eq(11)
+      end
+
+      it 'updates the position of the final' do
+        final = division.heats.where(round: 'Final')
+        expect(final.size).to eq(1)
+
+        expect(final.first.position).to eq(20)
+      end
+    end
+  end
 end
