@@ -14,13 +14,14 @@ class EventsController < ApplicationController
   end
 
   def schedule
-    heats = @event.event_divisions.includes(:division, :heats).map do |division|
+    heats = @event.event_divisions.includes(:division, :heats, :users).map do |division|
       division.heats.map do |heat|
         [heat.id, {
           id: heat.id,
           division: division.division.name,
           round: heat.round,
-          number: (heat.position % 10).next
+          number: (heat.position % 10).next,
+          users: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
         }]
       end
     end
