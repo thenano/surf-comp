@@ -26,7 +26,12 @@ class EventsController < ApplicationController
       end
     end
 
-    render json: { name: @event.name, schedule: @event.schedule, heats: heats.flatten(1).to_h}
+    render json: {
+      id: @event.id,
+      name: @event.name,
+      schedule: @event.schedule,
+      heats: heats.flatten(1).to_h
+    }
   end
 
   private

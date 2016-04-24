@@ -52,11 +52,11 @@ class Heat extends React.Component {
 
         return connectDragSource(
             d.div(
-                {className: `heat ${heat.get("division")}`},
+                {className: `heat ${heat.get("division").toLowerCase()}`},
 
                 d.div({},
                     d.header({}, heat.get("division")),
-                    d.div({}, `heat ${heat.get("number")}, round ${heat.get("round")}`)
+                    d.div({}, `heat ${heat.get("number")}, ${heat.get("round")}`)
                 )
             )
         );
@@ -92,7 +92,6 @@ class TimeRow extends React.Component {
         let { row, left, right, move } = this.props;
         let heatL, heatR;
 
-
         return d.div(
             {className: "time-row"},
 
@@ -123,20 +122,25 @@ function timeRow(row, left, right, move) {
     );
 }
 
-@fetch((store) => {
-    return store.dispatch(ScheduleActions.getSchedule(8))
+@fetch((store, r) => {
+    if (!store.loaded(`schedules.ids.${r.params.id}`)) {
+        return store.dispatch(ScheduleActions.getSchedule(1/*r.params.id*/));
+    }
 })
 @DragDropContext(HTML5Backend)
-@connect(state => state)
+@connect(state => ({
+    schedules: state.schedules
+}))
 export class EditTimetable extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const { schedule } = this.props;
+        const { schedules } = this.props;
+        let schedule = schedules.getIn(["ids", 1]);
 
         this.state = {
-            schedule: schedule.getIn(["current", "schedule"]),
-            heats: schedule.getIn(["current", "heats"])
+            schedule: schedule.get("schedule"),
+            heats: schedule.get("heats")
         };
 
         this.move = this.move.bind(this);
@@ -167,6 +171,7 @@ export class EditTimetable extends React.Component {
         for (var i=0; i < 12 * 60 / 16; i++) {
             let left = "" + this.state.schedule.getIn([0, i]),
                 right = "" + this.state.schedule.getIn([1, i]);
+
             times.push(this.renderTime(i, this.state.heats.get(left), this.state.heats.get(right)));
         }
 

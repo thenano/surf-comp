@@ -1,2 +1,2 @@
 export { reducer as users } from "./users";
-export { reducer as schedule } from "./schedule";
+export { reducer as schedules } from "./schedules";
