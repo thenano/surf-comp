@@ -8,7 +8,7 @@ class Division < ApplicationRecord
   def draw
     number_of_heats = (users.length.to_f / HEAT_SIZE).ceil
     number_of_rounds = Math.log2(number_of_heats).ceil
-    create_heat_draw(0, number_of_rounds, users.length.to_f)
+    create_rounds(0, number_of_rounds, users.length.to_f)
 
     heat_cycle = (0...number_of_heats).cycle
 
@@ -17,22 +17,45 @@ class Division < ApplicationRecord
 
   def add_athlete(athlete)
     users << athlete
-    number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
-
-    round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
 
     round_1_heats = heats.where('position < 10').includes(:users)
-    available_round_1_heat = round_1_heats.detect { |heat| heat.users.size < HEAT_SIZE } || heats.create({round: round_name, position: round_1_heats.size})
-    available_round_1_heat.users << athlete
+    available_round_1_heat = round_1_heats.detect { |heat| heat.users.size < HEAT_SIZE }
 
-    round_1_heats.update_all(round: round_name)
+    if available_round_1_heat.nil?
+      number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
+      round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
 
-    heats.destroy(heats.where('position >= 10'))
-    create_heat_draw(1, (number_of_rounds - 1), users.length / 2.0)
+      available_round_1_heat = heats.create({round: round_name, position: round_1_heats.size})
+      available_round_1_heat.users << athlete
+
+      round_1_heats.update_all(round: round_name)
+
+      heats.destroy(heats.where('position >= 10'))
+      create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
+    else
+      available_round_1_heat.users << athlete
+    end
+  end
+
+  def remove_athlete(heat_id, athlete_id)
+    users.delete(athlete_id)
+    heat = heats.find(heat_id)
+    heat.users.delete(athlete_id)
+
+    if heat.users.empty?
+      heats.destroy(heat)
+
+      number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
+      round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
+      heats.where('position < 10').update_all(round: round_name)
+
+      heats.destroy(heats.where('position >= 10'))
+      create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
+    end
   end
 
   private
-    def create_heat_draw(lower_round, number_of_rounds, remaining_athletes)
+    def create_rounds(lower_round, number_of_rounds, remaining_athletes)
       (0..number_of_rounds).to_a.reverse.each do |upper_round|
         round_name = ROUND_NAMES[upper_round] || "Round #{lower_round.next}"
 

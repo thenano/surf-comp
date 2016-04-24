@@ -292,7 +292,6 @@ RSpec.describe Division, :type => :model do
   end
 
   describe '#add_athlete' do
-
     describe 'with 23 athletes' do
       let(:division) { create(:division_with_athletes, athletes_count: 23) }
 
@@ -508,6 +507,74 @@ RSpec.describe Division, :type => :model do
 
         expect(quarters.size).to eq(4)
         expect(quarters.last.position).to eq(13)
+      end
+    end
+  end
+
+  describe '#remove_athlete' do
+    describe 'with 24 athletes' do
+      let(:division) { create(:division_with_athletes) }
+
+      it 'removes the athlete from the heat' do
+        division.draw
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+        removed_athlete = quarters.last.users.last
+        division.remove_athlete(quarters.last.id, removed_athlete.id)
+
+        expect(quarters.last.users.size).to eq(5)
+        expect { quarters.last.users.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'removes the athlete from the division' do
+        division.draw
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+        removed_athlete = quarters.last.users.last
+        division.remove_athlete(quarters.last.id, removed_athlete.id)
+
+        expect { division.users.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      describe 'when removing the last athlete from a heat' do
+        before(:each) do
+          division.draw
+          @new_athlete = create(:user)
+          division.add_athlete(@new_athlete)
+
+          @first_round = division.heats.where('position < 10')
+        end
+
+        it 'removes the empty heat' do
+          division.remove_athlete(@first_round.last.id, @new_athlete.id)
+          expect(division.heats.where('position < 10').size).to eq(4)
+        end
+
+        it 'renames the round 1 heats to quarters' do
+          division.remove_athlete(@first_round.last.id, @new_athlete.id)
+          division.heats.where('position < 10').each { |heat| expect(heat.round).to eq('Quarterfinal') }
+        end
+
+        it 'removes the extra heats' do
+          division.remove_athlete(@first_round.last.id, @new_athlete.id)
+
+          expect(division.heats.where(round: 'Round 1')).to be_empty
+
+          quarters = division.heats.where(round: 'Quarterfinal')
+          expect(quarters.size).to be(4)
+          expect(quarters.first.position).to be(0)
+          expect(quarters.second.position).to be(1)
+          expect(quarters[2].position).to be(2)
+          expect(quarters.last.position).to be(3)
+
+          semis = division.heats.where(round: 'Semifinal')
+          expect(semis.size).to be(2)
+          expect(semis.first.position).to be(10)
+          expect(semis.second.position).to be(11)
+
+          expect(division.heats.where(round: 'Final').size).to be(1)
+          expect(division.heats.where(round: 'Final').first.position).to be(20)
+        end
       end
     end
   end
