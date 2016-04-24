@@ -123,7 +123,7 @@ function timeRow(row, left, right, move) {
 
 @fetch((store, r) => {
     if (!store.loaded(`schedules.ids.${r.params.id}`)) {
-        return store.dispatch(ScheduleActions.getSchedule(1/*r.params.id*/));
+        return store.dispatch(ScheduleActions.getSchedule(r.params.id));
     }
 })
 @DragDropContext(HTML5Backend)

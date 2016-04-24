@@ -30,15 +30,17 @@ module.exports = {
             { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less')}
         ]
     },
+
     plugins: [
         new ExtractTextPlugin(isProd ? '[name].[hash].css' : '[name].css'),
+
         new HtmlWebpackPlugin({
             template: './src/index.html',
-            inject: 'body',
+            inject: false,
             chunks: 'app'
-            // favicon: 'client/src/assets/images/favicon.png'
         })
     ],
+
     devServer: {
         proxy: {
             '/api*': {
