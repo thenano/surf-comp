@@ -10,7 +10,6 @@ gem 'puma'
 
 gem 'devise', '>= 4.0.0.rc2'
 gem 'omniauth-facebook'
-gem 'active_model_serializers'
 
 group :development, :test do
   gem 'rspec-rails'
