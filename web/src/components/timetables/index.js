@@ -3,6 +3,7 @@ import Immutable from "immutable";
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { ShowHeat } from "../schedules/heats/show";
+import { DropTarget, DragSource } from 'react-dnd';
 
 var d = React.DOM;
 
@@ -11,33 +12,101 @@ function zeroPad(num, places) {
   return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
+const heatCardSource = {
+    beginDrag(props) {
+        return {
+            position: props.position
+        };
+    }
+};
+
+const heatCardTarget = {
+    hover(props, monitor, component) {
+        const dragPos = monitor.getItem().position;
+        const hoverPos = props.position;
+
+        // Don't replace items with themselves
+        if (dragPos === hoverPos) {
+            return;
+        }
+
+        props.move(dragPos, hoverPos);
+
+        if (monitor.getItem()) {
+            monitor.getItem().position = hoverPos;
+        }
+    }
+};
+
+@DragSource("show-heat", heatCardSource, (connect, monitor) => ({
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+}))
+class Heat extends React.Component {
+    render() {
+        const { connectDragSource, connectDropTarget, isDragging } = this.props;
+        let { division, heat, round } = this.props;
+
+        return connectDragSource(
+            d.div(
+                {className: "heat"},
+                d.header({}, division),
+                d.div({}, `heat ${heat}, round ${round}`)
+            )
+        );
+    }
+}
+
+@DropTarget("show-heat", heatCardTarget, connect => ({
+    connectDropTarget: connect.dropTarget()
+}))
+class Empty extends React.Component {
+    render() {
+        const { connectDropTarget } = this.props;
+
+        return connectDropTarget(d.div({className: "empty"}));
+    }
+}
+
+function empty(row, col, move) {
+    return React.createElement(Empty, {
+        position: [col, row],
+        move: move
+    });
+}
+
 class TimeRow extends React.Component {
     constructor(props, context) {
         super(props, context);
     }
 
     render() {
-        let { left, right } = this.props;
+        let { row, left, right, move } = this.props;
         let heatL, heatR;
+
 
         if (left) {
             heatL = React.createElement(
-                ShowHeat,
+                Heat,
                 {
-                    id: 1,
+                    heat: 1,
                     division: "groms",
-                    athletes: []
+                    round: 1,
+                    move: move,
+                    position: [0, row]
                 }
             )
         }
 
         if (right) {
             heatR = React.createElement(
-                ShowHeat,
+                Heat,
                 {
-                    id: 1,
+                    heat: 1,
                     division: "groms",
-                    athletes: []
+                    round: 1,
+                    move: move,
+                    position: [1, row]
                 }
             )
         }
@@ -46,20 +115,21 @@ class TimeRow extends React.Component {
             {className: "time-row"},
 
             d.div(
-                {className: "time-cell"},
-                left || d.div({className: "empty"})
+                {className: "time"},
+                this.props.time
             ),
+
             d.div(
-                {className: "time-point"},
-                d.div(
-                    {className: "time-mark"},
-                    this.props.time
-                )
+                {className: "time-cell left"},
+                heatL || empty(row, 0, move)
             ),
+
             d.div(
-                {className: "time-cell"},
-                right || d.div({className: "empty"})
+                {className: "time-cell right"},
+                heatR || empty(row, 1, move)
             ),
+
+            d.div({className:"clear"})
         );
     }
 }
@@ -70,19 +140,37 @@ export class EditTimetable extends React.Component {
         super(props, context);
 
         this.state = {
-            times: Immutable.Map(),
-            start: "08:00",
-            end: "15:00"
+            schedule: Immutable.fromJS([
+                [1, 2, 3, 4, 5],
+                [null, 3, null, null, null]
+            ])
         };
+
+        this.move = this.move.bind(this);
     }
 
-    renderTime(hours, mins) {
+    move(from, to) {
+        const { schedule } = this.state;
+
+        if (schedule.getIn(to)) {
+            // There's something already in the slot, don't allow moving it.
+            return;
+        }
+
+        let heat = schedule.getIn(from);
+
+        this.setState({
+            schedule: schedule.setIn(from, null).setIn(to, heat)
+        });
+    }
+
+    renderTime(row, hours, mins, left, right) {
         return d.div(
             {className: "time-slot", key: (hours * 60 + mins)},
 
             React.createElement(
                 TimeRow,
-                {time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`}
+                {row, left, right, move: this.move, time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`}
             )
         );
     }
@@ -90,10 +178,12 @@ export class EditTimetable extends React.Component {
     renderTimes(from, to) {
         let times = [];
 
-        for (var hours=from; hours < to; hours++) {
-            for (var mins=0; mins < 60; mins+=15) {
-                times.push(this.renderTime(hours, mins))
-            }
+        for (var i=0; i < 20; i++) {
+            let hours = Math.floor(i * 16 / 60) + 7;
+            let mins = (i * 16) % 60;
+            let left = this.state.schedule.getIn([0, i]),
+                right = this.state.schedule.getIn([1, i]);
+            times.push(this.renderTime(i, hours, mins, left, right));
         }
 
         return times;
@@ -105,9 +195,8 @@ export class EditTimetable extends React.Component {
             d.div(
                 {className: "timeline"},
 
-                this.renderTimes(8, 12)
-            ),
-            d.div({className: "timeline-line"})
+                this.renderTimes(7, 17)
+            )
         );
     }
 }

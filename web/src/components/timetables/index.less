@@ -1,63 +1,68 @@
 .timeline-wrapper {
     position: relative;
-
-    .timeline-line {
-        position: absolute;
-        width: 5px;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: @beard-color;
-        z-index: -1;
-    }
 }
 
 .timeline {
     width: 100%;
-    display: table;
 
     .time-slot {
         width: 100%;
-        display: table-row-group;
+    }
+
+    .heat {
+        header {
+            font-family: @serif;
+            font-weight: bold;
+        }
+
+        height: 100%;
+        color: white;
+        font-family: @sans-serif;
+        background: #512da8;
+        padding: 5px 20px;
+        margin: 1px;
     }
 
     .time-row {
-        display: table-row;
         width: 100%;
+        height: 70px;
+        position: relative;
 
-        .time-point {
-            display: table-cell;
-            vertical-align: middle;
-            width: 5px;
-
-            .time-mark {
-                font-family: @serif;
-                font-weight: bold;
-                color: white;
-                width: 50px;
-                height: 50px;
-                background: @info-color;
-                border: 5px solid @info-color;
-                border-radius: 25px;
-                line-height: 40px;
-                vertical-align: middle;
-                text-align: center;
-            }
+        .time {
+            position: absolute;
+            width: 20%;
+            height: 100%;
+            background: @info-color;
+            padding: 5px 10px;
+            font-family: @serif;
+            font-weight: bold;
+            color: white;
+            border-right: 2px solid @info-color;
+            text-align: right;
         }
     }
 
     .time-cell {
-        display: table-cell;
-        width: 50%;
+        position: absolute;
+        width: 40%;
+        height: 100%;
+        border-bottom: 1px dotted #ccc;
+
+        &.left {
+            left: 20%;
+        }
+
+        &.right {
+            left: 60%;
+        }
     }
 
     .empty {
-        min-height: 150px;
+        min-height: 50px;
     }
 
     .heat {
-        min-height: 150px;
+        min-height: 50px;
         margin-right: 10px;
         width: 100%;
         float: left;
