@@ -4,7 +4,7 @@
   "description": "The web frontend for surf competitions",
   "author": "",
   "scripts": {
-    "dev": "webpack-dev-server --dev --content-base public/ --inline",
+    "dev": "webpack-dev-server --dev --content-base public/ --inline --hot",
     "build": "rm -rf public/* && webpack --prod"
   },
   "dependencies": {

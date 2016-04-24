@@ -8,7 +8,7 @@ export function reducer(state=defaultState, action) {
     case "REGISTER_USER":
     case "GET_CURRENT_USER":
         return state
-            .set("current", Immutable.fromJS(action.res.data))
+            .set("current", Immutable.fromJS(action.res.data.user))
             .setIn(["meta", "@@loaded/current"], true);
     case "LOGIN_USER":
         return state
