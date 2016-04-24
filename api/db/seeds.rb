@@ -5,3 +5,14 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+event = FactoryGirl.create(:event)
+groms = FactoryGirl.create(:division, name: 'Groms')
+women = FactoryGirl.create(:division, name: 'Women')
+opens = FactoryGirl.create(:division, name: 'Open')
+
+FactoryGirl.create(:division_with_athletes, {event: event, division: groms})
+FactoryGirl.create(:division_with_athletes, {event: event, division: women, athletes_count: 14})
+FactoryGirl.create(:division_with_athletes, {event: event, division: opens, athletes_count: 25})
+
+event.draw
