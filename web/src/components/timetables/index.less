@@ -62,6 +62,8 @@
                 position: absolute;
                 top: 0;
                 right: 0;
+                height: 100%;
+                line-height: @tick-height;
                 padding: 0 25px;
             }
 
@@ -71,8 +73,9 @@
                 width: 15px;
                 height: 1px;
                 background: @info-color;
-                top: 0;
+                top: 50%;
                 right: 5px;
+                transform: translate(0, 50%);
             }
 
             .small-tick:after {
