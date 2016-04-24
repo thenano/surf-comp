@@ -4,6 +4,9 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import { ShowHeat } from "../schedules/heats/show";
 import { DropTarget, DragSource } from 'react-dnd';
+import * as ScheduleActions from "../../actions/schedule";
+import { fetch } from "../../decorators";
+import { connect } from "react-redux";
 
 var d = React.DOM;
 
@@ -120,54 +123,20 @@ function timeRow(row, left, right, move) {
     );
 }
 
+@fetch((store) => {
+    return store.dispatch(ScheduleActions.getSchedule(8))
+})
 @DragDropContext(HTML5Backend)
+@connect(state => state)
 export class EditTimetable extends React.Component {
     constructor(props, context) {
         super(props, context);
 
+        const { schedule } = this.props;
+
         this.state = {
-            schedule: Immutable.fromJS([
-                [1, 2, 3, 4, 5],
-                [null, 6, null, null, null]
-            ]),
-            heats: Immutable.fromJS({
-                1: {
-                    id: 1,
-                    division: "groms",
-                    round: 1,
-                    number: 1,
-                },
-                2: {
-                    id: 2,
-                    division: "opens",
-                    round: 1,
-                    number: 1,
-                },
-                3: {
-                    id: 3,
-                    division: "opens",
-                    round: 1,
-                    number: 2,
-                },
-                4: {
-                    id: 4,
-                    division: "masters",
-                    round: 1,
-                    number: 1,
-                },
-                5: {
-                    id: 5,
-                    division: "groms",
-                    round: 1,
-                    number: 2,
-                },
-                6: {
-                    id: 6,
-                    division: "groms",
-                    round: 1,
-                    number: 3,
-                }
-            })
+            schedule: schedule.getIn(["current", "schedule"]),
+            heats: schedule.getIn(["current", "heats"])
         };
 
         this.move = this.move.bind(this);

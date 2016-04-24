@@ -2,16 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Event, :type => :model do
   describe '#draw' do
-    let(:event) { create(:event) }
-    let(:event_division1) { create(:division_with_athletes, {event: event}) }
-    let(:event_division2) { create(:division_with_athletes, {event: event}) }
 
     it 'creates the schedule with the draw' do
-      event.reload
-      p event_division1
-      p event_division2
-      p event
-      p event.event_divisions
+      event = create(:event)
+      create(:division_with_athletes, {event: event})
+      create(:division_with_athletes, {event: event})
+
       event.draw
 
       expect(event.schedule).to eq([

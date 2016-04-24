@@ -17,16 +17,16 @@ class EventsController < ApplicationController
     heats = @event.event_divisions.includes(:division, :heats, :users).map do |division|
       division.heats.map do |heat|
         [heat.id, {
-          id: heat.id,
-          division: division.division.name,
-          round: heat.round,
-          number: (heat.position % 10).next,
-          users: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
+            id: heat.id,
+            division: division.division.name,
+            round: heat.round,
+            number: (heat.position % 10).next,
+            users: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
         }]
       end
     end
 
-    render json: { schedule: @event.schedule, heats: heats.flatten(1).to_h}
+    render json: { name: @event.name, schedule: @event.schedule, heats: heats.flatten(1).to_h}
   end
 
   private
@@ -35,6 +35,6 @@ class EventsController < ApplicationController
     end
 
     def event_params
-      params.require(:event).permit(:schedule)
+      params.require(:event).permit(schedule: [north: [], south: []])
     end
 end
