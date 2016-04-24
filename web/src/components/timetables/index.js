@@ -50,8 +50,11 @@ class Heat extends React.Component {
         return connectDragSource(
             d.div(
                 {className: `heat ${heat.get("division")}`},
-                d.header({}, heat.get("division")),
-                d.div({}, `heat ${heat.get("number")}, round ${heat.get("round")}`)
+
+                d.div({},
+                    d.header({}, heat.get("division")),
+                    d.div({}, `heat ${heat.get("number")}, round ${heat.get("round")}`)
+                )
             )
         );
     }
@@ -82,16 +85,6 @@ function empty(row, col, move) {
 }
 
 class TimeRow extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        let hours = Math.floor(props.row * 16 / 60) + 7;
-        let mins = (props.row * 16) % 60;
-        this.state = {
-            time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`
-        };
-    }
-
     render() {
         let { row, left, right, move } = this.props;
         let heatL, heatR;
@@ -99,11 +92,6 @@ class TimeRow extends React.Component {
 
         return d.div(
             {className: "time-row"},
-
-            d.div(
-                {className: "time"},
-                this.state.time
-            ),
 
             d.div(
                 {className: "time-cell left"},
@@ -125,9 +113,10 @@ class TimeRow extends React.Component {
 }
 
 function timeRow(row, left, right, move) {
+    let key = row;
     return React.createElement(
         TimeRow,
-        {row, left, right, move}
+        {key, row, left, right, move}
     );
 }
 
@@ -200,33 +189,55 @@ export class EditTimetable extends React.Component {
     }
 
     renderTime(row, left, right) {
-        return d.div(
-            {className: "time-slot", key: row},
-
-            timeRow(row, left, right, this.move)
-        );
+        return timeRow(row, left, right, this.move);
     }
 
-    renderTimes(from, to) {
+    renderTimes() {
         let times = [];
 
-        for (var i=0; i < 20; i++) {
+        for (var i=0; i < 12 * 60 / 16; i++) {
             let left = "" + this.state.schedule.getIn([0, i]),
                 right = "" + this.state.schedule.getIn([1, i]);
             times.push(this.renderTime(i, this.state.heats.get(left), this.state.heats.get(right)));
         }
 
-        return times;
+        return d.div(
+            {className: "times"},
+            times
+        );
+    }
+
+    renderTicks() {
+        let ticks = [];
+
+        for (var i=0; i < 12 * 4; i++) {
+            let hours = Math.floor(i * 15 / 60) + 7,
+                mins = (i * 15) % 60;
+
+            ticks.push(d.div(
+                {key: i, className: "tick"},
+                i % 4 == 0 ?
+                    d.div({className: "big-tick"}, `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`) :
+                    d.div({className: "small-tick"})
+            ));
+        }
+
+        return ticks;
+    }
+
+    renderTickColumn() {
+        return d.div(
+            {className: "ticks"},
+            this.renderTicks()
+        )
     }
 
     render() {
         return d.div(
-            {className: "timeline-wrapper"},
-            d.div(
-                {className: "timeline"},
+            {className: "timeline"},
 
-                this.renderTimes(7, 17)
-            )
+            this.renderTickColumn(),
+            this.renderTimes()
         );
     }
 }
