@@ -207,10 +207,22 @@ export class EditTimetable extends React.Component {
 
     render() {
         return d.div(
-            {className: "timeline"},
+            {},
 
-            this.renderTickColumn(),
-            this.renderTimes()
+            d.header(
+                {className: "timeline-header"},
+
+                d.div({className: "times"}, ""),
+                d.div({className: "bank"}, "north bank"),
+                d.div({className: "bank"}, "south bank"),
+            ),
+
+            d.div(
+                {className: "timeline"},
+
+                this.renderTickColumn(),
+                this.renderTimes()
+            )
         );
     }
 }
