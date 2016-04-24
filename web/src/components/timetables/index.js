@@ -55,7 +55,12 @@ class Heat extends React.Component {
 
                 d.div({},
                     d.header({}, heat.get("division")),
-                    d.div({}, `heat ${heat.get("number")}, ${heat.get("round")}`)
+                    d.div({}, `heat ${heat.get("number")}, ${heat.get("round")}`),
+                    d.div(
+                        {className: "heat-time"},
+                        d.i({className: "fa fa-clock-o"}),
+                        this.props.time
+                    )
                 )
             )
         );
@@ -63,8 +68,11 @@ class Heat extends React.Component {
 }
 
 function heat(row, col, move, heat) {
+    let hours = Math.floor(row * 16 / 60) + 7,
+        mins = (row * 16) % 60;
+
     return React.createElement(Heat, {
-        heat, move, position: [col, row]
+        heat, move, position: [col, row], time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`
     });
 }
 

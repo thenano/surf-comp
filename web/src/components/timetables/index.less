@@ -36,12 +36,13 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-
+        padding: 5px 20px;
         cursor: move;
         height: 100%;
         color: white;
         font-family: @sans-serif;
         background: #b6b6b6;
+        position: relative;
 
         &.groms {
             background: #512da8;
@@ -59,7 +60,16 @@
             background: #e91e63;
         }
 
-        padding: 5px 20px;
+        .heat-time {
+            position: absolute;
+            font-family: @sans-serif;
+            right: 5px;
+            top: 5px;
+            color: grey;
+            font-size: 11px;
+            font-weight: bold;
+            color: #bdbdbd;
+        }
     }
 
     .times {
