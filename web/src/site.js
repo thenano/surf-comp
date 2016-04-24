@@ -9,7 +9,6 @@ import { Application } from "./components/application"
 import { Home } from "./components/home"
 import { NotFound } from "./components/navigation"
 import { LoginForm } from "./components/login"
-import { EditSchedule } from "./components/schedules"
 import { EditTimetable } from "./components/timetables"
 import { SignUp } from "./components/sign-up"
 import { api } from "./actions/api"
@@ -55,7 +54,6 @@ ReactDOM.render(
                 home(),
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
-                r("/schedules", EditSchedule),
                 r("/timetables", EditTimetable),
                 r("*", NotFound)
             )

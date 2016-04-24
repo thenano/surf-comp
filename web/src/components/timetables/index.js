@@ -2,7 +2,6 @@ import React from "react";
 import Immutable from "immutable";
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
-import { ShowHeat } from "../schedules/heats/show";
 import { DropTarget, DragSource } from 'react-dnd';
 import * as ScheduleActions from "../../actions/schedule";
 import { fetch } from "../../decorators";
