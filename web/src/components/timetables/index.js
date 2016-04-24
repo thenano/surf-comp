@@ -45,16 +45,22 @@ const heatCardTarget = {
 class Heat extends React.Component {
     render() {
         const { connectDragSource, connectDropTarget, isDragging } = this.props;
-        let { division, heat, round } = this.props;
+        let { heat } = this.props;
 
         return connectDragSource(
             d.div(
-                {className: "heat"},
-                d.header({}, division),
-                d.div({}, `heat ${heat}, round ${round}`)
+                {className: `heat ${heat.get("division")}`},
+                d.header({}, heat.get("division")),
+                d.div({}, `heat ${heat.get("number")}, round ${heat.get("round")}`)
             )
         );
     }
+}
+
+function heat(row, col, move, heat) {
+    return React.createElement(Heat, {
+        heat, move, position: [col, row]
+    });
 }
 
 @DropTarget("show-heat", heatCardTarget, connect => ({
@@ -78,6 +84,12 @@ function empty(row, col, move) {
 class TimeRow extends React.Component {
     constructor(props, context) {
         super(props, context);
+
+        let hours = Math.floor(props.row * 16 / 60) + 7;
+        let mins = (props.row * 16) % 60;
+        this.state = {
+            time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`
+        };
     }
 
     render() {
@@ -85,53 +97,38 @@ class TimeRow extends React.Component {
         let heatL, heatR;
 
 
-        if (left) {
-            heatL = React.createElement(
-                Heat,
-                {
-                    heat: 1,
-                    division: "groms",
-                    round: 1,
-                    move: move,
-                    position: [0, row]
-                }
-            )
-        }
-
-        if (right) {
-            heatR = React.createElement(
-                Heat,
-                {
-                    heat: 1,
-                    division: "groms",
-                    round: 1,
-                    move: move,
-                    position: [1, row]
-                }
-            )
-        }
-
         return d.div(
             {className: "time-row"},
 
             d.div(
                 {className: "time"},
-                this.props.time
+                this.state.time
             ),
 
             d.div(
                 {className: "time-cell left"},
-                heatL || empty(row, 0, move)
+                left ?
+                    heat(row, 0, move, left) :
+                    empty(row, 0, move)
             ),
 
             d.div(
                 {className: "time-cell right"},
-                heatR || empty(row, 1, move)
+                right ?
+                    heat(row, 1, move, right) :
+                    empty(row, 1, move)
             ),
 
             d.div({className:"clear"})
         );
     }
+}
+
+function timeRow(row, left, right, move) {
+    return React.createElement(
+        TimeRow,
+        {row, left, right, move}
+    );
 }
 
 @DragDropContext(HTML5Backend)
@@ -142,8 +139,46 @@ export class EditTimetable extends React.Component {
         this.state = {
             schedule: Immutable.fromJS([
                 [1, 2, 3, 4, 5],
-                [null, 3, null, null, null]
-            ])
+                [null, 6, null, null, null]
+            ]),
+            heats: Immutable.fromJS({
+                1: {
+                    id: 1,
+                    division: "groms",
+                    round: 1,
+                    number: 1,
+                },
+                2: {
+                    id: 2,
+                    division: "opens",
+                    round: 1,
+                    number: 1,
+                },
+                3: {
+                    id: 3,
+                    division: "opens",
+                    round: 1,
+                    number: 2,
+                },
+                4: {
+                    id: 4,
+                    division: "masters",
+                    round: 1,
+                    number: 1,
+                },
+                5: {
+                    id: 5,
+                    division: "groms",
+                    round: 1,
+                    number: 2,
+                },
+                6: {
+                    id: 6,
+                    division: "groms",
+                    round: 1,
+                    number: 3,
+                }
+            })
         };
 
         this.move = this.move.bind(this);
@@ -164,14 +199,11 @@ export class EditTimetable extends React.Component {
         });
     }
 
-    renderTime(row, hours, mins, left, right) {
+    renderTime(row, left, right) {
         return d.div(
-            {className: "time-slot", key: (hours * 60 + mins)},
+            {className: "time-slot", key: row},
 
-            React.createElement(
-                TimeRow,
-                {row, left, right, move: this.move, time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`}
-            )
+            timeRow(row, left, right, this.move)
         );
     }
 
@@ -179,11 +211,9 @@ export class EditTimetable extends React.Component {
         let times = [];
 
         for (var i=0; i < 20; i++) {
-            let hours = Math.floor(i * 16 / 60) + 7;
-            let mins = (i * 16) % 60;
-            let left = this.state.schedule.getIn([0, i]),
-                right = this.state.schedule.getIn([1, i]);
-            times.push(this.renderTime(i, hours, mins, left, right));
+            let left = "" + this.state.schedule.getIn([0, i]),
+                right = "" + this.state.schedule.getIn([1, i]);
+            times.push(this.renderTime(i, this.state.heats.get(left), this.state.heats.get(right)));
         }
 
         return times;
