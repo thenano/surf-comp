@@ -45,10 +45,36 @@
     }
 
     .ticks {
+        background: #eee;
         flex: 1 1 0;
 
         .tick {
+            position: relative;
             height: @tick-height;
+            font-weight: bold;
+
+            .big-tick, .small-tick {
+                position: absolute;
+                top: 50%;
+                right: 0;
+                transform: translate(0, -50%);
+                padding: 25px;
+            }
+
+            .small-tick:after, .big-tick:after {
+                position: absolute;
+                content: ' ';
+                width: 15px;
+                height: 1px;
+                background: @info-color;
+                top: 50%;
+                right: 5px;
+                transform: translate(0, -50%);
+            }
+
+            .small-tick:after {
+                width: 10px;
+            }
         }
     }
 
@@ -59,19 +85,6 @@
 
         &.offhours {
             background: #9e9e9e;
-        }
-
-        .time {
-            position: absolute;
-            width: 20%;
-            height: 100%;
-            background: @info-color;
-            padding: 5px 10px;
-            font-family: @serif;
-            font-weight: bold;
-            color: white;
-            border-right: 2px solid @info-color;
-            text-align: right;
         }
     }
 
