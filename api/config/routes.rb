@@ -1,11 +1,9 @@
 Rails.application.routes.draw do
-  get 'schedule/draw'
+  resources :events, only: [:show, :update] do
+    get 'schedule', on: :member
+  end
 
   devise_for :users, controllers: {sessions: 'users/sessions', registrations: 'users/registrations', :omniauth_callbacks => 'users/omniauth_callbacks'}, defaults: {format: :json}
-
-  # For details on the DSL available within this file, see
-  # http://guides.rubyonrails.org/routing.html
-  
 
   devise_scope :user do
     get '/users/current', to: 'users/sessions#current', defaults: {format: :json}

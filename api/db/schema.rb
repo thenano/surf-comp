@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160416050410) do
+ActiveRecord::Schema.define(version: 20160424080410) do
 
   create_table "divisions", force: :cascade do |t|
     t.string   "name"
@@ -19,23 +19,41 @@ ActiveRecord::Schema.define(version: 20160416050410) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "divisions_users", id: false, force: :cascade do |t|
-    t.integer "division_id", null: false
-    t.integer "user_id",     null: false
-  end
-
-  add_index "divisions_users", ["user_id", "division_id"], name: "index_divisions_users_on_user_id_and_division_id", unique: true
-
-  create_table "heats", force: :cascade do |t|
-    t.string   "round"
-    t.time     "time"
-    t.integer  "position"
+  create_table "event_divisions", force: :cascade do |t|
+    t.integer  "event_id"
     t.integer  "division_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
 
-  add_index "heats", ["division_id"], name: "index_heats_on_division_id"
+  add_index "event_divisions", ["division_id"], name: "index_event_divisions_on_division_id"
+  add_index "event_divisions", ["event_id"], name: "index_event_divisions_on_event_id"
+
+  create_table "event_divisions_users", id: false, force: :cascade do |t|
+    t.integer "event_division_id", null: false
+    t.integer "user_id",           null: false
+  end
+
+  add_index "event_divisions_users", ["user_id", "event_division_id"], name: "index_event_divisions_users_on_user_id_and_event_division_id", unique: true
+
+  create_table "events", force: :cascade do |t|
+    t.string   "name"
+    t.date     "date"
+    t.text     "schedule"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "heats", force: :cascade do |t|
+    t.string   "round"
+    t.time     "time"
+    t.integer  "position"
+    t.integer  "event_division_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "heats", ["event_division_id"], name: "index_heats_on_event_division_id"
 
   create_table "heats_users", id: false, force: :cascade do |t|
     t.integer "heat_id", null: false

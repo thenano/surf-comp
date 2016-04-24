@@ -4,7 +4,7 @@ class CreateHeats < ActiveRecord::Migration[5.0]
       t.string :round
       t.time :time
       t.integer :position
-      t.belongs_to :division, foreign_key: true
+      t.belongs_to :event_division, foreign_key: true
 
       t.timestamps
     end
