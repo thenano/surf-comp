@@ -28,7 +28,8 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
-            { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less')}
+            { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less')},
+            { test: /\.(woff|woff2|ttf|eot|svg)(\?]?.*)?$/, loader: 'file?name=assets/fonts/[name].[ext]?[hash]'}
         ]
     },
 
