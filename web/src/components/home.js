@@ -11,7 +11,7 @@ export class Home extends React.Component {
 
             d.h1({}, "surf competitions"),
 
-            link("Edit Heats", {to: "/heats"})
+            link("Edit Heats", {to: "/comps/8/schedule/edit"})
         );
     }
 }

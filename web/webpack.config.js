@@ -21,6 +21,7 @@ module.exports = {
 
     output: {
         path: buildPath,
+        publicPath: '/',
         filename: isProd ? '[name].[hash].js' : '[name].js'
     },
 
@@ -36,10 +37,12 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             template: './src/index.html',
-            inject: false,
+            inject: 'body',
             chunks: 'app'
         })
     ],
+
+    devtool: 'source-map',
 
     devServer: {
         proxy: {

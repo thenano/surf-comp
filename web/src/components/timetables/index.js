@@ -1,5 +1,4 @@
 import React from "react";
-import Immutable from "immutable";
 import HTML5Backend from 'react-dnd-html5-backend';
 import * as ScheduleActions from "../../actions/schedule";
 import { DragDropContext } from 'react-dnd';
@@ -44,7 +43,7 @@ const heatCardTarget = {
 }))
 class Heat extends React.Component {
     render() {
-        const { connectDragSource, connectDropTarget, isDragging } = this.props;
+        const { connectDragSource } = this.props;
         let { heat } = this.props;
 
         return connectDragSource(
@@ -95,7 +94,6 @@ function empty(row, col, move) {
 class TimeRow extends React.Component {
     render() {
         let { row, left, right, move } = this.props;
-        let heatL, heatR;
 
         return d.div(
             {className: "time-row"},

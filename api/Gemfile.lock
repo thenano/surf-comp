@@ -41,6 +41,9 @@ GEM
     arel (7.0.0)
     bcrypt (3.1.11)
     builder (3.2.2)
+    bullet (5.0.0)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.9.0)
     byebug (8.2.4)
     concurrent-ruby (1.0.1)
     devise (4.0.0.rc2)
@@ -168,6 +171,7 @@ GEM
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    uniform_notifier (1.9.0)
     warden (1.2.6)
       rack (>= 1.0)
     websocket-driver (0.6.3)
@@ -178,6 +182,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bullet
   byebug
   devise (>= 4.0.0.rc2)
   factory_girl_rails

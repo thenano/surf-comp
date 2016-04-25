@@ -56,8 +56,8 @@ ReactDOM.render(
                 home(),
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
-                r("/comps/:id/schedule/edit", EditTimetable),
-                r("/comps/:id/heats/edit", EditHeats),
+                r("/events/:id/schedule/edit", EditTimetable),
+                r("/events/:id/heats/edit", EditHeats),
                 r("*", NotFound)
             )
         )

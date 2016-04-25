@@ -40,6 +40,6 @@ class EventsController < ApplicationController
     end
 
     def event_params
-      params.require(:event).permit(schedule: [north: [], south: []])
+      params.require(:event).permit(schedule: ['north bank': [], 'south bank': []])
     end
 end
