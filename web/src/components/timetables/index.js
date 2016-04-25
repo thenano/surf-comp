@@ -143,7 +143,7 @@ export class EditTimetable extends React.Component {
         super(props, context);
 
         const { schedules } = this.props;
-        let schedule = schedules.getIn(["ids", this.props.params.id]);
+        let schedule = schedules.getIn(["ids", Number.parseInt(this.props.params.id)]);
 
         this.state = {
             schedule: schedule.get("schedule"),
