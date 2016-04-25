@@ -1,6 +1,7 @@
 import React from "react";
 import HTML5Backend from 'react-dnd-html5-backend';
 import * as ScheduleActions from "../../actions/schedule";
+import * as forms from "../forms";
 import { DragDropContext } from 'react-dnd';
 import { DropTarget, DragSource } from 'react-dnd';
 import { fetch } from "../../decorators";
@@ -125,6 +126,53 @@ function timeRow(row, left, right, move) {
     );
 }
 
+@connect(state => state)
+export class SaveSchedule extends forms.ValidatedForm {
+    validate() {
+        return {}
+    }
+
+    send() {
+        let { event_id, schedule, dispatch } = this.props;
+
+        this.setState({ submitting: true });
+
+        return dispatch(
+            ScheduleActions.save(event_id, schedule)
+        )
+        .catch(e => {
+            this.setState({
+                submitting: false,
+                error: `The was an unexpected problem: ${e.data}`
+            });
+        })
+        .then(() => {
+            this.setState({ submitting: false });
+        });
+
+    }
+
+    render() {
+        return d.div(
+            {},
+            d.form(
+                {},
+                d.div(
+                    {
+                        className: "notification error plain",
+                        style: {
+                            display: this.state.error ? "block" : "none"
+                        }
+                    },
+                    this.state.error
+                ),
+
+                forms.submit("Save", this.submit.bind(this), this.state.submitting)
+            )
+        );
+    }
+}
+
 @fetch((store, r) => {
     if (!store.loaded(`schedules.ids.${r.params.id}`)) {
         return store.dispatch(ScheduleActions.getSchedule(r.params.id));
@@ -160,7 +208,7 @@ export class EditTimetable extends React.Component {
         let heat = schedule.getIn(from);
 
         this.setState({
-            schedule: schedule.setIn(from, null).setIn(to, heat)
+            schedule: schedule.setIn(from, 0).setIn(to, heat)
         });
     }
 
@@ -226,6 +274,12 @@ export class EditTimetable extends React.Component {
 
                 this.renderTickColumn(),
                 this.renderTimes()
+            ),
+
+            d.div(
+                {className: "actions"},
+
+                React.createElement(SaveSchedule, {event_id: this.props.params.id, schedule: this.state.schedule})
             )
         );
     }

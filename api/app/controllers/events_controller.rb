@@ -7,7 +7,7 @@ class EventsController < ApplicationController
 
   def update
     if @event.update(event_params)
-      render json: @event
+      schedule
     else
       render json: @event.errors, status: :unprocessable_entity
     end
@@ -40,6 +40,8 @@ class EventsController < ApplicationController
     end
 
     def event_params
-      params.require(:event).permit(schedule: ['north bank': [], 'south bank': []])
+      permitted = params.require(:event).permit
+      permitted[:schedule] = params.require(:event).require(:schedule) if params.require(:event).has_key?(:schedule)
+      permitted
     end
 end

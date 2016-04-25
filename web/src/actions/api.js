@@ -40,6 +40,22 @@ export function api(cookie) {
                 data,
                 opts
             );
+        },
+
+        put: (resource, data) => {
+            return request.put(
+                urlTo(resource),
+                data,
+                opts
+            );
+        },
+
+        patch: (resource, data) => {
+            return request.patch(
+                urlTo(resource),
+                data,
+                opts
+            );
         }
     };
 }

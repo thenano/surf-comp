@@ -1,7 +1,6 @@
 import * as UserActions from "../../actions/user";
 import * as forms from "../forms";
 import React from "react";
-import Immutable from "immutable";
 import { connect } from "react-redux";
 
 var d = React.DOM;
