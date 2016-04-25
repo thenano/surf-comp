@@ -1,9 +1,9 @@
 import React from "react";
 import Immutable from "immutable";
 import HTML5Backend from 'react-dnd-html5-backend';
+import * as ScheduleActions from "../../actions/schedule";
 import { DragDropContext } from 'react-dnd';
 import { DropTarget, DragSource } from 'react-dnd';
-import * as ScheduleActions from "../../actions/schedule";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
 
@@ -34,13 +34,11 @@ const heatCardTarget = {
 
         props.move(dragPos, hoverPos);
 
-        if (monitor.getItem()) {
-            monitor.getItem().position = hoverPos;
-        }
+        monitor.getItem().position = hoverPos;
     }
 };
 
-@DragSource("show-heat", heatCardSource, (connect, monitor) => ({
+@DragSource("heat-card", heatCardSource, (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
 }))
@@ -76,7 +74,7 @@ function heat(row, col, move, heat) {
     });
 }
 
-@DropTarget("show-heat", heatCardTarget, connect => ({
+@DropTarget("heat-card", heatCardTarget, connect => ({
     connectDropTarget: connect.dropTarget()
 }))
 class Empty extends React.Component {

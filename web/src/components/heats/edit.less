@@ -1,0 +1,86 @@
+.heat-wrapper {
+    ol, ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .heat {
+        margin-bottom: 35px;
+    }
+
+    .heat-list-item header {
+        color: white;
+        padding: 5px 10px;
+        font-family: @serif;
+
+        &.groms { background: @groms-color; }
+        &.open { background: @open-color; }
+        &.master { background: @master-color; }
+        &.women { background: @women-color; }
+    }
+
+    .heat-list-item .athlete {
+        position: relative;
+        padding: 5px 20px;
+        height: 35px;
+        line-height: 25px;
+        background: white;
+
+        &.hovering {
+            background: #fff6e6;
+        }
+
+        &:hover {
+            cursor: move;
+        }
+
+        &.empty:hover {
+            cursor: auto;
+        }
+
+        &.empty {
+            opacity: 0.2;
+            font-style: italic;
+            user-select: none;
+        }
+
+        &.empty.hovering {
+            opacity: 1;
+        }
+
+        &.empty:before {
+            content: ' ';
+        }
+
+        &:before {
+            content: '\f142';
+            position: absolute;
+            font-family: FontAwesome;
+            font-style: normal;
+            left: 5px;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        &:after {
+            content: '\f0c8';
+            position: absolute;
+            font-family: FontAwesome;
+            font-style: normal;
+            right: 5px;
+            top: 50%;
+            transform: translate(0, -50%);
+            text-shadow: 1px 0 black,
+                         0 1px black,
+                         -1px 0 black,
+                         0 -1px black;
+        }
+
+        &.red:after { color: #f44336; }
+        &.blue:after { color: #2196f3; }
+        &.yellow:after { color: #ffeb3b; }
+        &.white:after { color: white; }
+        &.green:after { color: #4caf50; }
+        &.pink:after { color: #ff4081; }
+    }
+}

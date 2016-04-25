@@ -5,15 +5,17 @@ import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 
 import * as reducers from "./reducers"
+import { api } from "./actions/api"
+import { promises } from "./reducers/middleware"
+import { addLoaded } from "./enhancers";
+
 import { Application } from "./components/application"
 import { Home } from "./components/home"
 import { NotFound } from "./components/navigation"
 import { LoginForm } from "./components/login"
 import { EditTimetable } from "./components/timetables"
 import { SignUp } from "./components/sign-up"
-import { api } from "./actions/api"
-import { promises } from "./reducers/middleware"
-import { addLoaded } from "./enhancers";
+import { EditHeats } from "./components/heats/edit"
 
 const reducer = combineReducers(reducers);
 const store = compose(
@@ -55,6 +57,7 @@ ReactDOM.render(
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
                 r("/comps/:id/schedule/edit", EditTimetable),
+                r("/comps/:id/heats/edit", EditHeats),
                 r("*", NotFound)
             )
         )

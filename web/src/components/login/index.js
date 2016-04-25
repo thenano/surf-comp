@@ -7,10 +7,6 @@ var d = React.DOM;
 
 @connect(state => state)
 export class LoginForm extends forms.ValidatedForm {
-    constructor(props, context) {
-        super(props, context);
-    }
-
     validate(model) {
         return {};
     }
