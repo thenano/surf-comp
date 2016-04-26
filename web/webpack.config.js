@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require("path");
-const buildPath = path.join(__dirname, "public");
+const buildPath = path.join(__dirname, "../api/public");
 const args = require('yargs').argv;
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -50,9 +50,6 @@ module.exports = {
             '/api*': {
                 target: "http://127.0.0.1:3000",
                 secure: false,
-                rewrite: function(req) {
-                    req.url = req.url.replace(/^\/api/, '');
-                }
             }
         },
 
