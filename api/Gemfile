@@ -10,6 +10,7 @@ gem 'puma'
 
 gem 'devise', '>= 4.0.0.rc2'
 gem 'omniauth-facebook'
+gem 'rack-rewrite'
 
 group :development, :test do
   gem 'rspec-rails'
@@ -17,8 +18,8 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'bullet'
+  gem 'factory_girl_rails'
 end
-gem 'factory_girl_rails'
 
 group :development do
   gem 'listen', '~> 3.0.5'
