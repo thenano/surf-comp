@@ -1,3 +1,10 @@
+export function list() {
+    return {
+        type: "LIST_ALL",
+        promise: api => api.get("events")
+    };
+}
+
 export function getSchedule(event_id) {
     return {
         type: "GET_SCHEDULE",

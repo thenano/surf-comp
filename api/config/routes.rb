@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :events, only: [:show, :update] do
+  resources :events, only: [:index, :show, :update] do
     get 'schedule', on: :member
   end
 

@@ -1,6 +1,11 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :schedule]
 
+  def index
+    @events = Event.all
+    render json: @events
+  end
+
   def show
     render json: @event
   end

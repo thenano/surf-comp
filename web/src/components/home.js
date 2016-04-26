@@ -1,4 +1,3 @@
-import * as UserActions from "../actions/user";
 import React from "react"
 import { link } from "./navigation"
 
@@ -11,7 +10,7 @@ export class Home extends React.Component {
 
             d.h1({}, "surf competitions"),
 
-            link("Edit Heats", {to: "/comps/8/schedule/edit"})
+            link("Edit Events", {to: "/events"})
         );
     }
 }

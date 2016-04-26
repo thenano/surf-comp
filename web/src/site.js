@@ -16,6 +16,7 @@ import { LoginForm } from "./components/login"
 import { EditTimetable } from "./components/timetables"
 import { SignUp } from "./components/sign-up"
 import { EditHeats } from "./components/heats/edit"
+import { Events } from "./components/events"
 
 const reducer = combineReducers(reducers);
 const store = compose(
@@ -56,6 +57,7 @@ ReactDOM.render(
                 home(),
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
+                r("/events", Events),
                 r("/events/:id/schedule/edit", EditTimetable),
                 r("/events/:id/heats/edit", EditHeats),
                 r("*", NotFound)

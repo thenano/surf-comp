@@ -1,6 +1,6 @@
 import React from "react";
 import HTML5Backend from 'react-dnd-html5-backend';
-import * as ScheduleActions from "../../actions/schedule";
+import * as EventActions from "../../actions/event";
 import * as forms from "../forms";
 import { DragDropContext } from 'react-dnd';
 import { DropTarget, DragSource } from 'react-dnd';
@@ -138,7 +138,7 @@ export class SaveSchedule extends forms.ValidatedForm {
         this.setState({ submitting: true });
 
         return dispatch(
-            ScheduleActions.save(event_id, schedule)
+            EventActions.save(event_id, schedule)
         )
         .catch(e => {
             this.setState({
@@ -174,20 +174,20 @@ export class SaveSchedule extends forms.ValidatedForm {
 }
 
 @fetch((store, r) => {
-    if (!store.loaded(`schedules.ids.${r.params.id}`)) {
-        return store.dispatch(ScheduleActions.getSchedule(r.params.id));
+    if (!store.loaded(`events.schedules.${r.params.id}`)) {
+        return store.dispatch(EventActions.getSchedule(r.params.id));
     }
 })
 @DragDropContext(HTML5Backend)
 @connect(state => ({
-    schedules: state.schedules
+    events: state.events
 }))
 export class EditTimetable extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const { schedules } = this.props;
-        let schedule = schedules.getIn(["ids", Number.parseInt(this.props.params.id)]);
+        const { events } = this.props;
+        let schedule = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
 
         this.state = {
             schedule: schedule.get("schedule"),
