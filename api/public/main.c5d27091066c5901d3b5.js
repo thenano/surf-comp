@@ -31260,7 +31260,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var base = "http://localhost:8080/api";
+	var base = "/api";
 	
 	var CONFIG = {
 	    withCredentials: true
@@ -111745,4 +111745,4 @@
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=main.9c67dd9ef7d9ac28f904.js.map
+//# sourceMappingURL=main.c5d27091066c5901d3b5.js.map
