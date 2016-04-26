@@ -3,6 +3,7 @@
 use Rack::Rewrite do
   rewrite %r{^(?!.*(api|\.)).*$}, '/index.html'
 end
+use Rack::Deflater
 
 require ::File.expand_path('../config/environment', __FILE__)
 

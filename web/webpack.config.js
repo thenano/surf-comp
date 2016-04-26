@@ -1,5 +1,6 @@
 'use strict';
 
+const webpack = require('webpack');
 const path = require("path");
 const buildPath = path.join(__dirname, "../api/public");
 const args = require('yargs').argv;
@@ -14,6 +15,30 @@ let entry = ["./src/site.js"];
 
 if (isDev) {
     entry.push('webpack-dev-server/client?http://localhost:8080');
+}
+
+let plugins = [
+    new ExtractTextPlugin(isProd ? '[name].[hash].css' : '[name].css'),
+
+    new HtmlWebpackPlugin({
+        template: './src/index.html',
+        inject: 'body',
+        chunks: 'app'
+    })
+];
+
+if (isProd) {
+    plugins.push(
+        new webpack.NoErrorsPlugin(),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            },
+            mangle: true
+        }),
+        new webpack.optimize.OccurenceOrderPlugin()
+    );
 }
 
 module.exports = {
@@ -33,15 +58,7 @@ module.exports = {
         ]
     },
 
-    plugins: [
-        new ExtractTextPlugin(isProd ? '[name].[hash].css' : '[name].css'),
-
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            inject: 'body',
-            chunks: 'app'
-        })
-    ],
+    plugins: plugins,
 
     devtool: 'source-map',
 
