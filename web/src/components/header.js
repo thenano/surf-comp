@@ -20,10 +20,11 @@ export class Header extends React.Component {
 
     render() {
         const { users } = this.props;
+        const { pathname } = this.props.location;
 
         if (users.hasIn(["current", "name"])) {
             return d.header(
-                {id: "site-header"},
+                {id: "site-header", className: pathname == "/" ? "home-header" : ""},
                 d.div(
                     {},
                     d.span(
@@ -40,7 +41,7 @@ export class Header extends React.Component {
                             {className: "logged-in-user"},
                             users.getIn(["current", "name"])
                         ),
-                        " | ",
+                        " ",
                         d.span(
                             {id: "logout"},
                             d.a({onClick: this.logout.bind(this), href: "/logout"}, "logout")
@@ -50,7 +51,7 @@ export class Header extends React.Component {
             );
         } else {
             return d.header(
-                {id: "site-header"},
+                {id: "site-header", className: pathname == "/" ? "home-header" : ""},
                 d.div(
                     {},
                     d.span(

@@ -235,7 +235,7 @@ export class EditTimetable extends React.Component {
 
     render() {
         return d.div(
-            {},
+            {className: "wrapper"},
 
             d.header(
                 {className: "timeline-header"},

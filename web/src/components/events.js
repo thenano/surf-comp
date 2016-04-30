@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 var d = React.DOM;
 
 @fetch((store) => {
-    console.log('fetching');
     if (!store.loaded("events.all")) {
         return store.dispatch(EventActions.list());
     }
@@ -17,7 +16,7 @@ export class Events extends React.Component {
     render() {
         const { events } = this.props;
         let eventList = events.get("all");
-        
+
         return d.div(
             {},
 

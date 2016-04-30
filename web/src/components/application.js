@@ -70,13 +70,15 @@ export class Application extends React.Component {
 
     render() {
         let { snacks, snackbar } = this.state;
+        const { pathname } = this.props.location;
 
         if (snackbar) {
             this.setTimer();
         }
 
         return d.div(
-            { className: "wrapper" },
+            {id: pathname == "/" ? "home-container" : "page-container"},
+
             React.createElement(Header, this.props),
             this.props.children,
 

@@ -20,17 +20,44 @@ export class Home extends React.Component {
         return d.div(
             {},
 
-            d.h1({}, "Upcoming Events"),
+            d.header(
+                {id: "hero"},
 
-            d.ul(
-                {className: "event-list"},
-
-                events.get("list", new Immutable.List()).map(event => {
-                    return d.ul(
-                        {key: event.get("id"), className: "event"},
-                        link(event.get("name"), {to: `/events/${event.get("id")}/schedule/edit`})
+                d.div(
+                    {id: "hero-video"},
+                    d.video(
+                        {
+                            loop: "loop",
+                            autoPlay: "autoplay",
+                            preload: "auto",
+                            src: "/v/perth.compressed.mp4",
+                        },
                     )
-                })
+                ),
+
+                d.div(
+                    {id: "hero-content"},
+
+                    d.h1({}, "SURF")
+                ),
+
+            ),
+
+            d.div(
+                {className: "wrapper"},
+
+                d.h2({}, "Upcoming Events"),
+
+                d.ul(
+                    {className: "event-list"},
+
+                    events.get("list", new Immutable.List()).map(event => {
+                        return d.ul(
+                            {key: event.get("id"), className: "event"},
+                            link(event.get("name"), {to: `/events/${event.get("id")}/schedule/edit`})
+                        )
+                    })
+                )
             )
         );
     }

@@ -63,9 +63,33 @@ a {
     left: 0;
     width: 100%;
     height: @header-height;
+    font-size: 16px;
     background: white;
-    font-size: 14px;
-    font-weight: bold;
+    color: black;
+
+    &.home-header {
+        position: absolute;
+        background: transparent;
+        color: white;
+
+        a {
+            color: white;
+        }
+
+        &:before {
+            content: ' ';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -45px;
+            bottom: -15px;
+            background: linear-gradient(to bottom, rgba(0,0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+    }
+
+    .logged-in-user {
+        padding: 0 40px;
+    }
 
     span {
         line-height: @header-height;
@@ -84,9 +108,12 @@ a {
 }
 
 body {
-    margin-top: @header-height;
     font-size: 16px;
     font-family: @sans-serif;
+}
+
+#page-container {
+    margin-top: @header-height;
 }
 
 #logo {
@@ -108,3 +135,50 @@ body {
 .clear {
     clear: both;
 }
+
+#hero {
+    height: 80vh;
+    position: relative;
+    background: #b2ebf2;
+}
+
+#hero-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+
+    h1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: white;
+        font-size: 72px;
+        text-align: center;
+        font-family: @sans-serif;
+        transform: translate(-50%, -150%);
+        width: 100%;
+        font-weight: 100;
+    }
+}
+
+#hero-video {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: absolute;
+    overflow: hidden;
+
+    video {
+        min-width: 100%;
+        min-height: 100%;
+    }
+}
+
+audio, canvas, video {
+    display: inline-block;
+}
+
