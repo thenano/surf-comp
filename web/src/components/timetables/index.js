@@ -127,53 +127,32 @@ function timeRow(row, left, right, move) {
     );
 }
 
-@connect(state => state)
-export class SaveSchedule extends forms.ValidatedForm {
-    validate() {
-        return {}
-    }
-
-    send() {
-        let { event_id, schedule, dispatch } = this.props;
-
-        this.setState({ submitting: true });
-
-        return dispatch(
-            EventActions.save(event_id, schedule)
-        )
-        .catch(e => {
-            this.setState({
-                submitting: false,
-                error: `The was an unexpected problem: ${e.data}`
-            });
-        })
-        .then(() => {
-            dispatch(SnackbarActions.message("Saved."));
-            this.setState({ submitting: false });
-        });
-
-    }
-
-    render() {
-        return d.div(
-            {},
-            d.form(
-                {},
-                d.div(
-                    {
-                        className: "notification error plain",
-                        style: {
-                            display: this.state.error ? "block" : "none"
-                        }
-                    },
-                    this.state.error
-                ),
-
-                forms.submit("Save", this.submit.bind(this), this.state.submitting)
-            )
-        );
-    }
-}
+// @connect(state => state)
+// export class SaveSchedule extends forms.ValidatedForm {
+//     validate() {
+//         return {}
+//     }
+//
+//     render() {
+//         return d.div(
+//             {},
+//             d.form(
+//                 {},
+//                 d.div(
+//                     {
+//                         className: "notification error plain",
+//                         style: {
+//                             display: this.state.error ? "block" : "none"
+//                         }
+//                     },
+//                     this.state.error
+//                 ),
+//
+//                 forms.floatingActionButton("save", this.submit.bind(this), this.state.submitting),
+//             )
+//         );
+//     }
+// }
 
 @fetch((store, r) => {
     if (!store.loaded(`events.schedules.${r.params.id}`)) {
@@ -210,6 +189,7 @@ export class EditTimetable extends React.Component {
         let heat = schedule.getIn(from);
 
         this.setState({
+            submitting: false,
             schedule: schedule.setIn(from, 0).setIn(to, heat)
         });
     }
@@ -259,6 +239,26 @@ export class EditTimetable extends React.Component {
         )
     }
 
+    send() {
+        let { dispatch } = this.props;
+        let eventId = this.props.params.id;
+
+        this.setState({ submitting: true });
+
+        return dispatch(EventActions.save(eventId, this.state.schedule))
+            .catch(e => {
+                this.setState({
+                    submitting: false,
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            })
+            .then(() => {
+                dispatch(SnackbarActions.message("Saved."));
+                this.setState({ submitting: false });
+            });
+
+    }
+
     render() {
         return d.div(
             {},
@@ -272,17 +272,13 @@ export class EditTimetable extends React.Component {
             ),
 
             d.div(
-                {className: "timeline"},
+                {className: `timeline ${this.state.submitting ? "submitting" : ""}`},
 
                 this.renderTickColumn(),
                 this.renderTimes()
             ),
 
-            d.div(
-                {className: "actions"},
-
-                React.createElement(SaveSchedule, {event_id: this.props.params.id, schedule: this.state.schedule})
-            )
+            forms.floatingActionButton("save", this.send.bind(this), this.state.submitting),
         );
     }
 }

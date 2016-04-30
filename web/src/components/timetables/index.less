@@ -19,8 +19,23 @@
     @row-height: 50px;
     @tick-height: 90 * @row-height / 24 / 4;
 
+    position: relative;
     display: flex;
     width: 100%;
+
+    &.submitting {
+        &:before {
+            content: ' ';
+            position: absolute;
+            opacity: 0.7;
+            background: white;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+        }
+    }
 
     .empty {
         min-height: @row-height;

@@ -53,4 +53,35 @@
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
+
+    &.floating {
+        position: fixed;
+        right: @page-horiz-padding;
+        bottom: @page-vert-padding;
+        z-index: 2;
+
+        @size: 56px;
+        width: @size;
+        height: @size;
+
+        border-radius: 50%;
+        border: none;
+        box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px,
+                    rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+
+        i {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+
+        .spinner {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(-85%, -50%);
+        }
+    }
 }

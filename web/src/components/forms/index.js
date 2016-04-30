@@ -3,8 +3,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Field } from "./field";
 import { Spinner } from "../spinner";
+import { FloatingActionButton } from "./buttons";
 
 var d = React.DOM;
+
+export function floatingActionButton(icon, submit, isSubmitting) {
+    return React.createElement(FloatingActionButton, {icon, onClick: submit, isSubmitting});
+}
 
 function spinner(props) {
     return React.createElement(Spinner, props);
