@@ -1,56 +1,56 @@
 @import "palette";
 
 .button, button {
-  color: @button-text-color;
-  border: 0;
-  text-decoration: none;
-  outline: none;
-  vertical-align: top;
-  padding: 5px 20px;
-  transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out;
-  cursor: pointer;
-  border-radius: 3px;
-  background-color: @button-primary-background-color;
-  border-bottom: 4px solid darken(@button-primary-background-color, 10%);
-  display: inline-block;
+    color: @button-text-color;
+    border: 0;
+    text-decoration: none;
+    outline: none;
+    vertical-align: top;
+    padding: 5px 20px;
+    transition: background-color 200ms ease-in-out, border-color 200ms ease-in-out;
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: @button-primary-background-color;
+    border-bottom: 4px solid darken(@button-primary-background-color, 10%);
+    display: inline-block;
 
-  &:hover {
-    background-color: lighten(@button-primary-background-color, 15%);
-    border-color: lighten(@button-primary-background-color, 10%);
-  }
+    &:hover {
+        background-color: lighten(@button-primary-background-color, 15%);
+        border-color: lighten(@button-primary-background-color, 10%);
+    }
 
-  a {
-      color: @button-text-color;
-      text-decoration: none;
-  }
+    a {
+        color: @button-text-color;
+        text-decoration: none;
+    }
 
-  &.secondary {
-      background-color: @button-secondary-background-color;
-      border-bottom: 4px solid darken(@button-secondary-background-color, 10%);
+    &.secondary {
+        background-color: @button-secondary-background-color;
+        border-bottom: 4px solid darken(@button-secondary-background-color, 10%);
 
-      &:hover {
-          background-color: lighten(@button-secondary-background-color, 5%);
-          border-color: lighten(@button-secondary-background-color, 2%);
-      }
-  }
+        &:hover {
+            background-color: lighten(@button-secondary-background-color, 5%);
+            border-color: lighten(@button-secondary-background-color, 2%);
+        }
+    }
 
-  &.tertiary {
-      background-color: @button-tertiary-background-color;
-      border-bottom: 4px solid darken(@button-tertiary-background-color, 10%);
+    &.tertiary {
+        background-color: @button-tertiary-background-color;
+        border-bottom: 4px solid darken(@button-tertiary-background-color, 10%);
 
-      &:hover {
-          background-color: lighten(@button-tertiary-background-color, 5%);
-          border-color: lighten(@button-tertiary-background-color, 2%);
-      }
-  }
+        &:hover {
+            background-color: lighten(@button-tertiary-background-color, 5%);
+            border-color: lighten(@button-tertiary-background-color, 2%);
+        }
+    }
 
-  &.left {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-  }
+    &.left {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 
-  &.right {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-  }
+    &.right {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 }

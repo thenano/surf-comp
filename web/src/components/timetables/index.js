@@ -1,6 +1,7 @@
 import React from "react";
 import HTML5Backend from 'react-dnd-html5-backend';
 import * as EventActions from "../../actions/event";
+import * as SnackbarActions from "../../actions/snackbar";
 import * as forms from "../forms";
 import { DragDropContext } from 'react-dnd';
 import { DropTarget, DragSource } from 'react-dnd';
@@ -147,6 +148,7 @@ export class SaveSchedule extends forms.ValidatedForm {
             });
         })
         .then(() => {
+            dispatch(SnackbarActions.message("Saved."));
             this.setState({ submitting: false });
         });
 

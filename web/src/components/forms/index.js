@@ -7,7 +7,7 @@ import { Spinner } from "../spinner";
 var d = React.DOM;
 
 function spinner(props) {
-    React.createElement(Spinner, props);
+    return React.createElement(Spinner, props);
 }
 
 class Submit extends React.Component {
