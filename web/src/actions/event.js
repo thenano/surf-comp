@@ -1,13 +1,13 @@
 export function list() {
     return {
-        type: "LIST_ALL",
+        type: "GET_EVENTS",
         promise: api => api.get("events")
     };
 }
 
 export function getSchedule(event_id) {
     return {
-        type: "GET_SCHEDULE",
+        type: "GET_EVENT_SCHEDULE",
         promise: api => api.get(`events/${event_id}/schedule`)
     };
 }
@@ -17,7 +17,7 @@ export function save(event_id, schedule) {
         event: {schedule: schedule.toJSON()}
     };
     return {
-        type: "SAVE_SCHEDULE",
+        type: "SAVE_EVENT_SCHEDULE",
         promise: api => api.patch(`events/${event_id}`, data)
     };
 }

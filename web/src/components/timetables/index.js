@@ -127,33 +127,6 @@ function timeRow(row, left, right, move) {
     );
 }
 
-// @connect(state => state)
-// export class SaveSchedule extends forms.ValidatedForm {
-//     validate() {
-//         return {}
-//     }
-//
-//     render() {
-//         return d.div(
-//             {},
-//             d.form(
-//                 {},
-//                 d.div(
-//                     {
-//                         className: "notification error plain",
-//                         style: {
-//                             display: this.state.error ? "block" : "none"
-//                         }
-//                     },
-//                     this.state.error
-//                 ),
-//
-//                 forms.floatingActionButton("save", this.submit.bind(this), this.state.submitting),
-//             )
-//         );
-//     }
-// }
-
 @fetch((store, r) => {
     if (!store.loaded(`events.schedules.${r.params.id}`)) {
         return store.dispatch(EventActions.getSchedule(r.params.id));
@@ -182,7 +155,8 @@ export class EditTimetable extends React.Component {
         const { schedule } = this.state;
 
         if (schedule.getIn(to)) {
-            // There's something already in the slot, don't allow moving it.
+            // There's something already in the slot, don't
+            // allow moving it.
             return;
         }
 

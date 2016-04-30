@@ -35,9 +35,10 @@ function r(path, component) {
     return React.createElement(Route, props);
 }
 
-const home = () => {
+const home = (store) => {
     return React.createElement(IndexRoute, {
-        component: Home
+        component: Home,
+        onEnter: Home.onEnter(store)
     });
 }
 
@@ -54,7 +55,7 @@ ReactDOM.render(
                 Route,
                 {path: "/", component: Application, onEnter: Application.onEnter(store)},
 
-                home(),
+                home(store),
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
                 r("/events", Events),
