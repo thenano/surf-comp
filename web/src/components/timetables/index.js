@@ -237,6 +237,8 @@ export class EditTimetable extends React.Component {
         return d.div(
             {className: "wrapper"},
 
+            d.h1({}, "Edit Schedule"),
+
             d.header(
                 {className: "timeline-header"},
 

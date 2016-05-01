@@ -213,6 +213,8 @@ export class EditHeats extends React.Component {
         return d.div(
             {className: "wrapper heat-wrapper"},
 
+            d.h1({}, "Arrange Surfers"),
+
             d.ul({className: "heats"}, heats)
         );
     }
