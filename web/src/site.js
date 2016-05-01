@@ -1,22 +1,22 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { Provider } from 'react-redux'
-import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import React from "react";
+import ReactDOM from "react-dom";
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
-import * as reducers from "./reducers"
-import { api } from "./actions/api"
-import { promises } from "./reducers/middleware"
+import * as reducers from "./reducers";
+import { api } from "./actions/api";
+import { promises } from "./reducers/middleware";
 import { addLoaded } from "./enhancers";
 
-import { Application } from "./components/application"
-import { Home } from "./components/home"
-import { NotFound } from "./components/navigation"
-import { LoginForm } from "./components/login"
-import { EditTimetable } from "./components/timetables"
-import { SignUp } from "./components/sign-up"
-import { EditHeats } from "./components/heats/edit"
-import { Events } from "./components/events"
+import { Application } from "./components/application";
+import { Home } from "./components/home";
+import { NotFound } from "./components/navigation";
+import { LoginForm } from "./components/login";
+import { EditTimetable } from "./components/timetables";
+import { SignUp } from "./components/sign-up";
+import { EditHeats } from "./components/heats/edit";
+import { ShowEvent } from "./components/events/show";
 
 const reducer = combineReducers(reducers);
 const store = compose(
@@ -58,7 +58,7 @@ ReactDOM.render(
                 home(store),
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
-                r("/events", Events),
+                r("/events/:id", ShowEvent),
                 r("/events/:id/schedule/edit", EditTimetable),
                 r("/events/:id/heats/edit", EditHeats),
                 r("*", NotFound)

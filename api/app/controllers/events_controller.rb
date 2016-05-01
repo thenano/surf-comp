@@ -34,6 +34,7 @@ class EventsController < ApplicationController
     render json: {
       id: @event.id,
       name: @event.name,
+      date: @event.date,
       schedule: @event.schedule,
       heats: heats.flatten(1).to_h
     }

@@ -55,7 +55,7 @@ export class Home extends React.Component {
                     events.get("list", new Immutable.List()).map(event => {
                         return d.ul(
                             {key: event.get("id"), className: "event"},
-                            link(event.get("name"), {to: `/events/${event.get("id")}/schedule/edit`})
+                            link(event.get("name"), {to: `/events/${event.get("id")}`})
                         )
                     })
                 )
