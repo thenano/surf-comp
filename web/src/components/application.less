@@ -11,6 +11,7 @@
 @import "snackbar";
 @import "forms/index";
 @import "timetables/index";
+@import "login/index";
 @import "heats/edit";
 @import "beard/index";
 @import "events/show";
@@ -68,25 +69,33 @@ a {
     padding: 0 25px;
 }
 
+h1 {
+    margin-bottom: 5px;
+    background: #2196f3;
+    color: white;
+    height: 30vh;
+    line-height: 40vh;
+}
+
 #site-header {
-    position: fixed;
+    position: absolute;
     z-index: 1000;
     top: 0;
     left: 0;
     width: 100%;
     height: @header-height;
     font-size: 16px;
-    background: white;
-    color: black;
+    background: transparent;
+    color: white;
+
+    a {
+        color: white;
+    }
 
     &.home-header {
         position: absolute;
         background: transparent;
         color: white;
-
-        a {
-            color: white;
-        }
 
         &:before {
             content: ' ';
@@ -124,10 +133,6 @@ body {
     font-family: @sans-serif;
 }
 
-#page-container {
-    margin-top: @header-height;
-}
-
 #logo {
     position: absolute;
     left: 15px;
@@ -163,6 +168,9 @@ body {
     z-index: 1;
 
     h1 {
+        height: inherit;
+        line-height: normal;
+        background: transparent;
         position: absolute;
         top: 50%;
         left: 50%;

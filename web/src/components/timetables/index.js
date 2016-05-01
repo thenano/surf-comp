@@ -235,23 +235,28 @@ export class EditTimetable extends React.Component {
 
     render() {
         return d.div(
-            {className: "wrapper"},
+            {id: "edit-schedule"},
 
-            d.h1({}, "Edit Schedule"),
-
-            d.header(
-                {className: "timeline-header"},
-
-                d.div({className: "times"}, ""),
-                d.div({className: "bank"}, "north bank"),
-                d.div({className: "bank"}, "south bank"),
+            d.div(
+                {},
+                d.h1({className: "wrapper"}, "Edit Schedule"),
             ),
 
             d.div(
-                {className: `timeline ${this.state.submitting ? "submitting" : ""}`},
+                {className: "wrapper"},
 
-                this.renderTickColumn(),
-                this.renderTimes()
+                d.header(
+                    {className: "timeline-header"},
+
+                    d.div({className: "bank"}, "north bank"),
+                    d.div({className: "bank"}, "south bank"),
+                ),
+
+                d.div(
+                    {className: `timeline ${this.state.submitting ? "submitting" : ""}`},
+
+                    this.renderTimes()
+                ),
             ),
 
             forms.floatingActionButton("save", this.send.bind(this), this.state.submitting),

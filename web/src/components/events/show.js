@@ -64,6 +64,15 @@ export class ShowEvent extends React.Component {
             hours = Math.floor(heats * 16 / 60) + 7,
             mins = (heats * 16) % 60;
 
+        const months = [
+            "Jan", "Feb", "Mar",
+            "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep",
+            "Oct", "Nov", "Dec"
+        ];
+
+        let date = new Date(event.get("date"));
+
         return d.div(
             {className: "event-schedule"},
 
@@ -72,19 +81,19 @@ export class ShowEvent extends React.Component {
             d.div(
                 {},
                 d.span({className: "time"}, "Start"),
-                d.span({className: "time"}, "07:00")
+                d.span({className: "time"}, d.i({className: "fa fa-clock-o"}), "07:00")
             ),
 
             d.div(
                 {},
                 d.span({className: "time"}, "End"),
-                d.span({className: "time"}, `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`)
+                d.span({className: "time"}, d.i({className: "fa fa-clock-o"}), `${zeroPad(hours, 2)}:${zeroPad(mins, 2)} (estimated)`)
             ),
 
             d.div(
                 {},
                 d.span({className: "time"}, "Date"),
-                d.span({className: "time"}, `${event.get("date")}`)
+                d.span({className: "time"}, d.i({className: "fa fa-calendar"}), `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`)
             ),
 
             d.div(
@@ -107,19 +116,21 @@ export class ShowEvent extends React.Component {
         let event = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
 
         return d.div(
-            {id: "show-event", className: "wrapper"},
+            {id: "show-event"},
 
-            d.h1({}, event.get("name")),
+            d.div(
+                {},
+                d.h1({className: "wrapper"}, event.get("name")),
+            ),
 
-            this.renderParticipants(),
-
-            d.hr({}),
-
-            this.renderSchedule(),
-
-            d.hr({}),
-
-            this.renderScoring(),
+            d.div(
+                {className: "wrapper"},
+                this.renderParticipants(),
+                d.hr({}),
+                this.renderSchedule(),
+                d.hr({}),
+                this.renderScoring(),
+            )
         );
     }
 }

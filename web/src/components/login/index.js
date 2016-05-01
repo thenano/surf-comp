@@ -62,47 +62,53 @@ export class LoginForm extends forms.ValidatedForm {
         return d.div(
             {id: "login", className: "page"},
 
-            d.h2({}, "Login"),
-
-            d.button({onClick: this.loginWithFacebook.bind(this)}, "Facebook"),
-
-            d.form(
+            d.div(
                 {},
+                d.h1({className: "wrapper"}, "Login"),
+            ),
 
-                d.div(
-                    {
-                        className: "notification error plain",
-                        style: {
-                            display: this.state.error ? "block" : "none"
+            d.div(
+                {className: "wrapper"},
+                d.button({onClick: this.loginWithFacebook.bind(this)}, "Facebook"),
+
+                d.form(
+                    {},
+
+                    d.div(
+                        {
+                            className: "notification error plain",
+                            style: {
+                                display: this.state.error ? "block" : "none"
+                            }
+                        },
+                        this.state.error
+                    ),
+
+                    forms.text(
+                        "Email",
+                        "email",
+                        {
+                            errors: this.errors("email"),
+                            placeholder: "email@example.com",
+                            onChange: this.set("email"),
+                            disabled: this.state.submitting
                         }
-                    },
-                    this.state.error
-                ),
+                    ),
 
-                forms.text(
-                    "Email",
-                    "email",
-                    {
-                        errors: this.errors("email"),
-                        placeholder: "email@example.com",
-                        onChange: this.set("email"),
-                        disabled: this.state.submitting
-                    }
-                ),
+                    forms.password(
+                        "Password",
+                        "password",
+                        {
+                            errors: this.errors("password"),
+                            placeholder: "super secret",
+                            onChange: this.set("password"),
+                            type: "password",
+                            disabled: this.state.submitting
+                        }
+                    ),
 
-                forms.password(
-                    "Password",
-                    "password",
-                    {
-                        errors: this.errors("password"),
-                        placeholder: "super secret",
-                        onChange: this.set("password"),
-                        type: "password",
-                        disabled: this.state.submitting
-                    }
-                ),
-
-                forms.submit("Login", this.submit.bind(this), this.state.submitting)
+                    forms.submit("Login", this.submit.bind(this), this.state.submitting)
+                )
             )
         );
     }

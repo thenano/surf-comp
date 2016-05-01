@@ -211,11 +211,17 @@ export class EditHeats extends React.Component {
         }).valueSeq();
 
         return d.div(
-            {className: "wrapper heat-wrapper"},
+            {id: "index-heats", className: "heat-wrapper"},
 
-            d.h1({}, "Arrange Surfers"),
+            d.div(
+                {},
+                d.h1({className: "wrapper"}, "Arrange Surfers"),
+            ),
 
-            d.ul({className: "heats"}, heats)
+            d.div(
+                {className: "wrapper"},
+                d.ul({className: "heats"}, heats)
+            )
         );
     }
 }
