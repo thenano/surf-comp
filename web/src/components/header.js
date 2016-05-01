@@ -39,6 +39,7 @@ export class Header extends React.Component {
                         {id: "account-actions"},
                         d.span(
                             {className: "logged-in-user"},
+                            d.img({id: "profile-image", src: `//res.cloudinary.com/adventure/image/facebook/w_100,h_100,c_fill,r_max,g_face,bo_2px_solid_white/${users.getIn(["current", "uid"])}.png`}),
                             users.getIn(["current", "name"])
                         ),
                         " ",

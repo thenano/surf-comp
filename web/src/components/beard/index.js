@@ -33,9 +33,9 @@ export class Beard extends React.Component {
 
             d.h3(
                 {id: "made-with-love"},
-                "Made with ",
+                "made with ",
                 d.i({className: "love fa fa-heart"}),
-                " in Bondi Beach"
+                " in bondi beach"
             )
         );
     }
