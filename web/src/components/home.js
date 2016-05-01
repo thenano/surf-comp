@@ -1,6 +1,7 @@
 import * as EventActions from "../actions/event";
 import React from "react"
 import Immutable from "immutable";
+import { Beard } from "./beard"
 import { link } from "./navigation"
 import { connect } from "react-redux";
 import { fetch } from "../decorators";
@@ -58,7 +59,10 @@ export class Home extends React.Component {
                         )
                     })
                 )
-            )
+            ),
+
+
+            React.createElement(Beard, {})
         );
     }
 }
