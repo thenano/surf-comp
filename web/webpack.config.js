@@ -12,9 +12,11 @@ let isProd = args.prod;
 let isDev = args.dev;
 
 let entry = ["./src/site.js"];
+let devtool;
 
 if (isDev) {
     entry.push('webpack-dev-server/client?http://localhost:8080');
+    devtool = 'source-map';
 }
 
 let plugins = [
@@ -31,7 +33,7 @@ if (isProd) {
     plugins.push(
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"development"'
+            'process.env.NODE_ENV': '"production"'
         }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -64,7 +66,7 @@ module.exports = {
 
     plugins: plugins,
 
-    devtool: 'source-map',
+    devtool: devtool,
 
     devServer: {
         proxy: {
