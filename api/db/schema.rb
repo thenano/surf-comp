@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20160424080410) do
     t.string   "round"
     t.time     "time"
     t.integer  "position"
+    t.integer  "round_position"
     t.integer  "event_division_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false

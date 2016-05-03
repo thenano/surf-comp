@@ -3,7 +3,7 @@ class EventDivision < ApplicationRecord
   belongs_to :division
 
   has_and_belongs_to_many :users
-  has_many :heats, -> { order 'position' }, dependent: :destroy
+  has_many :heats, -> { order 'round_position, position' }, dependent: :destroy
 
   HEAT_SIZE = 6
   ROUND_NAMES = %w(Final Semifinal Quarterfinal)
@@ -20,24 +20,24 @@ class EventDivision < ApplicationRecord
 
   def add_athlete(athlete)
     users << athlete
-
-    round_1_heats = heats.where('position < 10').includes(:users)
+    round_1_heats = heats.where(round_position: 0).includes(:users)
     available_round_1_heat = round_1_heats.detect { |heat| heat.users.size < HEAT_SIZE }
 
     if available_round_1_heat.nil?
       number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
       round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
 
-      available_round_1_heat = heats.create({round: round_name, position: round_1_heats.size})
-      available_round_1_heat.users << athlete
+      available_round_1_heat = heats.create({round: round_name, round_position: 0, position: round_1_heats.size})
 
       round_1_heats.update_all(round: round_name)
 
-      heats.destroy(heats.where('position >= 10'))
-      create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
-    else
-      available_round_1_heat.users << athlete
+      removed_heats = heats.destroy(heats.where('round_position > 0'))
+      added_heats =  [available_round_1_heat] + create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
     end
+
+    available_round_1_heat.users << athlete
+
+    [removed_heats, added_heats]
   end
 
   def remove_athlete(heat_id, athlete_id)
@@ -50,24 +50,28 @@ class EventDivision < ApplicationRecord
 
       number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
       round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
-      heats.where('position < 10').update_all(round: round_name)
+      heats.where(round_position: 0).update_all(round: round_name)
 
-      heats.destroy(heats.where('position >= 10'))
+      heats.destroy(heats.where('round_position > 0'))
       create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
     end
   end
 
   private
-  def create_rounds(lower_round, number_of_rounds, remaining_athletes)
-    (0..number_of_rounds).to_a.reverse.each do |upper_round|
-      round_name = ROUND_NAMES[upper_round] || "Round #{lower_round.next}"
+    def create_rounds(lower_round, number_of_rounds, remaining_athletes)
+      new_heats = []
+      (0..number_of_rounds).to_a.reverse.each do |upper_round|
+        round_name = ROUND_NAMES[upper_round] || "Round #{lower_round.next}"
 
-      number_of_heats = (remaining_athletes / HEAT_SIZE).ceil
-      number_of_heats.times { |heat_number| heats << Heat.new({round: round_name, position: (lower_round * 10) + heat_number}) }
+        number_of_heats = (remaining_athletes / HEAT_SIZE).ceil
+        number_of_heats.times { |heat_number| new_heats << Heat.new({round: round_name, round_position: lower_round, position: heat_number}) }
 
-      remaining_athletes /= 2
-      lower_round += 1
+        remaining_athletes /= 2
+        lower_round += 1
+      end
+      heats << new_heats
+
+      new_heats
     end
-  end
 
 end
