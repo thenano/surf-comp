@@ -30,6 +30,9 @@ let plugins = [
 if (isProd) {
     plugins.push(
         new webpack.NoErrorsPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': '"development"'
+        }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -55,7 +58,7 @@ module.exports = {
             { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
             { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less')},
             { test: /\.(woff|woff2|ttf|eot|svg)(\?]?.*)?$/, loader: 'file?name=assets/fonts/[name].[ext]?[hash]'},
-            { test: /\.mp4$/, loader: 'file?name=assets/v/[name].[ext]?[hash]'}
+            { test: /\.mp4$/, loader: 'file?name=assets/v/[name].[ext]'}
         ]
     },
 
