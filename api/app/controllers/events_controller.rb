@@ -19,7 +19,7 @@ class EventsController < ApplicationController
   end
 
   def schedule
-    heats = @event.event_divisions.includes(:division, :heats, :users).map do |division|
+    heats = @event.event_divisions.includes(:division, {heats: :users}).map do |division|
       division.heats.map do |heat|
         [heat.id, {
             id: heat.id,

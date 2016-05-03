@@ -6,6 +6,8 @@ import { link } from "./navigation"
 import { connect } from "react-redux";
 import { fetch } from "../decorators";
 
+import heroVideo from "../assets/v/perth.compressed.mp4";
+
 var d = React.DOM;
 
 @fetch((store) => {
@@ -31,7 +33,7 @@ export class Home extends React.Component {
                             loop: "loop",
                             autoPlay: "autoplay",
                             preload: "auto",
-                            src: "/v/perth.compressed.mp4",
+                            src: heroVideo,
                         },
                     )
                 ),

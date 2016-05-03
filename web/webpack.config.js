@@ -54,7 +54,8 @@ module.exports = {
         loaders: [
             { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"},
             { test: /\.less$/, exclude: /node_modules/, loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less')},
-            { test: /\.(woff|woff2|ttf|eot|svg)(\?]?.*)?$/, loader: 'file?name=assets/fonts/[name].[ext]?[hash]'}
+            { test: /\.(woff|woff2|ttf|eot|svg)(\?]?.*)?$/, loader: 'file?name=assets/fonts/[name].[ext]?[hash]'},
+            { test: /\.mp4$/, loader: 'file?name=assets/v/[name].[ext]?[hash]'}
         ]
     },
 

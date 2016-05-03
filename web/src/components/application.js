@@ -3,7 +3,6 @@ import './application.less';
 import * as UserActions from "../actions/user";
 import * as SnackbarActions from "../actions/snackbar";
 import React from "react";
-import Immutable from "immutable";
 import { fetch } from "../decorators";
 import { connect } from "react-redux";
 import { Header } from "./header"
