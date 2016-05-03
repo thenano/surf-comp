@@ -91,5 +91,28 @@ RSpec.describe Event, :type => :model do
       end
 
     end
+
+    describe 'when there is a division with 48 athletes' do
+
+      let(:event) { create(:event) }
+
+      before :each do
+        @division1 = create(:division_with_athletes, athletes_count: 48, event: event)
+
+        event.draw
+
+        @new_athlete = create(:user)
+      end
+
+      it 'adds the new heats and removes the unnecessary quarter' do
+        event.add_athlete(@new_athlete, @division1.id)
+
+        expect(event.schedule).to eq([
+            [1, 2, 3, 4, 5, 6, 7, 8, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27],
+            [nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, 0, 0]
+        ])
+      end
+
+    end
   end
 end

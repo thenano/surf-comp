@@ -38,16 +38,23 @@ class Event < ApplicationRecord
       end
     end
 
+    bank1 -= removed_heats.map(&:id)
+    bank2 -= removed_heats.map(&:id)
+
     update_attribute(:schedule, [bank1, bank2])
   end
 
   private
     def find_insert_index_for_round(bank1, bank2, division, position)
-      round_heat_ids = division.heats.where(round_position: position).map(&:id)
-      bank1_insert_index = bank1.index((bank1 & round_heat_ids).last)
-      bank2_insert_index = bank2.index((bank2 & round_heat_ids).last) unless bank1_insert_index
-      insert_index = bank1_insert_index || bank2_insert_index
+      round_heat_ids = division.heats.find_all{ |heat| heat.round_position.eql?(position) }.map(&:id)
 
+      bank1_rounds_intersection = (bank1 & round_heat_ids).last
+      bank1_insert_index = bank1.index(bank1_rounds_intersection) if bank1_rounds_intersection
+
+      bank2_rounds_intersection = (bank2 & round_heat_ids).last
+      bank2_insert_index = bank2.index(bank2_rounds_intersection) if bank2_rounds_intersection and !bank1_insert_index
+
+      insert_index = bank1_insert_index || bank2_insert_index
       return bank1_insert_index, bank2_insert_index, insert_index
     end
 end
