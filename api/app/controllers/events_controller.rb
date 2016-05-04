@@ -7,7 +7,15 @@ class EventsController < ApplicationController
   end
 
   def show
-    render json: @event
+    render json: {
+      id: @event.id,
+      name: @event.name,
+      date: @event.date,
+      schedule: @event.schedule,
+      divisions: @event.event_divisions.includes(:division).map{ |division|
+        [division.division.id, {id: division.division.id, name: division.division.name, athletes: division.users.size}]
+      }.to_h
+    }
   end
 
   def add_athlete
@@ -50,7 +58,7 @@ class EventsController < ApplicationController
             division: division.division.name,
             round: heat.round,
             number: (heat.position % 10).next,
-            users: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
+            athletes: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
         }]
       end
     end

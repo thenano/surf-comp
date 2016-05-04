@@ -60,7 +60,7 @@ ReactDOM.render(
                 r("/sign-up", SignUp),
                 r("/events/:id", ShowEvent),
                 r("/events/:id/schedule/edit", EditTimetable),
-                r("/events/:id/heats/edit", EditHeats),
+                r("/events/:id/division/:division_id/edit", EditHeats),
                 r("*", NotFound)
             )
         )

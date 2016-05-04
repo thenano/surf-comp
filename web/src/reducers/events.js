@@ -13,6 +13,10 @@ export function reducer(state = defaultState, action) {
             return state
                 .set("list", Immutable.fromJS(action.res.data))
                 .setIn(["meta", "@@loaded/list"], true);
+        case "GET_EVENT":
+            return state
+                .set(action.res.data.id, Immutable.fromJS(action.res.data))
+                .setIn(["meta", `@@loaded/${action.res.data.id}`], true);
         default:
             return state;
     }

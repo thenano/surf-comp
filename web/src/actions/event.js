@@ -12,6 +12,13 @@ export function getSchedule(event_id) {
     };
 }
 
+export function get(event_id) {
+    return {
+        type: "GET_EVENT",
+        promise: api => api.get(`events/${event_id}`)
+    };
+}
+
 export function save(event_id, schedule) {
     let data = {
         event: {schedule: schedule.toJSON()}

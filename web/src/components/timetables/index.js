@@ -133,9 +133,7 @@ function timeRow(row, left, right, move) {
     }
 })
 @DragDropContext(HTML5Backend)
-@connect(state => ({
-    events: state.events
-}))
+@connect(state => ({ events: state.events }))
 export class EditTimetable extends React.Component {
     constructor(props, context) {
         super(props, context);

@@ -1,5 +1,4 @@
 import React from "react";
-import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
@@ -13,52 +12,44 @@ function zeroPad(num, places) {
 }
 
 @fetch((store, r) => {
-    if (!store.loaded(`events.schedules.${r.params.id}`)) {
+    if (!store.loaded(`events.${r.params.id}`)) {
         return store
-            .dispatch(EventActions.getSchedule(r.params.id));
+            .dispatch(EventActions.get(r.params.id));
     }
 })
 @connect(state => ({
     events: state.events
 }))
 export class ShowEvent extends React.Component {
-    renderDivision(count, name) {
-        const { events } = this.props;
-        let event = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
+    renderDivision(division) {
+        let event_id = Number.parseInt(this.props.params.id);
 
         return d.div(
-            {key: name, className: `division division-${name.toLowerCase()}`},
+            {key: name, className: `division division-${division.get('name').toLowerCase()}`},
 
-            link(d.span({className: "division-count"}, `${count} ${name}`), {to: `/events/${event.get("id")}/divisions/${name.toLowerCase()}/edit`}),
-            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event.get("id")}/divisions/${name.toLowerCase()}/edit`})
+            link(d.span({className: "division-count"}, `${division.get('athletes')} ${division.get('name')}`), {to: `/events/${event_id}/division/${division.get('name')}/edit`}),
+            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get('name')}/edit`})
         );
     }
 
     renderParticipants() {
         const { events } = this.props;
-        let event = events.getIn(["schedules", Number.parseInt(this.props.params.id)]),
-            heats = event.get("heats"),
-            divisions = heats.reduce((m, v) => {
-                let div = v.get("division");
-                return m.set(div, m.get(div, 0) + v.get("users").size);
-            }, new Immutable.Map()),
-            total = divisions.reduce((m, v) => {
-                return v + m;
-            }, 0);
-
+        let event = events.get(Number.parseInt(this.props.params.id)),
+            divisions = event.get('divisions'),
+            total = divisions.reduce((r, division) => r + division.get('athletes'), 0);
 
         return d.div(
             {className: "event-participants"},
 
             d.h2({}, d.i({className: "fa fa-group"}), `${total} Surfers`),
 
-            divisions.map(this.renderDivision.bind(this)).valueSeq()
+            divisions.map(::this.renderDivision)
         );
     }
 
     renderSchedule() {
         const { events } = this.props;
-        let event = events.getIn(["schedules", Number.parseInt(this.props.params.id)]),
+        let event = events.get(Number.parseInt(this.props.params.id)),
             schedule = event.get("schedule"),
             heats = Math.max(schedule.get(0).size, schedule.get(1).size),
             hours = Math.floor(heats * 16 / 60) + 7,
@@ -113,7 +104,7 @@ export class ShowEvent extends React.Component {
 
     render() {
         const { events } = this.props;
-        let event = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
+        let event = events.get(Number.parseInt(this.props.params.id));
 
         return d.div(
             {id: "show-event"},

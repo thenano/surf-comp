@@ -1,25 +1,12 @@
 import React from "react";
-import faker from "faker";
 import Immutable from "immutable";
+import * as EventActions from "../../actions/event";
 import { DropTarget, DragSource, DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { fetch } from "../../decorators";
+import { connect } from "react-redux";
 
 var d = React.DOM;
-
-function athlete() {
-    return {
-        name: faker.name.findName()
-    }
-}
-
-function randomAthletes() {
-    let athletes = [];
-    for (var i=0; i < (Math.random() * 100) % 6; i++) {
-        athletes.push(athlete());
-    }
-
-    return Immutable.fromJS(athletes);
-}
 
 const heatAthleteSource = {
     beginDrag(props) {
@@ -54,12 +41,11 @@ const heatAthleteTarget = {
 
         props.hover(hoverHeat, hoverPos);
     }
-}
+};
 
 const JERSEYS = [
     "blue", "yellow", "red", "white", "green", "pink"
 ];
-
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({
     connectDropTarget: connect.dropTarget()
@@ -140,35 +126,22 @@ function heat(h, hover, swap, over) {
     );
 }
 
+@fetch((store, r) => {
+    if (!store.loaded(`events.schedules.${r.params.id}`)) {
+        return store.dispatch(EventActions.getSchedule(r.params.id));
+    }
+})
 @DragDropContext(HTML5Backend)
+@connect(state => ({ events: state.events }))
 export class EditHeats extends React.Component {
     constructor(props, context) {
         super(props, context);
 
+        const { events } = this.props;
+        let schedule = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
+        let heats = schedule.get('heats').filter(heat => heat.get('division') === this.props.params.division_id);
         this.state = {
-            heats: Immutable.fromJS({
-                1: {
-                    id: 1,
-                    division: "Groms",
-                    number: 1,
-                    round: "Quarterfinals",
-                    athletes: randomAthletes(),
-                },
-                2: {
-                    id: 2,
-                    division: "Groms",
-                    number: 2,
-                    round: "Quarterfinals",
-                    athletes: randomAthletes(),
-                },
-                3: {
-                    id: 3,
-                    division: "Groms",
-                    number: 3,
-                    round: "Quarterfinals",
-                    athletes: randomAthletes(),
-                },
-            }),
+            heats: heats,
             hover: Immutable.Map()
         };
     }
@@ -204,9 +177,9 @@ export class EditHeats extends React.Component {
     render() {
         let heats = this.state.heats.map((h, id) => {
             if (this.state.hover.get("heat") == id) {
-                return heat(h, this.hover.bind(this), this.swap.bind(this), this.state.hover.get("position"));
+                return heat(h, ::this.hover, ::this.swap, this.state.hover.get("position"));
             } else {
-                return heat(h, this.hover.bind(this), this.swap.bind(this));
+                return heat(h, ::this.hover, ::this.swap);
             }
         }).valueSeq();
 
