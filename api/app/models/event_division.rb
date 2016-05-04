@@ -32,12 +32,12 @@ class EventDivision < ApplicationRecord
       round_1_heats.update_all(round: round_name)
 
       removed_heats = heats.destroy(heats.where('round_position > 0'))
-      added_heats =  [available_round_1_heat] + create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
+      added_heats = [available_round_1_heat] + create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
     end
 
     available_round_1_heat.users << athlete
 
-    [removed_heats, added_heats]
+    return removed_heats, added_heats
   end
 
   def remove_athlete(heat_id, athlete_id)
@@ -46,15 +46,17 @@ class EventDivision < ApplicationRecord
     heat.users.delete(athlete_id)
 
     if heat.users.empty?
-      heats.destroy(heat)
+      removed_heats = heats.destroy(heat)
 
       number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
       round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
       heats.where(round_position: 0).update_all(round: round_name)
 
-      heats.destroy(heats.where('round_position > 0'))
-      create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
+      removed_heats += heats.destroy(heats.where('round_position > 0'))
+      added_heats = create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
     end
+
+    return removed_heats, added_heats
   end
 
   private

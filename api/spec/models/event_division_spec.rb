@@ -592,6 +592,17 @@ RSpec.describe EventDivision, :type => :model do
         expect { division.users.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
+      it 'does not add or remove heats' do
+        division.draw
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+        removed_athlete = quarters.last.users.last
+        removed_heats, added_heats = division.remove_athlete(quarters.last.id, removed_athlete.id)
+
+        expect(added_heats).to be_nil
+        expect(removed_heats).to be_nil
+      end
+
       describe 'when removing the last athlete from a heat' do
         before(:each) do
           division.draw
@@ -637,6 +648,12 @@ RSpec.describe EventDivision, :type => :model do
           expect(division.heats.where(round: 'Final').size).to be(1)
           expect(division.heats.where(round: 'Final').first.position).to be(0)
           expect(division.heats.where(round: 'Final').first.round_position).to be(2)
+        end
+
+        it 'returns all new added heats and all removed heats' do
+          removed_heats, added_heats = division.remove_athlete(@first_round.last.id, @new_athlete.id)
+          expect(removed_heats.map(&:id)).to eq([8, 9, 10, 11, 12, 13, 14])
+          expect(added_heats.map(&:id)).to eq([15, 16, 17])
         end
       end
     end
