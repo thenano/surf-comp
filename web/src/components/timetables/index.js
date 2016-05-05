@@ -257,7 +257,7 @@ export class EditTimetable extends React.Component {
                 ),
             ),
 
-            forms.floatingActionButton("save", this.send.bind(this), this.state.submitting),
+            forms.floatingActionButton("save", ::this.send, this.state.submitting),
         );
     }
 }
