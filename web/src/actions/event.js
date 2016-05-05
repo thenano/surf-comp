@@ -29,3 +29,12 @@ export function save(event_id, schedule) {
         })
     };
 }
+
+export function removeAthlete(event_id, division_id, heat_id, athlete_id) {
+    return {
+        type: "REMOVE_ATHLETE",
+        promise: api => api.post(`events/${event_id}/remove_athlete`, {
+            remove_athlete: { athlete_id, division_id, heat_id }
+        })
+    };
+}

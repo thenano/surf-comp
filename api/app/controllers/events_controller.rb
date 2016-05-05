@@ -20,26 +20,26 @@ class EventsController < ApplicationController
 
   def add_athlete
     params = add_athlete_params
-    athlete = User.where(name: params.name).first_or_create do |user|
+    athlete = User.where(name: params[:name]).first_or_create do |user|
       user.password = Devise.friendly_token[0,20]
-      user.email = params.name.replace(/\s/, '_') + '@create.com'
-      user.name = params.name
+      user.email = params[:name].replace(/\s/, '_') + '@create.com'
+      user.name = params[:name]
     end
     old_heat_size = @event.schedule.flatten.size
-    @event.add_athlete(athlete, params.division_id)
+    @event.add_athlete(athlete, params[:division_id])
     new_heat_size = @event.schedule.flatten.size
 
-    render json: {heat_offset: new_heat_size - old_heat_size}
+    render json: {id: @event.id, heat_offset: new_heat_size - old_heat_size}
   end
 
   def remove_athlete
     params = remove_athlete_params
 
     old_heat_size = @event.schedule.flatten.size
-    @event.remove_athlete(params.athlete_id, params.division_id, params.heat_id)
+    @event.remove_athlete(params[:athlete_id], params[:division_id], params[:heat_id])
     new_heat_size = @event.schedule.flatten.size
 
-    render json: {heat_offset: new_heat_size - old_heat_size}
+    render json: {id: @event.id, heat_offset: new_heat_size - old_heat_size}
   end
 
   def update
@@ -56,8 +56,9 @@ class EventsController < ApplicationController
         [heat.id, {
             id: heat.id,
             division: division.division.name,
+            division_id: division.division.id,
             round: heat.round,
-            number: (heat.position % 10).next,
+            number: heat.position.next,
             athletes: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
         }]
       end

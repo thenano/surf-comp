@@ -21,6 +21,10 @@ export function reducer(state = defaultState, action) {
             return state
                 .set(action.res.data.id, Immutable.fromJS(action.res.data))
                 .setIn(["meta", `@@loaded/${action.res.data.id}`], true);
+        case "REMOVE_ATHLETE":
+            return state
+                .deleteIn(["meta", `@@loaded/${action.res.data.id}`])
+                .deleteIn(["meta", `@@loaded/schedules/${action.res.data.id}`]);
         default:
             return state;
     }

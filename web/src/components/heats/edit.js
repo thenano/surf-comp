@@ -1,6 +1,7 @@
 import React from "react";
 import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
+import * as SnackbarActions from "../../actions/snackbar";
 import { DropTarget, DragSource, DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { fetch } from "../../decorators";
@@ -54,19 +55,56 @@ const JERSEYS = [
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
 }))
+@connect(state => ({ events: state.events }))
 class AthleteSlot extends React.Component {
+    remove() {
+        let { event_id, division_id, athlete, heat_id, dispatch } = this.props;
+
+        this.setState({ submitting: true });
+
+        return dispatch(EventActions.removeAthlete(event_id, division_id, heat_id, athlete.get('id')))
+            .catch(e => {
+                this.setState({
+                    submitting: false,
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            })
+            .then((result) => {
+                
+                dispatch(SnackbarActions.message("Saved."));
+                this.setState({ submitting: false });
+            });
+
+    }
+
     render() {
-        let { name, position, hovering, connectDragSource, connectDropTarget } = this.props;
+        let { athlete, position, hovering, connectDragSource, connectDropTarget } = this.props;
         let jersey = JERSEYS[position];
 
         return connectDragSource(connectDropTarget(
-            d.li({className: `athlete ${jersey} ${hovering ? "hovering" : ""}`}, name)
+            d.li(
+                {className: `athlete ${jersey} ${hovering ? "hovering" : ""}`},
+                athlete.get('name'),
+                d.button(
+                    {
+                        onClick: ::this.remove,
+                        className: "button danger submit " + (this.props.isSubmitting ? "disabled" : "")
+                    },
+
+                    d.i({className: 'fa fa-trash'}),
+
+                    // spinner({
+                    //     style: {
+                    //         display: this.props.isSubmitting ? "inline-block" : "none"
+                    //     }
+                    // })
+                ))
         ));
     }
 }
 
-function athleteSlot(heat, position, name, hover, swap, hovering) {
-    return React.createElement(AthleteSlot, {key: position, hover, swap, hovering, heat, position, name});
+function athleteSlot(event_id, division_id, heat_id, position, athlete, hover, swap, hovering) {
+    return React.createElement(AthleteSlot, {key: position, event_id, division_id, hover, swap, hovering, heat_id, position, athlete});
 }
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({
@@ -87,7 +125,7 @@ function emptySlot(heat, position, hover, swap, hovering) {
 
 class Heat extends React.Component {
     render() {
-        let { heat, hover, swap, over } = this.props;
+        let { event_id, division_id, heat, hover, swap, over } = this.props;
 
         let athletes = [];
 
@@ -96,7 +134,7 @@ class Heat extends React.Component {
                 hovering = over == i;
 
             if (a) {
-                athletes.push(athleteSlot(heat.get("id"), i, a.get("name"), hover, swap, hovering));
+                athletes.push(athleteSlot(event_id, division_id, heat.get("id"), i, a, hover, swap, hovering));
             } else {
                 athletes.push(emptySlot(heat.get("id"), i, hover, swap, hovering));
             }
@@ -119,10 +157,10 @@ class Heat extends React.Component {
     }
 }
 
-function heat(h, hover, swap, over) {
+function heat(event_id, division_id, heat, hover, swap, over) {
     return d.li(
-        {className: "heat-list-item", key: h.get("id")},
-        React.createElement(Heat, {heat: h, hover, swap, over})
+        {className: "heat-list-item", key: heat.get("id")},
+        React.createElement(Heat, {event_id, division_id, heat, hover, swap, over})
     );
 }
 
@@ -138,8 +176,12 @@ export class EditHeats extends React.Component {
         super(props, context);
 
         const { events } = this.props;
-        let schedule = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
-        let heats = schedule.get('heats').filter(heat => heat.get('division') === this.props.params.division_id);
+
+        let schedule = events.getIn(["schedules", parseInt(this.props.params.id)]);
+        let heats = schedule.get('heats')
+            .filter(heat => heat.get('division_id') === parseInt(this.props.params.division_id))
+            .sortBy((heat, id) => id);
+
         this.state = {
             heats: heats,
             hover: Immutable.Map()
@@ -175,13 +217,15 @@ export class EditHeats extends React.Component {
     }
 
     render() {
-        let heats = this.state.heats.map((h, id) => {
-            if (this.state.hover.get("heat") == id) {
-                return heat(h, ::this.hover, ::this.swap, this.state.hover.get("position"));
+        const { id, division_id } = this.props.params;
+
+        let heats = this.state.heats.map((h, heat_id) => {
+            if (this.state.hover.get("heat") == heat_id) {
+                return heat(id, division_id, h, ::this.hover, ::this.swap, this.state.hover.get("position"));
             } else {
-                return heat(h, ::this.hover, ::this.swap);
+                return heat(id, division_id, h, ::this.hover, ::this.swap);
             }
-        }).valueSeq();
+        });
 
         return d.div(
             {id: "index-heats", className: "heat-wrapper"},

@@ -17,9 +17,7 @@ function zeroPad(num, places) {
             .dispatch(EventActions.get(r.params.id));
     }
 })
-@connect(state => ({
-    events: state.events
-}))
+@connect(state => ({events: state.events}))
 export class ShowEvent extends React.Component {
     renderDivision(division) {
         let event_id = Number.parseInt(this.props.params.id);
@@ -27,8 +25,8 @@ export class ShowEvent extends React.Component {
         return d.div(
             {key: name, className: `division division-${division.get('name').toLowerCase()}`},
 
-            link(d.span({className: "division-count"}, `${division.get('athletes')} ${division.get('name')}`), {to: `/events/${event_id}/division/${division.get('name')}/edit`}),
-            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get('name')}/edit`})
+            link(d.span({className: "division-count"}, `${division.get('athletes')} ${division.get('name')}`), {to: `/events/${event_id}/division/${division.get('id')}/edit`}),
+            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get('id')}/edit`})
         );
     }
 
