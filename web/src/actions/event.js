@@ -20,11 +20,12 @@ export function get(event_id) {
 }
 
 export function save(event_id, schedule) {
-    let data = {
-        event: {schedule: schedule.toJSON()}
-    };
     return {
         type: "SAVE_EVENT_SCHEDULE",
-        promise: api => api.patch(`events/${event_id}`, data)
+        promise: api => api.patch(`events/${event_id}`, {
+            event: {
+                schedule: schedule.map(bank => bank.reverse().skipWhile(i => i === 0).reverse()).toJSON()
+            }
+        })
     };
 }
