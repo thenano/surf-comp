@@ -71,7 +71,7 @@ class EventsController < ApplicationController
     end
 
     def build_event_schedule_json
-      heats = @event.event_divisions.includes(:division, {heats: :users}).map do |division|
+      heats = @event.event_divisions.includes(:division, {heats: {athlete_heats: :athlete}}).map do |division|
         division.heats.map do |heat|
           [heat.id, {
             id: heat.id,
@@ -80,7 +80,10 @@ class EventsController < ApplicationController
             round: heat.round,
             round_position: heat.round_position,
             number: heat.position.next,
-            athletes: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
+            athletes: heat.athlete_heats.map do |athlete_heat|
+              athlete = athlete_heat.athlete
+              {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
+            end
           }]
         end
       end

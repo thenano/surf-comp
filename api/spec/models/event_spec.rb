@@ -302,7 +302,7 @@ RSpec.describe Event, :type => :model do
       end
 
       it 'removes the athlete and does not change the schedule' do
-        event.remove_athlete(@division1.heats.where(round_position: 0).last.users.first.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
+        event.remove_athlete(@division1.heats.where(round_position: 0).last.athletes.first.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
 
         expect(event.schedule).to eq([
           [1, 2, 3, 4, 5, 6, 7],

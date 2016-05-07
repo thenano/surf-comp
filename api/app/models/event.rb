@@ -14,7 +14,7 @@ class Event < ApplicationRecord
 
     update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats))) if added_heats
 
-    (added_heats.size - removed_heats.size)
+    (added_heats.to_a.size - removed_heats.to_a.size)
   end
 
   def remove_athlete(athlete_id, division_id, heat_id)
@@ -23,7 +23,7 @@ class Event < ApplicationRecord
 
     update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats))) if removed_heats
 
-    (added_heats.size - removed_heats.size)
+    (added_heats.to_a.size - removed_heats.to_a.size)
   end
 
   private

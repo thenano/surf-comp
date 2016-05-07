@@ -16,19 +16,19 @@ RSpec.describe EventDivision, :type => :model do
 
         expect(division.heats.last.round).to eq('Final')
         expect(division.heats.last.round_position).to eq(2)
-        expect(division.heats.last.users).to be_empty
+        expect(division.heats.last.athletes).to be_empty
         expect(division.heats.last.position).to eq(0)
       end
 
       it 'creates two empty semifinals' do
         division.draw
         expect(division.heats[5].round).to eq('Semifinal')
-        expect(division.heats[5].users).to be_empty
+        expect(division.heats[5].athletes).to be_empty
         expect(division.heats[5].round_position).to eq(1)
         expect(division.heats[5].position).to eq(1)
 
         expect(division.heats[4].round).to eq('Semifinal')
-        expect(division.heats[4].users).to be_empty
+        expect(division.heats[4].athletes).to be_empty
         expect(division.heats[4].round_position).to eq(1)
         expect(division.heats[4].position).to eq(0)
       end
@@ -36,7 +36,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'adds 6 athletes per heat by seed and gives the quarterfinal heat name' do
         athletes = division.users
         division.draw
-        expect(division.heats[0].users).to eq(
+        expect(division.heats[0].athletes).to eq(
                                                [
                                                    athletes[0],
                                                    athletes[4],
@@ -49,7 +49,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[0].round_position).to eq(0)
         expect(division.heats[0].position).to eq(0)
 
-        expect(division.heats[1].users).to eq(
+        expect(division.heats[1].athletes).to eq(
                                                [
                                                    athletes[1],
                                                    athletes[5],
@@ -62,7 +62,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[1].round_position).to eq(0)
         expect(division.heats[1].position).to eq(1)
 
-        expect(division.heats[2].users).to eq(
+        expect(division.heats[2].athletes).to eq(
                                                [
                                                    athletes[2],
                                                    athletes[6],
@@ -75,7 +75,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[2].round_position).to eq(0)
         expect(division.heats[2].position).to eq(2)
 
-        expect(division.heats[3].users).to eq(
+        expect(division.heats[3].athletes).to eq(
                                                [
                                                    athletes[3],
                                                    athletes[7],
@@ -101,7 +101,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'creates an empty final' do
         division.draw
         expect(division.heats.last.round).to eq('Final')
-        expect(division.heats.last.users).to be_empty
+        expect(division.heats.last.athletes).to be_empty
         expect(division.heats.last.round_position).to eq(3)
         expect(division.heats.last.position).to eq(0)
       end
@@ -109,12 +109,12 @@ RSpec.describe EventDivision, :type => :model do
       it 'creates two empty semifinals' do
         division.draw
         expect(division.heats[9].round).to eq('Semifinal')
-        expect(division.heats[9].users).to be_empty
+        expect(division.heats[9].athletes).to be_empty
         expect(division.heats[9].round_position).to eq(2)
         expect(division.heats[9].position).to eq(1)
 
         expect(division.heats[8].round).to eq('Semifinal')
-        expect(division.heats[8].users).to be_empty
+        expect(division.heats[8].athletes).to be_empty
         expect(division.heats[8].round_position).to eq(2)
         expect(division.heats[8].position).to eq(0)
       end
@@ -122,17 +122,17 @@ RSpec.describe EventDivision, :type => :model do
       it 'creates three empty quarterfinals' do
         division.draw
         expect(division.heats[7].round).to eq('Quarterfinal')
-        expect(division.heats[7].users).to be_empty
+        expect(division.heats[7].athletes).to be_empty
         expect(division.heats[7].round_position).to eq(1)
         expect(division.heats[7].position).to eq(2)
 
         expect(division.heats[6].round).to eq('Quarterfinal')
-        expect(division.heats[6].users).to be_empty
+        expect(division.heats[6].athletes).to be_empty
         expect(division.heats[6].round_position).to eq(1)
         expect(division.heats[6].position).to eq(1)
 
         expect(division.heats[5].round).to eq('Quarterfinal')
-        expect(division.heats[5].users).to be_empty
+        expect(division.heats[5].athletes).to be_empty
         expect(division.heats[5].round_position).to eq(1)
         expect(division.heats[5].position).to eq(0)
       end
@@ -140,7 +140,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'adds 5 athletes per heat by seed and gives the round 1 heat name' do
         athletes = division.users
         division.draw
-        expect(division.heats[0].users).to eq(
+        expect(division.heats[0].athletes).to eq(
                                                [
                                                    athletes[0],
                                                    athletes[5],
@@ -152,7 +152,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[0].round_position).to eq(0)
         expect(division.heats[0].position).to eq(0)
 
-        expect(division.heats[1].users).to eq(
+        expect(division.heats[1].athletes).to eq(
                                                [
                                                    athletes[1],
                                                    athletes[6],
@@ -164,7 +164,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[1].round_position).to eq(0)
         expect(division.heats[1].position).to eq(1)
 
-        expect(division.heats[2].users).to eq(
+        expect(division.heats[2].athletes).to eq(
                                                [
                                                    athletes[2],
                                                    athletes[7],
@@ -176,7 +176,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[2].round_position).to eq(0)
         expect(division.heats[2].position).to eq(2)
 
-        expect(division.heats[3].users).to eq(
+        expect(division.heats[3].athletes).to eq(
                                                [
                                                    athletes[3],
                                                    athletes[8],
@@ -188,7 +188,7 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats[3].round_position).to eq(0)
         expect(division.heats[3].position).to eq(3)
 
-        expect(division.heats[4].users).to eq(
+        expect(division.heats[4].athletes).to eq(
                                                [
                                                    athletes[4],
                                                    athletes[9],
@@ -208,7 +208,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'adds 5 athletes per heat by seed and 6 athletes to the first heat' do
         athletes = division.users
         division.draw
-        expect(division.heats[0].users).to eq(
+        expect(division.heats[0].athletes).to eq(
                                                [
                                                    athletes[0],
                                                    athletes[5],
@@ -218,7 +218,7 @@ RSpec.describe EventDivision, :type => :model do
                                                    athletes[25]
                                                ])
 
-        expect(division.heats[1].users).to eq(
+        expect(division.heats[1].athletes).to eq(
                                                [
                                                    athletes[1],
                                                    athletes[6],
@@ -227,7 +227,7 @@ RSpec.describe EventDivision, :type => :model do
                                                    athletes[21]
                                                ])
 
-        expect(division.heats[2].users).to eq(
+        expect(division.heats[2].athletes).to eq(
                                                [
                                                    athletes[2],
                                                    athletes[7],
@@ -236,7 +236,7 @@ RSpec.describe EventDivision, :type => :model do
                                                    athletes[22]
                                                ])
 
-        expect(division.heats[3].users).to eq(
+        expect(division.heats[3].athletes).to eq(
                                                [
                                                    athletes[3],
                                                    athletes[8],
@@ -245,7 +245,7 @@ RSpec.describe EventDivision, :type => :model do
                                                    athletes[23]
                                                ])
 
-        expect(division.heats[4].users).to eq(
+        expect(division.heats[4].athletes).to eq(
                                                [
                                                    athletes[4],
                                                    athletes[9],
@@ -262,7 +262,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'creates the final with all athletes on it' do
         athletes = division.users
         division.draw
-        expect(division.heats[0].users).to eq(
+        expect(division.heats[0].athletes).to eq(
                                                [
                                                    athletes[0],
                                                    athletes[1],
@@ -291,7 +291,7 @@ RSpec.describe EventDivision, :type => :model do
       it 'creates an empty final' do
         division.draw
         expect(division.heats.last.round).to eq('Final')
-        expect(division.heats.last.users).to be_empty
+        expect(division.heats.last.athletes).to be_empty
         expect(division.heats.last.round_position).to eq(1)
         expect(division.heats.last.position).to eq(0)
       end
@@ -328,13 +328,13 @@ RSpec.describe EventDivision, :type => :model do
       it 'should add the athlete to the last heat' do
         division.draw
 
-        expect(division.heats[3].users.size).to eq(5)
+        expect(division.heats[3].athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats[3].users.size).to eq(6)
-        expect(division.heats[3].users.last).to eq(new_athlete)
+        expect(division.heats[3].athletes.size).to eq(6)
+        expect(division.heats[3].athletes.last).to eq(new_athlete)
       end
 
       it 'does not add more heats' do
@@ -357,14 +357,14 @@ RSpec.describe EventDivision, :type => :model do
       it 'should add the athlete to the second to last heat' do
         division.draw
 
-        expect(division.heats[2].users.size).to eq(5)
-        expect(division.heats[3].users.size).to eq(5)
+        expect(division.heats[2].athletes.size).to eq(5)
+        expect(division.heats[3].athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats[2].users.size).to eq(6)
-        expect(division.heats[2].users.last).to eq(new_athlete)
+        expect(division.heats[2].athletes.size).to eq(6)
+        expect(division.heats[2].athletes.last).to eq(new_athlete)
       end
 
       it 'does not add more heats' do
@@ -387,13 +387,13 @@ RSpec.describe EventDivision, :type => :model do
       it 'should add the athlete to the first heat' do
         division.draw
 
-        expect(division.heats.first.users.size).to eq(5)
+        expect(division.heats.first.athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats.first.users.size).to eq(6)
-        expect(division.heats.first.users.last).to eq(new_athlete)
+        expect(division.heats.first.athletes.size).to eq(6)
+        expect(division.heats.first.athletes.last).to eq(new_athlete)
       end
 
       it 'does not add more heats' do
@@ -424,11 +424,11 @@ RSpec.describe EventDivision, :type => :model do
         first_round = division.heats(true).where(round_position: 0)
 
         expect(first_round.size).to eq(5)
-        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.athletes.size).to eq(1)
         expect(first_round.last.round).to eq('Round 1')
         expect(first_round.last.round_position).to eq(0)
         expect(first_round.last.position).to eq(4)
-        expect(first_round.last.users.first).to eq(@new_athlete)
+        expect(first_round.last.athletes.first).to eq(@new_athlete)
       end
 
       it 'renames the round of the first round heats' do
@@ -493,11 +493,11 @@ RSpec.describe EventDivision, :type => :model do
         first_round = division.heats.where(round_position: 0)
 
         expect(first_round.size).to eq(3)
-        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.athletes.size).to eq(1)
         expect(first_round.last.round).to eq('Quarterfinal')
         expect(first_round.last.position).to eq(2)
         expect(first_round.last.round_position).to eq(0)
-        expect(first_round.last.users.first).to eq(@new_athlete)
+        expect(first_round.last.athletes.first).to eq(@new_athlete)
       end
 
       it 'renames the round of the first round heats' do
@@ -544,11 +544,11 @@ RSpec.describe EventDivision, :type => :model do
         first_round = division.heats.where(round_position: 0)
 
         expect(first_round.size).to eq(7)
-        expect(first_round.last.users.size).to eq(1)
+        expect(first_round.last.athletes.size).to eq(1)
         expect(first_round.last.round).to eq('Round 1')
         expect(first_round.last.position).to eq(6)
         expect(first_round.last.round_position).to eq(0)
-        expect(first_round.last.users.first).to eq(@new_athlete)
+        expect(first_round.last.athletes.first).to eq(@new_athlete)
       end
 
       it 'create a new quarterfinal' do
@@ -575,18 +575,18 @@ RSpec.describe EventDivision, :type => :model do
         division.draw
 
         quarters = division.heats.where(round: 'Quarterfinal')
-        removed_athlete = quarters.last.users.last
+        removed_athlete = quarters.last.athletes.last
         division.remove_athlete(quarters.last.id, removed_athlete.id)
 
-        expect(quarters.last.users.size).to eq(5)
-        expect { quarters.last.users.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(quarters.last.athletes.size).to eq(5)
+        expect { quarters.last.athletes.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'removes the athlete from the division' do
         division.draw
 
         quarters = division.heats.where(round: 'Quarterfinal')
-        removed_athlete = quarters.last.users.last
+        removed_athlete = quarters.last.athletes.last
         division.remove_athlete(quarters.last.id, removed_athlete.id)
 
         expect { division.users.find(removed_athlete.id) }.to raise_error(ActiveRecord::RecordNotFound)
@@ -596,7 +596,7 @@ RSpec.describe EventDivision, :type => :model do
         division.draw
 
         quarters = division.heats.where(round: 'Quarterfinal')
-        removed_athlete = quarters.last.users.last
+        removed_athlete = quarters.last.athletes.last
         removed_heats, added_heats = division.remove_athlete(quarters.last.id, removed_athlete.id)
 
         expect(added_heats).to be_nil

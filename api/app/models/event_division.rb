@@ -15,13 +15,17 @@ class EventDivision < ApplicationRecord
 
     heat_cycle = (0...number_of_heats).cycle
 
-    users.each { |athlete| heats[heat_cycle.next].users << athlete }
+    users.each do |user|
+      heat = heats[heat_cycle.next]
+      position = heat.athlete_heats.last ? heat.athlete_heats.last.position.next : 0
+      heat.athlete_heats.create({athlete_id: user.id, position: position})
+    end
   end
 
   def add_athlete(athlete)
     users << athlete
-    round_1_heats = heats.where(round_position: 0).includes(:users)
-    available_round_1_heat = round_1_heats.detect { |heat| heat.users.size < HEAT_SIZE }
+    round_1_heats = heats.where(round_position: 0).includes(:athletes)
+    available_round_1_heat = round_1_heats.detect { |heat| heat.athletes.size < HEAT_SIZE }
 
     if available_round_1_heat.nil?
       number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
@@ -35,7 +39,8 @@ class EventDivision < ApplicationRecord
       added_heats = [available_round_1_heat] + create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
     end
 
-    available_round_1_heat.users << athlete
+    position = available_round_1_heat.athlete_heats.last ? available_round_1_heat.athlete_heats.last.position.next : 0
+    available_round_1_heat.athlete_heats.create({athlete_id: athlete.id, position: position})
 
     return removed_heats, added_heats
   end
@@ -43,9 +48,9 @@ class EventDivision < ApplicationRecord
   def remove_athlete(heat_id, athlete_id)
     users.delete(athlete_id)
     heat = heats.find(heat_id)
-    heat.users.delete(athlete_id)
+    heat.athletes.delete(athlete_id)
 
-    if heat.users.empty?
+    if heat.athletes.empty?
       removed_heats = heats.destroy(heat)
 
       number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil

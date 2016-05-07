@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160424080410) do
+ActiveRecord::Schema.define(version: 20160507095022) do
+
+  create_table "athlete_heats", force: :cascade do |t|
+    t.integer  "heat_id"
+    t.integer  "athlete_id"
+    t.integer  "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "athlete_heats", ["athlete_id"], name: "index_athlete_heats_on_athlete_id"
+  add_index "athlete_heats", ["heat_id"], name: "index_athlete_heats_on_heat_id"
+  add_index "athlete_heats", ["position", "heat_id"], name: "index_athlete_heats_on_position_and_heat_id", unique: true
 
   create_table "divisions", force: :cascade do |t|
     t.string   "name"
@@ -55,13 +67,6 @@ ActiveRecord::Schema.define(version: 20160424080410) do
   end
 
   add_index "heats", ["event_division_id"], name: "index_heats_on_event_division_id"
-
-  create_table "heats_users", id: false, force: :cascade do |t|
-    t.integer "heat_id", null: false
-    t.integer "user_id", null: false
-  end
-
-  add_index "heats_users", ["user_id", "heat_id"], name: "index_heats_users_on_user_id_and_heat_id", unique: true
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
