@@ -5,7 +5,6 @@ const defaultState = new Immutable.Map();
 export function reducer(state = defaultState, action) {
     switch (action.type) {
         case "SAVE_EVENT_SCHEDULE":
-        case "REMOVE_ATHLETE":
             return state
                 .setIn(["schedules", action.res.data.id], Immutable.fromJS(action.res.data))
                 .setIn(["meta", `@@loaded/schedules/${action.res.data.id}`], true)
@@ -22,6 +21,11 @@ export function reducer(state = defaultState, action) {
             return state
                 .set(action.res.data.id, Immutable.fromJS(action.res.data))
                 .setIn(["meta", `@@loaded/${action.res.data.id}`], true);
+        case "REMOVE_ATHLETE":
+            return state
+                .setIn(["schedules", action.res.data.event.id], Immutable.fromJS(action.res.data.event))
+                .setIn(["meta", `@@loaded/schedules/${action.res.data.event.id}`], true)
+                .deleteIn(["meta", `@@loaded/${action.res.data.event.id}`]);
         default:
             return state;
     }

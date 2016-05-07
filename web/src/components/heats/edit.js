@@ -70,7 +70,12 @@ class AthleteSlot extends React.Component {
                 });
             })
             .then((result) => {
-                dispatch(SnackbarActions.message("Saved."));
+                let message = "Athlete removed successfully.";
+                if (result.heat_offset !== 0) {
+                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
+                }
+
+                dispatch(SnackbarActions.message(message));
                 this.setState({ submitting: false });
             });
 
