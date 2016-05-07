@@ -13,13 +13,13 @@ const heatAthleteSource = {
     beginDrag(props) {
         return {
             heat: props.heat,
-            position: props.position,
+            position: props.position
         };
     }
 };
 
 const heatAthleteTarget = {
-    drop(props, monitor, component) {
+    drop(props, monitor) {
         const hoverPos = props.position,
               hoverHeat = props.heat,
               dragPos = monitor.getItem().position,
@@ -29,7 +29,7 @@ const heatAthleteTarget = {
         props.swap(dragHeat, dragPos, hoverHeat, hoverPos);
     },
 
-    hover(props, monitor, component) {
+    hover(props, monitor) {
         const hoverPos = props.position,
               hoverHeat = props.heat,
               dragPos = monitor.getItem().position,
@@ -55,7 +55,7 @@ const JERSEYS = [
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
 }))
-@connect(state => ({ events: state.events }))
+@connect()
 class AthleteSlot extends React.Component {
     remove() {
         let { event_id, division_id, athlete, heat_id, dispatch } = this.props;
@@ -70,7 +70,6 @@ class AthleteSlot extends React.Component {
                 });
             })
             .then((result) => {
-                
                 dispatch(SnackbarActions.message("Saved."));
                 this.setState({ submitting: false });
             });
@@ -170,26 +169,22 @@ function heat(event_id, division_id, heat, hover, swap, over) {
     }
 })
 @DragDropContext(HTML5Backend)
-@connect(state => ({ events: state.events }))
+@connect((state, props) => ({
+    heats: state.events.getIn(["schedules", parseInt(props.params.id), "heats"])
+        .filter(heat => heat.get('division_id') === parseInt(props.params.division_id))
+        .sortBy(heat => (100 * heat.get('round_position')) + heat.get('number'))
+}))
 export class EditHeats extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        const { events } = this.props;
-
-        let schedule = events.getIn(["schedules", parseInt(this.props.params.id)]);
-        let heats = schedule.get('heats')
-            .filter(heat => heat.get('division_id') === parseInt(this.props.params.division_id))
-            .sortBy((heat, id) => id);
-
         this.state = {
-            heats: heats,
             hover: Immutable.Map()
         };
     }
 
     swap(heat1, pos1, heat2, pos2) {
-        let { heats } = this.state;
+        let { heats } = this.props;
 
         heat1 = "" + heat1;
         heat2 = "" + heat2;
@@ -201,8 +196,6 @@ export class EditHeats extends React.Component {
 
         let updates = heats.setIn([heat1, "athletes", pos1], athlete2)
                             .setIn([heat2, "athletes", pos2], athlete1);
-
-        this.setState({ heats: updates });
     }
 
     hover(heat, position) {
@@ -219,13 +212,13 @@ export class EditHeats extends React.Component {
     render() {
         const { id, division_id } = this.props.params;
 
-        let heats = this.state.heats.map((h, heat_id) => {
+        let heats = this.props.heats.map((h, heat_id) => {
             if (this.state.hover.get("heat") == heat_id) {
                 return heat(id, division_id, h, ::this.hover, ::this.swap, this.state.hover.get("position"));
             } else {
                 return heat(id, division_id, h, ::this.hover, ::this.swap);
             }
-        });
+        }).valueSeq();
 
         return d.div(
             {id: "index-heats", className: "heat-wrapper"},

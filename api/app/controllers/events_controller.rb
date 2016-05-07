@@ -29,7 +29,7 @@ class EventsController < ApplicationController
     @event.add_athlete(athlete, params[:division_id])
     new_heat_size = @event.schedule.flatten.size
 
-    render json: {id: @event.id, heat_offset: new_heat_size - old_heat_size}
+    render json: {heat_offset: new_heat_size - old_heat_size}
   end
 
   def remove_athlete
@@ -39,7 +39,7 @@ class EventsController < ApplicationController
     @event.remove_athlete(params[:athlete_id], params[:division_id], params[:heat_id])
     new_heat_size = @event.schedule.flatten.size
 
-    render json: {id: @event.id, heat_offset: new_heat_size - old_heat_size}
+    schedule
   end
 
   def update
@@ -58,6 +58,7 @@ class EventsController < ApplicationController
             division: division.division.name,
             division_id: division.division.id,
             round: heat.round,
+            round_position: heat.round_position,
             number: heat.position.next,
             athletes: heat.users.map { |athlete| {id: athlete.id, name: athlete.name, image: athlete.image} }
         }]
