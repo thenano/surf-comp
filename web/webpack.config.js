@@ -72,13 +72,12 @@ module.exports = {
         proxy: {
             '/api*': {
                 target: "http://127.0.0.1:3000",
-                secure: false,
+                secure: false
             }
         },
 
         contentBase: buildPath,
         host: "0.0.0.0",
-        hot: true,
         port: 8080,
         historyApiFallback: true
     }
