@@ -55,43 +55,18 @@ const JERSEYS = [
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
 }))
-@connect()
 class AthleteSlot extends React.Component {
-    remove() {
-        let { event_id, division_id, athlete, heat_id, dispatch } = this.props;
-
-        this.setState({ submitting: true });
-
-        return dispatch(EventActions.removeAthlete(event_id, division_id, heat_id, athlete.get('id')))
-            .catch(e => {
-                this.setState({
-                    submitting: false,
-                    error: `The was an unexpected problem: ${e.data}`
-                });
-            })
-            .then((result) => {
-                let message = "Athlete removed successfully.";
-                if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
-                }
-
-                dispatch(SnackbarActions.message(message));
-                this.setState({ submitting: false });
-            });
-
-    }
-
     render() {
-        let { athlete, position, hovering, connectDragSource, connectDropTarget } = this.props;
+        let { name, position, hovering, connectDragSource, connectDropTarget, remove } = this.props;
         let jersey = JERSEYS[position];
 
         return connectDragSource(connectDropTarget(
             d.li(
                 {className: `athlete ${jersey} ${hovering ? "hovering" : ""}`},
-                athlete.get('name'),
+                name,
                 d.button(
                     {
-                        onClick: ::this.remove,
+                        onClick: remove,
                         className: "button danger submit " + (this.props.isSubmitting ? "disabled" : "")
                     },
 
@@ -107,8 +82,8 @@ class AthleteSlot extends React.Component {
     }
 }
 
-function athleteSlot(event_id, division_id, heat_id, position, athlete, hover, swap, hovering) {
-    return React.createElement(AthleteSlot, {key: position, event_id, division_id, hover, swap, hovering, heat_id, position, athlete});
+function athleteSlot(position, name, hover, swap, hovering, remove) {
+    return React.createElement(AthleteSlot, {key: position, name, hover, swap, hovering, remove});
 }
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({
@@ -129,7 +104,7 @@ function emptySlot(heat, position, hover, swap, hovering) {
 
 class Heat extends React.Component {
     render() {
-        let { event_id, division_id, heat, hover, swap, over } = this.props;
+        let { heat, hover, swap, over, remove } = this.props;
 
         let athletes = [];
 
@@ -138,7 +113,7 @@ class Heat extends React.Component {
                 hovering = over == i;
 
             if (a) {
-                athletes.push(athleteSlot(event_id, division_id, heat.get("id"), i, a, hover, swap, hovering));
+                athletes.push(athleteSlot(i, a.get("name"), hover, swap, hovering, remove.bind(this, a)));
             } else {
                 athletes.push(emptySlot(heat.get("id"), i, hover, swap, hovering));
             }
@@ -161,10 +136,10 @@ class Heat extends React.Component {
     }
 }
 
-function heat(event_id, division_id, heat, hover, swap, over) {
+function heat(heat, hover, swap, remove, over) {
     return d.li(
         {className: "heat-list-item", key: heat.get("id")},
-        React.createElement(Heat, {event_id, division_id, heat, hover, swap, over})
+        React.createElement(Heat, {heat, hover, swap, over, remove})
     );
 }
 
@@ -214,14 +189,37 @@ export class EditHeats extends React.Component {
         });
     }
 
-    render() {
+    remove(heat, athlete) {
         const { id, division_id } = this.props.params;
+        const { dispatch } = this.props;
 
+        this.setState({ submitting: true });
+
+        return dispatch(EventActions.removeAthlete(id, division_id, heat.get("id"), athlete.get('id')))
+            .catch(e => {
+                this.setState({
+                    submitting: false,
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            })
+            .then((result) => {
+                let message = "Athlete removed successfully.";
+                if (result.heat_offset !== 0) {
+                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
+                }
+
+                dispatch(SnackbarActions.message(message));
+                this.setState({ submitting: false });
+            });
+
+    }
+
+    render() {
         let heats = this.props.heats.map((h, heat_id) => {
             if (this.state.hover.get("heat") == heat_id) {
-                return heat(id, division_id, h, ::this.hover, ::this.swap, this.state.hover.get("position"));
+                return heat(h, ::this.hover, ::this.swap, this.remove.bind(this, h), this.state.hover.get("position"));
             } else {
-                return heat(id, division_id, h, ::this.hover, ::this.swap);
+                return heat(h, ::this.hover, ::this.swap, this.remove.bind(this, h));
             }
         }).valueSeq();
 
