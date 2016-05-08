@@ -23,7 +23,7 @@ export class ShowEvent extends React.Component {
         let event_id = Number.parseInt(this.props.params.id);
 
         return d.div(
-            {key: name, className: `division division-${division.get('name').toLowerCase()}`},
+            {key: division.get("name"), className: `division division-${division.get('name').toLowerCase()}`},
 
             link(d.span({className: "division-count"}, `${division.get('athletes')} ${division.get('name')}`), {to: `/events/${event_id}/division/${division.get('id')}/edit`}),
             link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get('id')}/edit`})
@@ -41,7 +41,7 @@ export class ShowEvent extends React.Component {
 
             d.h2({}, d.i({className: "fa fa-group"}), `${total} Surfers`),
 
-            divisions.map(::this.renderDivision)
+            divisions.map(this.renderDivision.bind(this)).valueSeq()
         );
     }
 
