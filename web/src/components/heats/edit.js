@@ -64,7 +64,7 @@ class AthleteSlot extends React.Component {
             d.li(
                 {className: `athlete ${jersey} ${hovering ? "hovering" : ""}`},
                 name,
-                d.button(
+                d.a(
                     {
                         onClick: remove,
                         className: "button danger submit " + (this.props.isSubmitting ? "disabled" : "")

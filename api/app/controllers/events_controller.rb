@@ -45,20 +45,19 @@ class EventsController < ApplicationController
     athlete2 = AthleteHeat.find_by(heat_id: params[:to][:heat_id], position: params[:to][:position])
 
     if athlete2.nil?
-      # athlete1_previous_heat = athlete1.heat
-      if athlete1.update_attributes(params[:to])
-        # if athlete1_previous_heat.athletes.empty?
-          # remove the heat
-          # heat_offset = @event.remove_athlete(athlete1.at, params[:division_id], params[:heat_id])
-        # end
-        render json: {heat_offset: 0, event: build_event_schedule_json}
+      athlete1_previous_heat = athlete1.heat
+      if athlete1.update(params[:to])
+        if athlete1_previous_heat.athletes.size === 0
+          heat_offset = @event.remove_heat(athlete1.heat.event_division.id, athlete1_previous_heat.id)
+        end
+        render json: {heat_offset: heat_offset.to_i, event: build_event_schedule_json}
       else
         render json: athlete1.errors, status: :unprocessable_entity
       end
     else
       athlete1.update_attribute(:heat_id, nil)
-      athlete2.update_attributes(params[:from])
-      athlete1.update_attributes(params[:to])
+      athlete2.update(params[:from])
+      athlete1.update(params[:to])
       render json: {heat_offset: 0, event: build_event_schedule_json}
     end
   end
@@ -104,7 +103,7 @@ class EventsController < ApplicationController
           athletes = []
           heat.athlete_heats.each do |athlete_heat|
             athlete = athlete_heat.athlete
-            athletes[athlete_heat.position] = {id: athlete_heat.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
+            athletes[athlete_heat.position] = {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
           end
 
           [heat.id, {

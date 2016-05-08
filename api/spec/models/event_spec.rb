@@ -17,6 +17,7 @@ RSpec.describe Event, :type => :model do
   end
 
   describe '#add_athlete' do
+
     describe 'when there is a division with 24 athletes' do
       let(:event) { create(:event) }
       before :each do
@@ -26,6 +27,12 @@ RSpec.describe Event, :type => :model do
         event.draw
 
         @new_athlete = create(:user)
+      end
+
+      it 'returns 4 created heats' do
+        heat_offset = event.add_athlete(@new_athlete, @division1.id)
+
+        expect(heat_offset).to be(4)
       end
 
       it 'adds the new round after the previous round and maintains subsequent round positions in the schedule' do
@@ -80,6 +87,12 @@ RSpec.describe Event, :type => :model do
         @new_athlete = create(:user)
       end
 
+      it 'returns 2 created heats' do
+        heat_offset = event.add_athlete(@new_athlete, @division1.id)
+
+        expect(heat_offset).to be(2)
+      end
+
       it 'adds the new heats after the last heats of each round' do
         event.add_athlete(@new_athlete, @division1.id)
 
@@ -116,6 +129,12 @@ RSpec.describe Event, :type => :model do
         @new_athlete = create(:user)
       end
 
+      it 'returns 5 created heats' do
+        heat_offset = event.add_athlete(@new_athlete, @division1.id)
+
+        expect(heat_offset).to be(5)
+      end
+
       it 'adds the new heats and removes the unnecessary quarter' do
         event.add_athlete(@new_athlete, @division1.id)
 
@@ -150,6 +169,12 @@ RSpec.describe Event, :type => :model do
         @new_athlete = create(:user)
       end
 
+      it 'returns 0 created heats' do
+        heat_offset = event.add_athlete(@new_athlete, @division1.id)
+
+        expect(heat_offset).to be(0)
+      end
+
       it 'adds the the athlete to the existing heat and does not change the schedule' do
         event.add_athlete(@new_athlete, @division1.id)
 
@@ -173,6 +198,13 @@ RSpec.describe Event, :type => :model do
         event.draw
 
         @new_athlete = create(:user)
+      end
+
+      it 'returns 4 removed heats' do
+        event.add_athlete(@new_athlete, @division1.id)
+        heat_offset = event.remove_athlete(@new_athlete.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
+
+        expect(heat_offset).to be(-4)
       end
 
       it 'removes the second round and maintains subsequent round positions in the schedule' do
@@ -244,6 +276,13 @@ RSpec.describe Event, :type => :model do
         @new_athlete = create(:user)
       end
 
+      it 'returns 2 removed heats' do
+        event.add_athlete(@new_athlete, @division1.id)
+        heat_offset = event.remove_athlete(@new_athlete.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
+
+        expect(heat_offset).to be(-2)
+      end
+
       it 'removes the new heats after the last heats of each round' do
         event.add_athlete(@new_athlete, @division1.id)
         event.remove_athlete(@new_athlete.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
@@ -281,6 +320,13 @@ RSpec.describe Event, :type => :model do
         @new_athlete = create(:user)
       end
 
+      it 'returns 5 removed heats' do
+        event.add_athlete(@new_athlete, @division1.id)
+        heat_offset = event.remove_athlete(@new_athlete.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
+
+        expect(heat_offset).to be(-5)
+      end
+
       it 'removes the heats and add the new quarter' do
         event.add_athlete(@new_athlete, @division1.id)
         event.remove_athlete(@new_athlete.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
@@ -299,6 +345,12 @@ RSpec.describe Event, :type => :model do
       before :each do
         @division1 = create(:division_with_athletes, event: event)
         event.draw
+      end
+
+      it 'returns 0 removed heats' do
+        heat_offset = event.remove_athlete(@division1.heats.where(round_position: 0).last.athletes.first.id, @division1.id, @division1.heats.where(round_position: 0).last.id)
+
+        expect(heat_offset).to be(0)
       end
 
       it 'removes the athlete and does not change the schedule' do

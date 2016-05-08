@@ -346,8 +346,8 @@ RSpec.describe EventDivision, :type => :model do
         removed_heats, added_heats = division.add_athlete(new_athlete)
 
         expect(division.heats(true).size).to eq(draw_size)
-        expect(added_heats).to be_nil
-        expect(removed_heats).to be_nil
+        expect(added_heats).to be_empty
+        expect(removed_heats).to be_empty
       end
     end
 
@@ -376,8 +376,8 @@ RSpec.describe EventDivision, :type => :model do
         removed_heats, added_heats = division.add_athlete(new_athlete)
 
         expect(division.heats.size).to eq(draw_size)
-        expect(added_heats).to be_nil
-        expect(removed_heats).to be_nil
+        expect(added_heats).to be_empty
+        expect(removed_heats).to be_empty
       end
     end
 
@@ -405,8 +405,8 @@ RSpec.describe EventDivision, :type => :model do
         removed_heats, added_heats = division.add_athlete(new_athlete)
 
         expect(division.heats.size).to eq(draw_size)
-        expect(added_heats).to be_nil
-        expect(removed_heats).to be_nil
+        expect(added_heats).to be_empty
+        expect(removed_heats).to be_empty
       end
     end
 
@@ -599,8 +599,8 @@ RSpec.describe EventDivision, :type => :model do
         removed_athlete = quarters.last.athletes.last
         removed_heats, added_heats = division.remove_athlete(quarters.last.id, removed_athlete.id)
 
-        expect(added_heats).to be_nil
-        expect(removed_heats).to be_nil
+        expect(added_heats).to be_empty
+        expect(removed_heats).to be_empty
       end
 
       describe 'when removing the last athlete from a heat' do

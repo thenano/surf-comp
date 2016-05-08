@@ -42,7 +42,7 @@ class EventDivision < ApplicationRecord
     position = available_round_1_heat.athlete_heats.last ? available_round_1_heat.athlete_heats.last.position.next : 0
     available_round_1_heat.athlete_heats.create({athlete_id: athlete.id, position: position})
 
-    return removed_heats, added_heats
+    return removed_heats || [], added_heats || []
   end
 
   def remove_athlete(heat_id, athlete_id)
@@ -51,15 +51,21 @@ class EventDivision < ApplicationRecord
     heat.athletes.delete(athlete_id)
 
     if heat.athletes.empty?
-      removed_heats = heats.destroy(heat)
-
-      number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
-      round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
-      heats.where(round_position: 0).update_all(round: round_name)
-
-      removed_heats += heats.destroy(heats.where('round_position > 0'))
-      added_heats = create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
+      removed_heats, added_heats = remove_heat(heat)
     end
+
+    return removed_heats || [], added_heats || []
+  end
+
+  def remove_heat(heat)
+    removed_heats = heats.destroy(heat)
+
+    number_of_rounds = Math.log2(users.size.to_f / HEAT_SIZE).ceil
+    round_name = ROUND_NAMES[number_of_rounds] || 'Round 1'
+    heats.where(round_position: 0).update_all(round: round_name)
+
+    removed_heats += heats.destroy(heats.where('round_position > 0'))
+    added_heats = create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
 
     return removed_heats, added_heats
   end

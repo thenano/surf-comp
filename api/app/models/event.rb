@@ -12,18 +12,27 @@ class Event < ApplicationRecord
     division = event_divisions.find(division_id)
     removed_heats, added_heats = division.add_athlete(athlete)
 
-    update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats))) if added_heats
+    update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats)))
 
-    (added_heats.to_a.size - removed_heats.to_a.size)
+    (added_heats.size - removed_heats.size)
   end
 
   def remove_athlete(athlete_id, division_id, heat_id)
     division = event_divisions.find(division_id)
     removed_heats, added_heats = division.remove_athlete(heat_id, athlete_id)
 
-    update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats))) if removed_heats
+    update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats)))
 
-    (added_heats.to_a.size - removed_heats.to_a.size)
+    (added_heats.size - removed_heats.size)
+  end
+
+  def remove_heat(division_id, heat_id)
+    division = event_divisions.find(division_id)
+    removed_heats, added_heats = division.remove_heat(heat_id)
+
+    update_attribute(:schedule, add_remaining_heats(division, *replace_and_remove_heats(removed_heats, added_heats)))
+
+    (added_heats.size - removed_heats.size)
   end
 
   private
