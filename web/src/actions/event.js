@@ -39,6 +39,15 @@ export function removeAthlete(event_id, division_id, heat_id, athlete_id) {
     };
 }
 
+export function addAthlete(event_id, division_id, name) {
+    return {
+        type: "ADD_ATHLETE",
+        promise: api => api.post(`events/${event_id}/add_athlete`, {
+            add_athlete: { name, division_id }
+        })
+    };
+}
+
 export function swapAthletes(event_id, heat1, pos1, heat2, pos2) {
     return {
         type: "SWAP_ATHLETES",

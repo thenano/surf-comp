@@ -22,7 +22,7 @@ class EventsController < ApplicationController
     params = add_athlete_params
     athlete = User.where('lower(name) = ?', params[:name].downcase).first_or_create do |user|
       user.password = Devise.friendly_token[0,20]
-      user.email = params[:name].replace(/\s/, '_') + '@create.com'
+      user.email = params[:name].gsub(/\s/, '_') + '@create.com'
       user.name = params[:name]
     end
 
@@ -86,7 +86,7 @@ class EventsController < ApplicationController
     end
 
     def add_athlete_params
-      params.require(:add_athlete).permit(:name, :division_id, :heat_id)
+      params.require(:add_athlete).permit(:name, :division_id)
     end
 
     def remove_athlete_params

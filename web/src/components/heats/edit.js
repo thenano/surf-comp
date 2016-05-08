@@ -2,6 +2,7 @@ import React from "react";
 import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import * as SnackbarActions from "../../actions/snackbar";
+import * as forms from "../forms";
 import { DropTarget, DragSource, DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { fetch } from "../../decorators";
@@ -179,7 +180,7 @@ export class EditHeats extends React.Component {
             .then((result) => {
                 let message = "Athlete moved successfully.";
                 if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
+                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`
                 }
 
                 dispatch(SnackbarActions.message(message));
@@ -214,13 +215,27 @@ export class EditHeats extends React.Component {
             .then((result) => {
                 let message = "Athlete removed successfully.";
                 if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
+                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`
                 }
 
                 dispatch(SnackbarActions.message(message));
                 this.setState({ submitting: false });
             });
 
+    }
+
+    addAthlete(model) {
+        const { id, division_id } = this.props.params;
+        const { dispatch } = this.props;
+
+        return dispatch(EventActions.addAthlete(id, division_id, model.get("name"))).then((result) => {
+            let message = "Athlete added successfully.";
+            if (result.heat_offset !== 0) {
+                message += ` ${result.heat_offset} heats were added, please check the schedule for changes.`
+            }
+
+            dispatch(SnackbarActions.message(message));
+        });
     }
 
     render() {
@@ -240,9 +255,71 @@ export class EditHeats extends React.Component {
                 d.h1({className: "wrapper"}, "Arrange Surfers"),
             ),
 
+            React.createElement(AddAthleteForm, {send: ::this.addAthlete}),
+
             d.div(
                 {className: "wrapper"},
                 d.ul({className: "heats"}, heats)
+            )
+        );
+    }
+}
+
+export class AddAthleteForm extends forms.ValidatedForm {
+    validate(model) {
+        if (model.name.match(/^\s*$/)) {
+            return {name: "Please enter a valid name"};
+        }
+        return {};
+    }
+
+    send(model) {
+        this.setState({ submitting: true });
+
+        return this.props.send(model).catch(e => {
+                this.setState({
+                    submitting: false,
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            }).then(() => {
+                this.setState({ submitting: false });
+            });
+    }
+
+    render() {
+        return d.div(
+            {},
+
+            d.h2({className: "wrapper"}, "Add athlete"),
+
+            d.div(
+                {className: "wrapper"},
+
+                d.form(
+                    {},
+
+                    d.div(
+                        {
+                            className: "notification error plain",
+                            style: {
+                                display: this.state.error ? "block" : "none"
+                            }
+                        },
+                        this.state.error
+                    ),
+
+                    forms.text(
+                        "Name",
+                        "name",
+                        {
+                            errors: this.errors("name"),
+                            onChange: this.set("name"),
+                            disabled: this.state.submitting
+                        }
+                    ),
+
+                    forms.submit("Add", this.submit.bind(this), this.state.submitting)
+                )
             )
         );
     }

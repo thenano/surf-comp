@@ -22,6 +22,7 @@ export function reducer(state = defaultState, action) {
                 .set(action.res.data.id, Immutable.fromJS(action.res.data))
                 .setIn(["meta", `@@loaded/${action.res.data.id}`], true);
         case "REMOVE_ATHLETE":
+        case "ADD_ATHLETE":
         case "SWAP_ATHLETES":
             return state
                 .setIn(["schedules", action.res.data.event.id], Immutable.fromJS(action.res.data.event))

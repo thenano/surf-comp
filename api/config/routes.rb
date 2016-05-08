@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope '/api' do
     resources :events, only: [:index, :show, :update] do
       get 'schedule', on: :member
-      put 'add_athlete', on: :member
+      post 'add_athlete', on: :member
       put 'remove_athlete', on: :member
       put 'swap_athletes', on: :member
     end
