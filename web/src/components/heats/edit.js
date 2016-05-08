@@ -82,8 +82,8 @@ class AthleteSlot extends React.Component {
     }
 }
 
-function athleteSlot(position, name, hover, swap, hovering, remove) {
-    return React.createElement(AthleteSlot, {key: position, name, hover, swap, hovering, remove});
+function athleteSlot(heat, position, name, hover, swap, hovering, remove) {
+    return React.createElement(AthleteSlot, {key: position, heat, position, name, hover, swap, hovering, remove});
 }
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({
@@ -113,7 +113,7 @@ class Heat extends React.Component {
                 hovering = over == i;
 
             if (a) {
-                athletes.push(athleteSlot(i, a.get("name"), hover, swap, hovering, remove.bind(this, a)));
+                athletes.push(athleteSlot(heat.get("id"), i, a.get("name"), hover, swap, hovering, remove.bind(this, a)));
             } else {
                 athletes.push(emptySlot(heat.get("id"), i, hover, swap, hovering));
             }
@@ -164,18 +164,27 @@ export class EditHeats extends React.Component {
     }
 
     swap(heat1, pos1, heat2, pos2) {
-        let { heats } = this.props;
+        const { id } = this.props.params;
+        const { dispatch } = this.props;
 
-        heat1 = "" + heat1;
-        heat2 = "" + heat2;
-        pos1 = "" + pos1;
-        pos2 = "" + pos2;
+        this.setState({ submitting: true });
 
-        let athlete1 = heats.getIn([heat1, "athletes", pos1]),
-            athlete2 = heats.getIn([heat2, "athletes", pos2]);
+        return dispatch(EventActions.swapAthletes(id, heat1, pos1, heat2, pos2))
+            .catch(e => {
+                this.setState({
+                    submitting: false,
+                    error: `The was an unexpected problem: ${e.data}`
+                });
+            })
+            .then((result) => {
+                let message = "Athlete moved successfully.";
+                if (result.heat_offset !== 0) {
+                    message += ` ${-1 * result.heat_offset} heat were removed, please check the schedule for changes.`
+                }
 
-        let updates = heats.setIn([heat1, "athletes", pos1], athlete2)
-                            .setIn([heat2, "athletes", pos2], athlete1);
+                dispatch(SnackbarActions.message(message));
+                this.setState({ submitting: false });
+            });
     }
 
     hover(heat, position) {

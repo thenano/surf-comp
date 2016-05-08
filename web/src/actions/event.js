@@ -38,3 +38,15 @@ export function removeAthlete(event_id, division_id, heat_id, athlete_id) {
         })
     };
 }
+
+export function swapAthletes(event_id, heat1, pos1, heat2, pos2) {
+    return {
+        type: "SWAP_ATHLETES",
+        promise: api => api.put(`events/${event_id}/swap_athletes`, {
+            swap_athletes: {
+                from: {heat_id: heat1, position: pos1},
+                to: {heat_id: heat2, position: pos2}
+            }
+        })
+    };
+}
