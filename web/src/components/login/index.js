@@ -7,7 +7,7 @@ var d = React.DOM;
 
 @connect(state => state)
 export class LoginForm extends forms.ValidatedForm {
-    validate(model) {
+    validate() {
         return {};
     }
 
@@ -45,16 +45,17 @@ export class LoginForm extends forms.ValidatedForm {
         let { dispatch } = this.props;
 
         return new Promise((resolve, reject) => {
+            // eslint-disable-next-line no-undef
             FB.login(function(response) {
                 if (response.authResponse) {
                     resolve(dispatch(UserActions.registerFacebook(response)));
                 } else {
                     reject(response);
                 }
-            }, {scope: "public_profile,email"})
+            }, {scope: "public_profile,email"});
         })
         .then(() => {
-            this.props.history.pushState({}, `/`);
+            this.props.history.pushState({}, "/");
         });
     }
 

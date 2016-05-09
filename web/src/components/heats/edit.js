@@ -3,8 +3,8 @@ import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import * as SnackbarActions from "../../actions/snackbar";
 import * as forms from "../forms";
-import { DropTarget, DragSource, DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { DropTarget, DragSource, DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
 
@@ -22,20 +22,18 @@ const heatAthleteSource = {
 const heatAthleteTarget = {
     drop(props, monitor) {
         const hoverPos = props.position,
-              hoverHeat = props.heat,
-              dragPos = monitor.getItem().position,
-              dragHeat = monitor.getItem().heat;
+            hoverHeat = props.heat,
+            dragPos = monitor.getItem().position,
+            dragHeat = monitor.getItem().heat;
 
         props.hover(null, null);
         props.swap(dragHeat, dragPos, hoverHeat, hoverPos);
     },
 
-    hover(props, monitor) {
+    hover(props) {
         const hoverPos = props.position,
-              hoverHeat = props.heat,
-              dragPos = monitor.getItem().position,
-              dragHeat = monitor.getItem().heat,
-              alreadyHoveringOver = props.hovering;
+            hoverHeat = props.heat,
+            alreadyHoveringOver = props.hovering;
 
         if (alreadyHoveringOver) {
             return;
@@ -71,7 +69,7 @@ class AthleteSlot extends React.Component {
                         className: "button danger submit " + (this.props.isSubmitting ? "disabled" : "")
                     },
 
-                    d.i({className: 'fa fa-trash'}),
+                    d.i({className: "fa fa-trash"}),
 
                     // spinner({
                     //     style: {
@@ -133,7 +131,7 @@ class Heat extends React.Component {
                 {className: "athletes"},
                 athletes
             )
-        )
+        );
     }
 }
 
@@ -152,8 +150,8 @@ function heat(heat, hover, swap, remove, over) {
 @DragDropContext(HTML5Backend)
 @connect((state, props) => ({
     heats: state.events.getIn(["schedules", parseInt(props.params.id), "heats"])
-        .filter(heat => heat.get('division_id') === parseInt(props.params.division_id))
-        .sortBy(heat => (100 * heat.get('round_position')) + heat.get('number'))
+        .filter(heat => heat.get("division_id") === parseInt(props.params.division_id))
+        .sortBy(heat => (100 * heat.get("round_position")) + heat.get("number"))
 }))
 export class EditHeats extends React.Component {
     constructor(props, context) {
@@ -180,7 +178,7 @@ export class EditHeats extends React.Component {
             .then((result) => {
                 let message = "Athlete moved successfully.";
                 if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`
+                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`;
                 }
 
                 dispatch(SnackbarActions.message(message));
@@ -205,7 +203,7 @@ export class EditHeats extends React.Component {
 
         this.setState({ submitting: true });
 
-        return dispatch(EventActions.removeAthlete(id, division_id, heat.get("id"), athlete.get('id')))
+        return dispatch(EventActions.removeAthlete(id, division_id, heat.get("id"), athlete.get("id")))
             .catch(e => {
                 this.setState({
                     submitting: false,
@@ -215,7 +213,7 @@ export class EditHeats extends React.Component {
             .then((result) => {
                 let message = "Athlete removed successfully.";
                 if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`
+                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`;
                 }
 
                 dispatch(SnackbarActions.message(message));
@@ -231,7 +229,7 @@ export class EditHeats extends React.Component {
         return dispatch(EventActions.addAthlete(id, division_id, model.get("name"))).then((result) => {
             let message = "Athlete added successfully.";
             if (result.heat_offset !== 0) {
-                message += ` ${result.heat_offset} heats were added, please check the schedule for changes.`
+                message += ` ${result.heat_offset} heats were added, please check the schedule for changes.`;
             }
 
             dispatch(SnackbarActions.message(message));
@@ -277,13 +275,13 @@ export class AddAthleteForm extends forms.ValidatedForm {
         this.setState({ submitting: true });
 
         return this.props.send(model).catch(e => {
-                this.setState({
-                    submitting: false,
-                    error: `The was an unexpected problem: ${e.data}`
-                });
-            }).then(() => {
-                this.setState({ submitting: false });
+            this.setState({
+                submitting: false,
+                error: `The was an unexpected problem: ${e.data}`
             });
+        }).then(() => {
+            this.setState({ submitting: false });
+        });
     }
 
     render() {

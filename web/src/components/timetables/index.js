@@ -1,18 +1,18 @@
 import React from "react";
-import HTML5Backend from 'react-dnd-html5-backend';
+import HTML5Backend from "react-dnd-html5-backend";
 import * as EventActions from "../../actions/event";
 import * as SnackbarActions from "../../actions/snackbar";
 import * as forms from "../forms";
-import { DragDropContext } from 'react-dnd';
-import { DropTarget, DragSource } from 'react-dnd';
+import { DragDropContext } from "react-dnd";
+import { DropTarget, DragSource } from "react-dnd";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
 
 var d = React.DOM;
 
 function zeroPad(num, places) {
-  var zero = places - num.toString().length + 1;
-  return Array(+(zero > 0 && zero)).join("0") + num;
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
 const heatCardSource = {
@@ -24,7 +24,7 @@ const heatCardSource = {
 };
 
 const heatCardTarget = {
-    hover(props, monitor, component) {
+    hover(props, monitor) {
         const dragPos = monitor.getItem().position;
         const hoverPos = props.position;
 
@@ -208,7 +208,7 @@ export class EditTimetable extends React.Component {
         return d.div(
             {className: "ticks"},
             this.renderTicks()
-        )
+        );
     }
 
     send() {

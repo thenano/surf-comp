@@ -1,6 +1,6 @@
 export function clearLast() {
     return {
-        type: "SNACKBAR_CLEAR_MESSAGE",
+        type: "SNACKBAR_CLEAR_MESSAGE"
     };
 }
 

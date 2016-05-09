@@ -27,8 +27,10 @@ export function registerFacebook(response) {
     document.cookie = `${cookie_name}=${response.authResponse.signedRequest}`;
     return {
         type: "REGISTER_FB_USER",
-        promise: api => api.post("users/auth/facebook/callback", {})
-                            .then(() => { return api.get("users/current") })
+        promise: api => {
+            return api.post("users/auth/facebook/callback", {})
+                            .then(() => { return api.get("users/current"); });
+        }
     };
 }
 

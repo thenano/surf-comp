@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import { Provider } from "react-redux";
+import { Router, Route, IndexRoute, browserHistory } from "react-router";
 
 import * as reducers from "./reducers";
 import { api } from "./actions/api";
@@ -40,7 +40,7 @@ const home = (store) => {
         component: Home,
         onEnter: Home.onEnter(store)
     });
-}
+};
 
 ReactDOM.render(
     React.createElement(
@@ -66,4 +66,4 @@ ReactDOM.render(
         )
     ),
     document.getElementById("render")
-)
+);

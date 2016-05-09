@@ -14,7 +14,7 @@ export class Header extends React.Component {
         e.stopPropagation();
 
         dispatch(UserActions.logout()).then(() => {
-            this.props.history.pushState({}, `/`);
+            this.props.history.pushState({}, "/");
         });
     }
 

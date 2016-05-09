@@ -1,8 +1,8 @@
 import * as EventActions from "../actions/event";
-import React from "react"
+import React from "react";
 import Immutable from "immutable";
-import { Beard } from "./beard"
-import { link } from "./navigation"
+import { Beard } from "./beard";
+import { link } from "./navigation";
 import { connect } from "react-redux";
 import { fetch } from "../decorators";
 
@@ -33,7 +33,7 @@ export class Home extends React.Component {
                             loop: "loop",
                             autoPlay: "autoplay",
                             preload: "auto",
-                            src: heroVideo,
+                            src: heroVideo
                         },
                     )
                 ),
@@ -58,7 +58,7 @@ export class Home extends React.Component {
                         return d.ul(
                             {key: event.get("id"), className: "event"},
                             link(event.get("name"), {to: `/events/${event.get("id")}`})
-                        )
+                        );
                     })
                 )
             ),

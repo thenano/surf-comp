@@ -2,7 +2,7 @@ import React from "react";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
-import { link } from "../navigation"
+import { link } from "../navigation";
 
 var d = React.DOM;
 
@@ -23,18 +23,18 @@ export class ShowEvent extends React.Component {
         let event_id = Number.parseInt(this.props.params.id);
 
         return d.div(
-            {key: division.get("name"), className: `division division-${division.get('name').toLowerCase()}`},
+            {key: division.get("name"), className: `division division-${division.get("name").toLowerCase()}`},
 
-            link(d.span({className: "division-count"}, `${division.get('athletes')} ${division.get('name')}`), {to: `/events/${event_id}/division/${division.get('id')}/edit`}),
-            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get('id')}/edit`})
+            link(d.span({className: "division-count"}, `${division.get("athletes")} ${division.get("name")}`), {to: `/events/${event_id}/division/${division.get("id")}/edit`}),
+            link(d.i({className: "fa fa-pencil"}), {to: `/events/${event_id}/division/${division.get("id")}/edit`})
         );
     }
 
     renderParticipants() {
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id)),
-            divisions = event.get('divisions'),
-            total = divisions.reduce((r, division) => r + division.get('athletes'), 0);
+            divisions = event.get("divisions"),
+            total = divisions.reduce((r, division) => r + division.get("athletes"), 0);
 
         return d.div(
             {className: "event-participants"},
@@ -93,10 +93,15 @@ export class ShowEvent extends React.Component {
     }
 
     renderScoring() {
+        const { events } = this.props;
+        let event = events.get(Number.parseInt(this.props.params.id));
+
         return d.div(
             {className: "event-scoring"},
 
             d.h2({}, d.i({className: "fa fa-tachometer"}), "Scoring"),
+
+            link("start scoring", {to: `/events/${event.get("id")}/scoring`})
         );
     }
 
