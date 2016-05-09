@@ -396,6 +396,19 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.heats.first.athletes.last).to eq(new_athlete)
       end
 
+      it 'should add the athlete to the first heat in the first available spot' do
+        division.draw
+
+        expect(division.heats.first.athletes.size).to eq(5)
+        division.heats.first.athlete_heats.last.update_attribute(:position, 5)
+        new_athlete = create(:user)
+
+        division.add_athlete(new_athlete)
+
+        expect(division.heats.first.athletes.size).to eq(6)
+        expect(division.heats.first.athlete_heats.find_by_position(4).athlete).to eq(new_athlete)
+      end
+
       it 'does not add more heats' do
         division.draw
 

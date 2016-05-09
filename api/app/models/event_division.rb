@@ -39,7 +39,7 @@ class EventDivision < ApplicationRecord
       added_heats = [available_round_1_heat] + create_rounds(1, (number_of_rounds - 1), users.length / 2.0)
     end
 
-    position = available_round_1_heat.athlete_heats.last ? available_round_1_heat.athlete_heats.last.position.next : 0
+    position = ((0..5).to_a - available_round_1_heat.athlete_heats.map(&:position)).first || 0
     available_round_1_heat.athlete_heats.create({athlete_id: athlete.id, position: position})
 
     return removed_heats || [], added_heats || []
