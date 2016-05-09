@@ -44,7 +44,7 @@ const heatAthleteTarget = {
 };
 
 const JERSEYS = [
-    "blue", "yellow", "red", "white", "green", "pink"
+    "red", "white", "yellow", "blue", "green", "pink"
 ];
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({

@@ -5,6 +5,16 @@ class EventDivision < ApplicationRecord
   has_and_belongs_to_many :users
   has_many :heats, -> { order 'round_position, position' }, dependent: :destroy
 
+  HEAT_SIZE_SEED_CYCLES = {
+    '1': [0],
+    '2': [0, 1],
+    '3': [0, 2, 1],
+    '4': [0, 3, 2, 1],
+    '5': [0, 4, 2, 3, 1],
+    '6': [0, 5, 3, 2, 4, 1],
+    '7': [0, 6, 4, 3, 2, 5, 1],
+    '8': [0, 7, 4, 3, 2, 5, 6, 1]
+  }
   HEAT_SIZE = 6
   ROUND_NAMES = %w(Final Semifinal Quarterfinal)
 
@@ -13,7 +23,23 @@ class EventDivision < ApplicationRecord
     number_of_rounds = Math.log2(number_of_heats).ceil
     create_rounds(0, number_of_rounds, users.length.to_f)
 
-    heat_cycle = (0...number_of_heats).cycle
+    # heat_seeds = (0...number_of_heats).to_a
+    #
+    # heat_cycle_start = []
+    # heat_cycle_end = []
+    # array_cycle = [:shift, :pop, :shift, :pop]
+    # array_cycle = (array_cycle + array_cycle.reverse).cycle
+    # array_method_cycle = [:append, :append, :prepend, :prepend]
+    # array_method_cycle = (array_method_cycle + array_method_cycle.reverse).cycle
+    # heat_piece_cycle = [heat_cycle_start, heat_cycle_start, heat_cycle_end, heat_cycle_end]
+    # heat_piece_cycle = (heat_piece_cycle + heat_piece_cycle.reverse).cycle
+    #
+    # while heat_seeds.size > 0 do
+    #   heat_piece_cycle.next.send(array_method_cycle.next, heat_seeds.send(array_cycle.next))
+    # end
+
+    heat_cycle = HEAT_SIZE_SEED_CYCLES[number_of_heats.to_s.to_sym]
+    heat_cycle = (heat_cycle + heat_cycle.reverse).cycle
 
     users.each do |user|
       heat = heats[heat_cycle.next]

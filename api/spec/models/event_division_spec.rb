@@ -34,59 +34,28 @@ RSpec.describe EventDivision, :type => :model do
       end
 
       it 'adds 6 athletes per heat by seed and gives the quarterfinal heat name' do
-        athletes = division.users
         division.draw
-        expect(division.heats[0].athletes).to eq(
-                                               [
-                                                   athletes[0],
-                                                   athletes[4],
-                                                   athletes[8],
-                                                   athletes[12],
-                                                   athletes[16],
-                                                   athletes[20],
-                                               ])
+
         expect(division.heats[0].round).to eq('Quarterfinal')
         expect(division.heats[0].round_position).to eq(0)
         expect(division.heats[0].position).to eq(0)
 
-        expect(division.heats[1].athletes).to eq(
-                                               [
-                                                   athletes[1],
-                                                   athletes[5],
-                                                   athletes[9],
-                                                   athletes[13],
-                                                   athletes[17],
-                                                   athletes[21],
-                                               ])
         expect(division.heats[1].round).to eq('Quarterfinal')
         expect(division.heats[1].round_position).to eq(0)
         expect(division.heats[1].position).to eq(1)
 
-        expect(division.heats[2].athletes).to eq(
-                                               [
-                                                   athletes[2],
-                                                   athletes[6],
-                                                   athletes[10],
-                                                   athletes[14],
-                                                   athletes[18],
-                                                   athletes[22],
-                                               ])
         expect(division.heats[2].round).to eq('Quarterfinal')
         expect(division.heats[2].round_position).to eq(0)
         expect(division.heats[2].position).to eq(2)
 
-        expect(division.heats[3].athletes).to eq(
-                                               [
-                                                   athletes[3],
-                                                   athletes[7],
-                                                   athletes[11],
-                                                   athletes[15],
-                                                   athletes[19],
-                                                   athletes[23],
-                                               ])
         expect(division.heats[3].round).to eq('Quarterfinal')
         expect(division.heats[3].round_position).to eq(0)
         expect(division.heats[3].position).to eq(3)
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 8,  9, 16, 17, 24])
+        expect(division.heats[1].athletes.map(&:id)).to eq([4, 5, 12, 13, 20, 21])
+        expect(division.heats[2].athletes.map(&:id)).to eq([3, 6, 11, 14, 19, 22])
+        expect(division.heats[3].athletes.map(&:id)).to eq([2, 7, 10, 15, 18, 23])
       end
     end
 
@@ -100,6 +69,7 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates an empty final' do
         division.draw
+
         expect(division.heats.last.round).to eq('Final')
         expect(division.heats.last.athletes).to be_empty
         expect(division.heats.last.round_position).to eq(3)
@@ -108,6 +78,7 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates two empty semifinals' do
         division.draw
+
         expect(division.heats[9].round).to eq('Semifinal')
         expect(division.heats[9].athletes).to be_empty
         expect(division.heats[9].round_position).to eq(2)
@@ -121,6 +92,7 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates three empty quarterfinals' do
         division.draw
+
         expect(division.heats[7].round).to eq('Quarterfinal')
         expect(division.heats[7].athletes).to be_empty
         expect(division.heats[7].round_position).to eq(1)
@@ -138,121 +110,47 @@ RSpec.describe EventDivision, :type => :model do
       end
 
       it 'adds 5 athletes per heat by seed and gives the round 1 heat name' do
-        athletes = division.users
         division.draw
-        expect(division.heats[0].athletes).to eq(
-                                               [
-                                                   athletes[0],
-                                                   athletes[5],
-                                                   athletes[10],
-                                                   athletes[15],
-                                                   athletes[20]
-                                               ])
+
         expect(division.heats[0].round).to eq('Round 1')
         expect(division.heats[0].round_position).to eq(0)
         expect(division.heats[0].position).to eq(0)
 
-        expect(division.heats[1].athletes).to eq(
-                                               [
-                                                   athletes[1],
-                                                   athletes[6],
-                                                   athletes[11],
-                                                   athletes[16],
-                                                   athletes[21]
-                                               ])
         expect(division.heats[1].round).to eq('Round 1')
         expect(division.heats[1].round_position).to eq(0)
         expect(division.heats[1].position).to eq(1)
 
-        expect(division.heats[2].athletes).to eq(
-                                               [
-                                                   athletes[2],
-                                                   athletes[7],
-                                                   athletes[12],
-                                                   athletes[17],
-                                                   athletes[22]
-                                               ])
         expect(division.heats[2].round).to eq('Round 1')
         expect(division.heats[2].round_position).to eq(0)
         expect(division.heats[2].position).to eq(2)
 
-        expect(division.heats[3].athletes).to eq(
-                                               [
-                                                   athletes[3],
-                                                   athletes[8],
-                                                   athletes[13],
-                                                   athletes[18],
-                                                   athletes[23]
-                                               ])
         expect(division.heats[3].round).to eq('Round 1')
         expect(division.heats[3].round_position).to eq(0)
         expect(division.heats[3].position).to eq(3)
 
-        expect(division.heats[4].athletes).to eq(
-                                               [
-                                                   athletes[4],
-                                                   athletes[9],
-                                                   athletes[14],
-                                                   athletes[19],
-                                                   athletes[24]
-                                               ])
         expect(division.heats[4].round).to eq('Round 1')
         expect(division.heats[4].round_position).to eq(0)
         expect(division.heats[4].position).to eq(4)
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 10, 11, 20, 21])
+        expect(division.heats[1].athletes.map(&:id)).to eq([5,  6, 15, 16, 25])
+        expect(division.heats[2].athletes.map(&:id)).to eq([3,  8, 13, 18, 23])
+        expect(division.heats[3].athletes.map(&:id)).to eq([4,  7, 14, 17, 24])
+        expect(division.heats[4].athletes.map(&:id)).to eq([2,  9, 12, 19, 22])
       end
     end
 
     describe 'with 26 athletes' do
       let(:division) { create(:division_with_athletes, athletes_count: 26) }
 
-      it 'adds 5 athletes per heat by seed and 6 athletes to the first heat' do
-        athletes = division.users
+      it 'adds 5 athletes per heat by seed and 6 athletes to the second heat' do
         division.draw
-        expect(division.heats[0].athletes).to eq(
-                                               [
-                                                   athletes[0],
-                                                   athletes[5],
-                                                   athletes[10],
-                                                   athletes[15],
-                                                   athletes[20],
-                                                   athletes[25]
-                                               ])
 
-        expect(division.heats[1].athletes).to eq(
-                                               [
-                                                   athletes[1],
-                                                   athletes[6],
-                                                   athletes[11],
-                                                   athletes[16],
-                                                   athletes[21]
-                                               ])
-
-        expect(division.heats[2].athletes).to eq(
-                                               [
-                                                   athletes[2],
-                                                   athletes[7],
-                                                   athletes[12],
-                                                   athletes[17],
-                                                   athletes[22]
-                                               ])
-
-        expect(division.heats[3].athletes).to eq(
-                                               [
-                                                   athletes[3],
-                                                   athletes[8],
-                                                   athletes[13],
-                                                   athletes[18],
-                                                   athletes[23]
-                                               ])
-
-        expect(division.heats[4].athletes).to eq(
-                                               [
-                                                   athletes[4],
-                                                   athletes[9],
-                                                   athletes[14],
-                                                   athletes[19],
-                                                   athletes[24]
-                                               ])
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 10, 11, 20, 21])
+        expect(division.heats[1].athletes.map(&:id)).to eq([5,  6, 15, 16, 25, 26])
+        expect(division.heats[2].athletes.map(&:id)).to eq([3,  8, 13, 18, 23])
+        expect(division.heats[3].athletes.map(&:id)).to eq([4,  7, 14, 17, 24])
+        expect(division.heats[4].athletes.map(&:id)).to eq([2,  9, 12, 19, 22])
       end
     end
 
@@ -260,17 +158,9 @@ RSpec.describe EventDivision, :type => :model do
       let(:division) { create(:division_with_athletes, athletes_count: 6) }
 
       it 'creates the final with all athletes on it' do
-        athletes = division.users
         division.draw
-        expect(division.heats[0].athletes).to eq(
-                                               [
-                                                   athletes[0],
-                                                   athletes[1],
-                                                   athletes[2],
-                                                   athletes[3],
-                                                   athletes[4],
-                                                   athletes[5]
-                                               ])
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 2, 3, 4, 5, 6])
         expect(division.heats[0].position).to eq(0)
       end
 
@@ -285,11 +175,13 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates 3 heats' do
         division.draw
+
         expect(division.heats.size).to eq(3)
       end
 
       it 'creates an empty final' do
         division.draw
+
         expect(division.heats.last.round).to eq('Final')
         expect(division.heats.last.athletes).to be_empty
         expect(division.heats.last.round_position).to eq(1)
@@ -298,6 +190,7 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates the first heat as a semifinal' do
         division.draw
+
         expect(division.heats.first.round).to eq('Semifinal')
         expect(division.heats.first.round_position).to eq(0)
         expect(division.heats.first.position).to eq(0)
@@ -305,9 +198,49 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'creates the second heat as a semifinal' do
         division.draw
+
         expect(division.heats.second.round).to eq('Semifinal')
         expect(division.heats.second.round_position).to eq(0)
         expect(division.heats.second.position).to eq(1)
+      end
+
+      it 'seeds correctly' do
+        division.draw
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 4, 5, 8,  9, 12])
+        expect(division.heats[1].athletes.map(&:id)).to eq([2, 3, 6, 7, 10, 11])
+      end
+    end
+
+    describe 'with 36 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 36) }
+
+      it 'seeds correctly' do
+        division.draw
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 12, 13, 24, 25, 36])
+        expect(division.heats[1].athletes.map(&:id)).to eq([6,  7, 18, 19, 30, 31])
+        expect(division.heats[2].athletes.map(&:id)).to eq([4,  9, 16, 21, 28, 33])
+        expect(division.heats[3].athletes.map(&:id)).to eq([3, 10, 15, 22, 27, 34])
+        expect(division.heats[4].athletes.map(&:id)).to eq([5,  8, 17, 20, 29, 32])
+        expect(division.heats[5].athletes.map(&:id)).to eq([2, 11, 14, 23, 26, 35])
+      end
+    end
+
+    describe 'with 48 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 48) }
+
+      it 'seeds correctly' do
+        division.draw
+
+        expect(division.heats[0].athletes.map(&:id)).to eq([1, 16, 17, 32, 33, 48])
+        expect(division.heats[1].athletes.map(&:id)).to eq([8,  9, 24, 25, 40, 41])
+        expect(division.heats[2].athletes.map(&:id)).to eq([5, 12, 21, 28, 37, 44])
+        expect(division.heats[3].athletes.map(&:id)).to eq([4, 13, 20, 29, 36, 45])
+        expect(division.heats[4].athletes.map(&:id)).to eq([3, 14, 19, 30, 35, 46])
+        expect(division.heats[5].athletes.map(&:id)).to eq([6, 11, 22, 27, 38, 43])
+        expect(division.heats[6].athletes.map(&:id)).to eq([7, 10, 23, 26, 39, 42])
+        expect(division.heats[7].athletes.map(&:id)).to eq([2, 15, 18, 31, 34, 47])
       end
     end
   end
