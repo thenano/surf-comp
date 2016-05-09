@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20160507095022) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "athlete_heats", ["athlete_id", "heat_id"], name: "index_athlete_heats_on_athlete_id_and_heat_id", unique: true
   add_index "athlete_heats", ["athlete_id"], name: "index_athlete_heats_on_athlete_id"
   add_index "athlete_heats", ["heat_id"], name: "index_athlete_heats_on_heat_id"
   add_index "athlete_heats", ["position", "heat_id"], name: "index_athlete_heats_on_position_and_heat_id", unique: true
@@ -61,6 +62,7 @@ ActiveRecord::Schema.define(version: 20160507095022) do
     t.time     "time"
     t.integer  "position"
     t.integer  "round_position"
+    t.text     "scores"
     t.integer  "event_division_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false

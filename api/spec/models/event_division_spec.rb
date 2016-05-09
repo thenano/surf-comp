@@ -258,16 +258,16 @@ RSpec.describe EventDivision, :type => :model do
         expect(division.users.find(new_athlete.id)).to eq(new_athlete)
       end
 
-      it 'should add the athlete to the last heat' do
+      it 'should add the athlete to the first available heat' do
         division.draw
 
-        expect(division.heats[3].athletes.size).to eq(5)
+        expect(division.heats.first.athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats[3].athletes.size).to eq(6)
-        expect(division.heats[3].athletes.last).to eq(new_athlete)
+        expect(division.heats.first.athletes.size).to eq(6)
+        expect(division.heats.first.athletes.last).to eq(new_athlete)
       end
 
       it 'does not add more heats' do
@@ -290,14 +290,14 @@ RSpec.describe EventDivision, :type => :model do
       it 'should add the athlete to the second to last heat' do
         division.draw
 
-        expect(division.heats[2].athletes.size).to eq(5)
-        expect(division.heats[3].athletes.size).to eq(5)
+        expect(division.heats.first.athletes.size).to eq(5)
+        expect(division.heats.last.athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
 
-        expect(division.heats[2].athletes.size).to eq(6)
-        expect(division.heats[2].athletes.last).to eq(new_athlete)
+        expect(division.heats.first.athletes.size).to eq(6)
+        expect(division.heats.first.athletes.last).to eq(new_athlete)
       end
 
       it 'does not add more heats' do

@@ -23,21 +23,6 @@ class EventDivision < ApplicationRecord
     number_of_rounds = Math.log2(number_of_heats).ceil
     create_rounds(0, number_of_rounds, users.length.to_f)
 
-    # heat_seeds = (0...number_of_heats).to_a
-    #
-    # heat_cycle_start = []
-    # heat_cycle_end = []
-    # array_cycle = [:shift, :pop, :shift, :pop]
-    # array_cycle = (array_cycle + array_cycle.reverse).cycle
-    # array_method_cycle = [:append, :append, :prepend, :prepend]
-    # array_method_cycle = (array_method_cycle + array_method_cycle.reverse).cycle
-    # heat_piece_cycle = [heat_cycle_start, heat_cycle_start, heat_cycle_end, heat_cycle_end]
-    # heat_piece_cycle = (heat_piece_cycle + heat_piece_cycle.reverse).cycle
-    #
-    # while heat_seeds.size > 0 do
-    #   heat_piece_cycle.next.send(array_method_cycle.next, heat_seeds.send(array_cycle.next))
-    # end
-
     heat_cycle = HEAT_SIZE_SEED_CYCLES[number_of_heats.to_s.to_sym]
     heat_cycle = (heat_cycle + heat_cycle.reverse).cycle
 

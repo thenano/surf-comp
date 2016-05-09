@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :athlete_heat do
-    jersey 1
+    position 1
   end
 end
