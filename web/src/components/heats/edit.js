@@ -248,9 +248,12 @@ export class EditHeats extends React.Component {
         return d.div(
             {id: "index-heats", className: "heat-wrapper"},
 
-            d.div(
+            d.h1(
                 {},
-                d.h1({className: "wrapper"}, "Arrange Surfers"),
+                d.div(
+                    {className: "wrapper"},
+                    "Arrange Surfers"
+                ),
             ),
 
             React.createElement(AddAthleteForm, {send: ::this.addAthlete}),

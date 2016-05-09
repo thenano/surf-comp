@@ -17,6 +17,7 @@ import { EditTimetable } from "./components/timetables";
 import { SignUp } from "./components/sign-up";
 import { EditHeats } from "./components/heats/edit";
 import { ShowEvent } from "./components/events/show";
+import { Scoring } from "./components/scoring";
 
 const reducer = combineReducers(reducers);
 const store = compose(
@@ -61,6 +62,7 @@ ReactDOM.render(
                 r("/events/:id", ShowEvent),
                 r("/events/:id/schedule/edit", EditTimetable),
                 r("/events/:id/division/:division_id/edit", EditHeats),
+                r("/events/:id/scoring", Scoring),
                 r("*", NotFound)
             )
         )

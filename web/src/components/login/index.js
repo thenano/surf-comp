@@ -63,9 +63,12 @@ export class LoginForm extends forms.ValidatedForm {
         return d.div(
             {id: "login", className: "page"},
 
-            d.div(
+            d.h1(
                 {},
-                d.h1({className: "wrapper"}, "Login"),
+                d.div(
+                    {className: "wrapper"},
+                    "Login"
+                ),
             ),
 
             d.div(

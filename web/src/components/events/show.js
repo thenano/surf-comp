@@ -112,10 +112,14 @@ export class ShowEvent extends React.Component {
         return d.div(
             {id: "show-event"},
 
-            d.div(
+            d.h1(
                 {},
-                d.h1({className: "wrapper"}, event.get("name")),
+                d.div(
+                    {className: "wrapper"},
+                    event.get("name")
+                ),
             ),
+
 
             d.div(
                 {className: "wrapper"},

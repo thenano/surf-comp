@@ -235,9 +235,12 @@ export class EditTimetable extends React.Component {
         return d.div(
             {id: "edit-schedule"},
 
-            d.div(
+            d.h1(
                 {},
-                d.h1({className: "wrapper"}, "Edit Schedule"),
+                d.div(
+                    {className: "wrapper"},
+                    "Edit Schedule"
+                ),
             ),
 
             d.div(
