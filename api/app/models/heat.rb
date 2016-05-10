@@ -8,13 +8,31 @@ class Heat < ApplicationRecord
 
   validates_presence_of :round, :position, :round_position
 
-  def add_score(judge_id, athlete_id, wave, score)
+  def add_score!(judge_id, athlete_id, wave, score)
     athletes.find(athlete_id) # will raise record not found
     self.scores ||= {}
-    self.scores[judge_id] ||= {}
-    self.scores[judge_id][athlete_id] ||= []
-    self.scores[judge_id][athlete_id][wave] = score
+    self.scores[athlete_id] ||= {}
+    self.scores[athlete_id][judge_id] ||= []
+    self.scores[athlete_id][judge_id][wave] = score
 
     save!
   end
+
+  def result
+    scores.map{|key, value| [key, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
+    .to_h
+    .map { |athlete_id, waves|
+      {athlete_id: athlete_id, total: waves.sort.reverse.slice(0, 2).reduce(:+).round(2), waves: waves}
+    }
+    .sort_by { |score| [-score[:total], *score[:waves].sort.reverse.map{|score| -score}] }
+  end
+
+  private
+    def average_score
+      -> (scores) {
+        return scores unless scores.is_a? Array
+        flat_scores = scores.flatten.compact
+        return (flat_scores.reduce(:+) / flat_scores.size.to_f).round(2)
+      }
+    end
 end

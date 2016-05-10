@@ -1,5 +1,11 @@
 FactoryGirl.define do
+  sequence :position do |n|
+    n % 7
+  end
+
   factory :athlete_heat do
-    position 1
+    position
+    association :athlete, factory: :user
+    heat
   end
 end
