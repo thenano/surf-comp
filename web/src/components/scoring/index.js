@@ -13,15 +13,19 @@ const JERSEYS = [
 class WaveScore extends React.Component {
     render() {
         return d.div(
-            {className: `wave ${this.props.odd ? "odd" : "even"}`},
+            {
+                className: `wave number-${this.props.number}`,
+                onMouseOver: () => this.props.mouseOver(this.props.number),
+                onMouseOut: () => this.props.mouseOut(this.props.number),
+            },
 
             number("", `w8`, {})
         );
     }
 }
 
-function waveScore(key) {
-    return React.createElement(WaveScore, {key, odd: key%2==0});
+function waveScore(key, mouseOver, mouseOut) {
+    return React.createElement(WaveScore, {key, number: key+1, mouseOver, mouseOut});
 }
 
 class AthleteScoreRow extends React.Component {
@@ -30,13 +34,13 @@ class AthleteScoreRow extends React.Component {
 
         let waves = []
         for (var i=0; i < 10; i++) {
-            waves.push(waveScore(i));
+            waves.push(waveScore(i, this.props.mouseOverWave, this.props.mouseOutWave));
         }
 
         let jersey = JERSEYS[this.props.position];
 
         return d.div(
-            {className: "score-row"},
+            {className: `score-row ${jersey}`},
             d.div(
                 {className: `jersey ${jersey}`},
             ),
@@ -46,8 +50,8 @@ class AthleteScoreRow extends React.Component {
     }
 }
 
-function athleteScore(athlete, position) {
-    return React.createElement(AthleteScoreRow, {key: athlete.get("name"), athlete, position})
+function athleteScore(athlete, position, mouseOverWave, mouseOutWave) {
+    return React.createElement(AthleteScoreRow, {key: athlete.get("name"), athlete, position, mouseOverWave, mouseOutWave,})
 }
 
 class ScoreCard extends React.Component {
@@ -58,7 +62,7 @@ class ScoreCard extends React.Component {
         for (var i=0; i < 10; i++) {
             waveTitles.push(
                 d.div(
-                    {key: i, className: "wave title"},
+                    {key: i, className: `wave title number-${i+1}`},
                     `W${i+1}`
                 )
             );
@@ -77,7 +81,7 @@ class ScoreCard extends React.Component {
                 {className: "score-table"},
 
                 d.div(
-                    {className: "title score-row"},
+                    {className: "title-row"},
                     d.div(
                         {className: "jersey"},
                         "Jersey"
@@ -85,14 +89,14 @@ class ScoreCard extends React.Component {
                     waveTitles
                 ),
 
-                heat.get("athletes").map((a, i) => athleteScore(a, i))
+                heat.get("athletes").map((a, i) => athleteScore(a, i, this.props.mouseOverWave, this.props.mouseOutWave))
             ),
         );
     }
 }
 
-function scoreCard(heat) {
-    return React.createElement(ScoreCard, {heat});
+function scoreCard(heat, mouseOverWave, mouseOutWave) {
+    return React.createElement(ScoreCard, {heat, mouseOverWave, mouseOutWave});
 }
 
 @fetch((store, r) => {
@@ -125,13 +129,32 @@ export class Scoring extends React.Component {
         this.state = {};
     }
 
+    onMouseOver(wave) {
+        this.setState({
+            hovered: wave
+        });
+    }
+
+    onMouseOut() {
+        this.setState({
+            hovered: null
+        });
+    }
+
     render() {
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id));
         let heats = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]);
 
+        let hoverWave
+        if (this.state.hovered != null) {
+            hoverWave = `hover-wave-${this.state.hovered}`
+        }
+
         return d.div(
-            {id: "scoring"},
+            {
+                id: "scoring",
+            },
 
             d.h1(
                 {},
@@ -142,8 +165,8 @@ export class Scoring extends React.Component {
             ),
 
             d.div(
-                {className: "wrapper"},
-                scoreCard(heats.get("3"))
+                {className: `wrapper ${hoverWave ? hoverWave : ""}`},
+                scoreCard(heats.get("3"), this.onMouseOver.bind(this), this.onMouseOut.bind(this))
             )
         );
     }

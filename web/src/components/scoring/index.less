@@ -45,21 +45,43 @@
             &.pink:after { color: #ff4081; }
         }
 
-        .title {
-            font-weight: bold;
-            text-align: center;
+    }
 
-            .jersey:after {
-                display: none;
-            }
+    .title-row {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        font-weight: bold;
+        text-align: center;
+
+        .jersey:after {
+            display: none;
         }
     }
+
+    @hover-color: rgba(255,202,40, 0.6);
+    @hover-color-light: rgba(255,202,40, 0.2);
 
     .score-row {
         display: flex;
         justify-content: center;
         flex-direction: row;
+
+        &:hover {
+            background-color: @hover-color-light;
+        }
     }
+
+    .hover-wave-1 .wave.number-1 { background-color: @hover-color-light; }
+    .hover-wave-2 .wave.number-2 { background-color: @hover-color-light; }
+    .hover-wave-3 .wave.number-3 { background-color: @hover-color-light; }
+    .hover-wave-4 .wave.number-4 { background-color: @hover-color-light; }
+    .hover-wave-5 .wave.number-5 { background-color: @hover-color-light; }
+    .hover-wave-6 .wave.number-6 { background-color: @hover-color-light; }
+    .hover-wave-7 .wave.number-7 { background-color: @hover-color-light; }
+    .hover-wave-8 .wave.number-8 { background-color: @hover-color-light; }
+    .hover-wave-9 .wave.number-9 { background-color: @hover-color-light; }
+    .hover-wave-10 .wave.number-10 { background-color: @hover-color-light; }
 
     .wave {
         padding: 10px 5px;
@@ -68,6 +90,10 @@
 
         &.title {
             text-align: center;
+
+            &:hover {
+                background-color: white;
+            }
         }
 
         input {
@@ -81,6 +107,10 @@
             }
 
             margin: 0;
+        }
+
+        &:hover {
+            background-color: @hover-color;
         }
     }
 }
