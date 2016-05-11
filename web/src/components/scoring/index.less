@@ -2,4 +2,85 @@
     h1 {
         background: #00e676;
     }
+
+    header {
+        padding: 20px;
+        color: white;
+        font-family: @serif;
+        font-size: 18px;
+
+        &.groms { background: @groms-color; }
+        &.open { background: @open-color; }
+        &.master { background: @master-color; }
+        &.women { background: @women-color; }
+    }
+
+    .score-table {
+        .jersey {
+            position: relative;
+            padding: 20px;
+            font-size: 24px;
+            flex: 2 1 0;
+            align-items: center;
+
+            &:after {
+                content: '\f0c8';
+                position: absolute;
+                font-family: FontAwesome;
+                font-style: normal;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                text-shadow: 1px 0 black,
+                             0 1px black,
+                             -1px 0 black,
+                             0 -1px black;
+            }
+
+            &.red:after { color: #f44336; }
+            &.blue:after { color: #2196f3; }
+            &.yellow:after { color: #ffeb3b; }
+            &.white:after { color: white; }
+            &.green:after { color: #4caf50; }
+            &.pink:after { color: #ff4081; }
+        }
+
+        .title {
+            font-weight: bold;
+            text-align: center;
+
+            .jersey:after {
+                display: none;
+            }
+        }
+    }
+
+    .score-row {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
+
+    .wave {
+        padding: 10px 5px;
+        flex: 1 1 0;
+        align-items: center;
+
+        &.title {
+            text-align: center;
+        }
+
+        input {
+            padding: 10px 0;
+            background: transparent;
+        }
+
+        .field {
+            label {
+                display: none;
+            }
+
+            margin: 0;
+        }
+    }
 }

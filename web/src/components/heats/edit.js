@@ -70,12 +70,6 @@ class AthleteSlot extends React.Component {
                     },
 
                     d.i({className: "fa fa-trash"}),
-
-                    // spinner({
-                    //     style: {
-                    //         display: this.props.isSubmitting ? "inline-block" : "none"
-                    //     }
-                    // })
                 ))
         ));
     }

@@ -68,6 +68,11 @@ export const password = function(label, name, options) {
     return React.createElement(Text, props);
 };
 
+export const number = function(label, name, options) {
+    let props = Object.assign({}, options, {errors: Immutable.Seq(), label: label, name: name, type: "text", pattern: "[0-9]*", inputmode: "numeric"});
+    return React.createElement(Text, props);
+};
+
 class TextAreaAutoresize extends React.Component {
     constructor(props) {
         super(props);
