@@ -2,7 +2,7 @@ import React from "react";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
-import { number } from "../forms";
+import * as forms from "../forms";
 
 var d = React.DOM;
 
@@ -19,7 +19,7 @@ class WaveScore extends React.Component {
                 onMouseOut: () => this.props.mouseOut(this.props.number),
             },
 
-            number("", `w8`, {})
+            forms.number("", `w8`, {})
         );
     }
 }
@@ -91,6 +91,13 @@ class ScoreCard extends React.Component {
 
                 heat.get("athletes").map((a, i) => athleteScore(a, i, this.props.mouseOverWave, this.props.mouseOutWave))
             ),
+
+            d.button(
+                {className: "button flat"},
+                "Finalise Heat",
+            ),
+
+            d.div({className: "clear"})
         );
     }
 }
@@ -167,7 +174,7 @@ export class Scoring extends React.Component {
             d.div(
                 {className: `wrapper ${hoverWave ? hoverWave : ""}`},
                 scoreCard(heats.get("3"), this.onMouseOver.bind(this), this.onMouseOut.bind(this))
-            )
+            ),
         );
     }
 }

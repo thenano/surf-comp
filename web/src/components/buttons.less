@@ -1,5 +1,20 @@
 @import "palette";
 
+.button.flat {
+    text-transform: uppercase;
+    color: @button-primary-background-color;
+    margin: 5px 20px;
+
+    background: transparent;
+    border: none;
+
+    &:hover {
+        color: darken(@button-primary-background-color, 10%);
+        background: transparent;
+        border: none;
+    }
+}
+
 .button, button {
     color: @button-text-color;
     border: 0;

@@ -1,4 +1,6 @@
 #scoring {
+    background-color: #ececec;
+
     h1 {
         background: #00e676;
     }
@@ -16,11 +18,12 @@
     }
 
     .score-table {
+        padding: 25px 25px;
+
         .jersey {
             position: relative;
-            padding: 20px;
-            font-size: 24px;
-            flex: 2 1 0;
+            font-size: 14px;
+            flex: 1 1 0;
             align-items: center;
 
             &:after {
@@ -54,13 +57,17 @@
         font-weight: bold;
         text-align: center;
 
+        .jersey {
+            padding-bottom: 15px;
+        }
+
         .jersey:after {
             display: none;
         }
     }
 
-    @hover-color: rgba(255,202,40, 0.6);
-    @hover-color-light: rgba(255,202,40, 0.2);
+    @hover-color: rgba(255,202,40, 0.3);
+    @hover-color-light: rgba(255,202,40, 0.1);
 
     .score-row {
         display: flex;
@@ -84,11 +91,13 @@
     .hover-wave-10 .wave.number-10 { background-color: @hover-color-light; }
 
     .wave {
-        padding: 10px 5px;
+        padding: 0 2px;
         flex: 1 1 0;
         align-items: center;
 
         &.title {
+            padding-bottom: 15px;
+            font-size: 14px;
             text-align: center;
 
             &:hover {
@@ -99,6 +108,7 @@
         input {
             padding: 10px 0;
             background: transparent;
+            text-align: center;
         }
 
         .field {
