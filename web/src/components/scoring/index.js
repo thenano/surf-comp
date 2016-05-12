@@ -16,26 +16,54 @@ class WaveScore extends React.Component {
         return d.div(
             {
                 className: `wave number-${this.props.number}`,
-                onMouseOver: () => this.props.mouseOver(this.props.number),
-                onMouseOut: () => this.props.mouseOut(this.props.number),
+                onMouseOver: () => this.props.onMouseOver(this.props.number),
+                onMouseOut: () => this.props.onMouseOut(this.props.number),
             },
 
-            forms.number("", `w8`, {disabled: this.props.disabled})
+            forms.number("", `w8`, {
+                disabled: this.props.disabled,
+                value: this.props.value,
+                onChange: (e) => this.props.onChange(e.target.value)
+            })
         );
     }
 }
 
-function waveScore(key, mouseOver, mouseOut, disabled) {
-    return React.createElement(WaveScore, {key, number: key+1, mouseOver, mouseOut, disabled});
+function waveScore(key, options) {
+    let props = Object.assign({}, options, {
+        key,
+        number: key+1
+    });
+
+    return React.createElement(WaveScore, props);
 }
 
 class AthleteScoreRow extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+            scores: this.props.scores
+        };
+    }
+
+    updateScore(athleteId, waveNumber, value) {
+        this.setState({
+            scores: this.state.scores.set(waveNumber, value)
+        });
+    }
+
     render() {
         let { athlete } = this.props;
 
         let waves = []
         for (var i=0; i < 10; i++) {
-            waves.push(waveScore(i, this.props.mouseOverWave, this.props.mouseOutWave));
+            waves.push(waveScore(i, {
+                value: this.state.scores.get(i.toString()),
+                onChange: (v) => this.updateScore(athlete.get("id"), i+1, v),
+                onMouseOver: this.props.onMouseOver,
+                onMouseOut: this.props.onMouseOut,
+            }));
         }
 
         let jersey = JERSEYS[this.props.position];
@@ -55,7 +83,13 @@ class DisabledScoreRow extends React.Component {
     render() {
         let waves = []
         for (var i=0; i < 10; i++) {
-            waves.push(waveScore(i, this.props.mouseOverWave, this.props.mouseOutWave, true));
+            waves.push(waveScore(i, {
+                value: "",
+                onChange: () => {},
+                onMouseOver: this.props.onMouseOver,
+                onMouseOut: this.props.onMouseOut,
+                disabled: true
+            }));
         }
 
         let jersey = JERSEYS[this.props.position];
@@ -71,11 +105,18 @@ class DisabledScoreRow extends React.Component {
     }
 }
 
-function athleteScore(athlete, position, mouseOverWave, mouseOutWave) {
+function athleteScore(athlete, key, options) {
+    let props = Object.assign({}, options, {
+        key,
+        number: key+1,
+        position: key,
+        athlete
+    });
+
     if (!athlete) {
-        return React.createElement(DisabledScoreRow, {key: position, position, mouseOverWave, mouseOutWave}, mouseOverWave, mouseOutWave);
+        return React.createElement(DisabledScoreRow, props);
     } else {
-        return React.createElement(AthleteScoreRow, {key: position, athlete, position, mouseOverWave, mouseOutWave,})
+        return React.createElement(AthleteScoreRow, props);
     }
 }
 
@@ -95,6 +136,12 @@ class ScoreCard extends React.Component {
     onMouseOut() {
         this.setState({
             hovered: null
+        });
+    }
+
+    updatescore(athleteid, wavenumber, value) {
+        this.setstate({
+            heat: this.state.heat.setin([athleteid, wavenumber], value)
         });
     }
 
@@ -122,11 +169,18 @@ class ScoreCard extends React.Component {
                 .get("athletes", Immutable.List())
                 .get(i, null);
 
+            let scores = Immutable.List();
+            if (athlete) {
+                scores = heat.getIn(["scores", athlete.get("id")], Immutable.List());
+            }
+
             scoreRows.push(athleteScore(
-                athlete,
-                i,
-                this.onMouseOver.bind(this),
-                this.onMouseOut.bind(this)
+                athlete, i,
+                {
+                    scores,
+                    onMouseOver: this.onMouseOver.bind(this),
+                    onMouseOut: this.onMouseOut.bind(this)
+                }
             ));
         }
 
@@ -163,8 +217,8 @@ class ScoreCard extends React.Component {
     }
 }
 
-function scoreCard(heat) {
-    return React.createElement(ScoreCard, {key: heat.get("id"), heat});
+function scoreCard(heat, onChange) {
+    return React.createElement(ScoreCard, {key: heat.get("id"), heat, onChange});
 }
 
 @fetch((store, r) => {
@@ -191,14 +245,22 @@ function scoreCard(heat) {
     heats: state.events.getIn(["schedules", parseInt(props.params.id), "heats"])
 }))
 export class Scoring extends React.Component {
-    render() {
+    constructor(props, context) {
+        super(props, context);
+
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id));
-        let allHeats = this.props.heats;
+        let allHeats = this.props.heats.map(h => h.set("scores", Immutable.fromJS({})));
         let northBank = event.getIn(["schedule", 0]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "North")]),
             southBank = event.getIn(["schedule", 1]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "South")]);
         let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
 
+        this.state = {
+            event, heats
+        };
+    }
+
+    render() {
         return d.div(
             {
                 id: "scoring",
@@ -208,14 +270,14 @@ export class Scoring extends React.Component {
                 {},
                 d.div(
                     {className: "wrapper"},
-                    `Scoring: ${event.get("name")}`
+                    `Scoring: ${this.state.event.get("name")}`
                 ),
             ),
 
             d.div(
                 {className: "wrapper"},
-                heats.map((heat, k) => {
-                    return scoreCard(heat)
+                this.state.heats.map((heat, k) => {
+                    return scoreCard(heat);
                 }).valueSeq()
             ),
         );
