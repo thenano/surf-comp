@@ -6,14 +6,14 @@ class EventDivision < ApplicationRecord
   has_many :heats, -> { order 'round_position, position' }, dependent: :destroy
 
   HEAT_SIZE_SEED_CYCLES = {
-    '1': [0],
-    '2': [0, 1],
-    '3': [0, 2, 1],
-    '4': [0, 3, 2, 1],
-    '5': [0, 4, 2, 3, 1],
-    '6': [0, 5, 3, 2, 4, 1],
-    '7': [0, 6, 4, 3, 2, 5, 1],
-    '8': [0, 7, 4, 3, 2, 5, 6, 1]
+    1 => [0],
+    2 => [0, 1],
+    3 => [0, 2, 1],
+    4 => [0, 3, 2, 1],
+    5 => [0, 4, 2, 3, 1],
+    6 => [0, 5, 3, 2, 4, 1],
+    7 => [0, 6, 4, 3, 2, 5, 1],
+    8 => [0, 7, 4, 3, 2, 5, 6, 1]
   }
   HEAT_SIZE = 6
   ROUND_NAMES = %w(Final Semifinal Quarterfinal)
@@ -23,7 +23,7 @@ class EventDivision < ApplicationRecord
     number_of_rounds = Math.log2(number_of_heats).ceil
     create_rounds(0, number_of_rounds, users.length.to_f)
 
-    heat_cycle = HEAT_SIZE_SEED_CYCLES[number_of_heats.to_s.to_sym]
+    heat_cycle = HEAT_SIZE_SEED_CYCLES[number_of_heats]
     heat_cycle = (heat_cycle + heat_cycle.reverse).cycle
 
     users.each do |user|
@@ -79,6 +79,32 @@ class EventDivision < ApplicationRecord
     added_heats = create_rounds(1, (number_of_rounds - 1), users.size / 2.0)
 
     return removed_heats, added_heats
+  end
+
+  def end_heat(heat)
+    heat.update_attribute(:time, Time.now)
+    return if heat.round.eql?('Final')
+
+    result = heat.result
+
+    advances = result.slice(0, (heat.athletes.size/2.0).ceil)
+    this_round = heats.where(round_position: heat.round_position)
+    next_round = heats.where(round_position: heat.round_position.next)
+    this_round_size = this_round.size
+
+    next_round_order = HEAT_SIZE_SEED_CYCLES[next_round.size]
+    next_round_cycle = next_round_order + next_round_order.reverse
+    next_round_cycle += next_round_order.reverse + next_round_order if this_round_size % 2 === 0
+    next_round_cycle = next_round_cycle.cycle
+
+    this_round_seed = HEAT_SIZE_SEED_CYCLES[this_round_size][heat.position]
+
+    this_round_seed.times{next_round_cycle.next}
+    advances.each_with_index do |athlete_result, position|
+      heat = next_round[next_round_cycle.next]
+      heat.athlete_heats.create({athlete_id: athlete_result[:athlete_id], position: (this_round_seed + position * this_round_size)/ next_round.size})
+      (this_round_size - 1).times{next_round_cycle.next}
+    end
   end
 
   private

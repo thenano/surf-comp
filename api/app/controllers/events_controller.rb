@@ -113,6 +113,7 @@ class EventsController < ApplicationController
             round: heat.round,
             round_position: heat.round_position,
             number: heat.position.next,
+            time: heat.time,
             athletes: athletes
           }]
         end

@@ -287,11 +287,11 @@ RSpec.describe EventDivision, :type => :model do
     describe 'with 22 athletes' do
       let(:division) { create(:division_with_athletes, athletes_count: 22) }
 
-      it 'should add the athlete to the second to last heat' do
+      it 'should add the athlete to the first to last heat' do
         division.draw
 
         expect(division.heats.first.athletes.size).to eq(5)
-        expect(division.heats.last.athletes.size).to eq(5)
+        expect(division.heats[3].athletes.size).to eq(5)
         new_athlete = create(:user)
 
         division.add_athlete(new_athlete)
@@ -601,6 +601,307 @@ RSpec.describe EventDivision, :type => :model do
           expect(removed_heats.map(&:id)).to eq([8, 9, 10, 11, 12, 13, 14])
           expect(added_heats.map(&:id)).to eq([15, 16, 17])
         end
+      end
+    end
+  end
+
+  describe '#end_heat' do
+    def score_and_end_heat(heat)
+      heat.scores = {
+          1 => {'judge': [1, 2]},
+          2 => {'judge': [4, 4]},
+          3 => {'judge': [4, 3]},
+          4 => {'judge': [10, 10]},
+          5 => {'judge': [7, 7]},
+          6 => {'judge': [6, 5]}
+      }
+
+      division.end_heat(heat)
+    end
+
+    describe 'with 24 athletes' do
+      let(:division) { create(:division_with_athletes) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the first heat into the respective semifinal heats' do
+        score_and_end_heat(division.heats.first)
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.first.athlete_heats.first.position).to eq(0)
+
+        expect(semis.last.athlete_heats.first.athlete_id).to eq(5)
+        expect(semis.last.athlete_heats.first.position).to eq(2)
+
+        expect(semis.first.athlete_heats.second.athlete_id).to eq(6)
+        expect(semis.first.athlete_heats.second.position).to eq(4)
+      end
+
+      it 'progresses the first 3 of the second heat into the respective semifinal heats' do
+        score_and_end_heat(division.heats.second)
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.first.athlete_heats.first.position).to eq(1)
+
+        expect(semis.last.athlete_heats.first.athlete_id).to eq(5)
+        expect(semis.last.athlete_heats.first.position).to eq(3)
+
+        expect(semis.first.athlete_heats.last.athlete_id).to eq(6)
+        expect(semis.first.athlete_heats.last.position).to eq(5)
+      end
+
+      it 'progresses the first 3 of the third heat into the respective semifinal heats' do
+        score_and_end_heat(division.heats[2])
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.last.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.last.athlete_heats.first.position).to eq(1)
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(5)
+        expect(semis.first.athlete_heats.first.position).to eq(3)
+
+        expect(semis.last.athlete_heats.last.athlete_id).to eq(6)
+        expect(semis.last.athlete_heats.last.position).to eq(5)
+      end
+
+      it 'progresses the first 3 of the last heat into the respective semifinal heats' do
+        score_and_end_heat(division.heats[3])
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.last.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.last.athlete_heats.first.position).to eq(0)
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(5)
+        expect(semis.first.athlete_heats.first.position).to eq(2)
+
+        expect(semis.last.athlete_heats.last.athlete_id).to eq(6)
+        expect(semis.last.athlete_heats.last.position).to eq(4)
+      end
+    end
+
+    describe 'with 12 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 12) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the first heat into the final' do
+        score_and_end_heat(division.heats.first)
+        final = division.heats.where(round: 'Final').first
+
+        expect(final.athlete_heats.first.athlete_id).to eq(4)
+        expect(final.athlete_heats.first.position).to eq(0)
+
+        expect(final.athlete_heats.second.athlete_id).to eq(5)
+        expect(final.athlete_heats.second.position).to eq(2)
+
+        expect(final.athlete_heats.last.athlete_id).to eq(6)
+        expect(final.athlete_heats.last.position).to eq(4)
+      end
+
+      it 'progresses the first 3 of the last heat into the final' do
+        score_and_end_heat(division.heats.second)
+        final = division.heats.where(round: 'Final').first
+
+        expect(final.athlete_heats.first.athlete_id).to eq(4)
+        expect(final.athlete_heats.first.position).to eq(1)
+
+        expect(final.athlete_heats.second.athlete_id).to eq(5)
+        expect(final.athlete_heats.second.position).to eq(3)
+
+        expect(final.athlete_heats.last.athlete_id).to eq(6)
+        expect(final.athlete_heats.last.position).to eq(5)
+      end
+
+      it 'ends the final with the time' do
+        now = Time.now
+        allow(Time).to receive(:now).and_return(now)
+        score_and_end_heat(division.heats.last)
+        expect(division.heats.last.time).to eq(now.utc)
+      end
+    end
+
+    describe 'with 18 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 18) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the first heat into the semifinals' do
+        score_and_end_heat(division.heats.first)
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.first.athlete_heats.first.position).to eq(0)
+
+        expect(semis.first.athlete_heats.second.athlete_id).to eq(5)
+        expect(semis.first.athlete_heats.second.position).to eq(1)
+
+        expect(semis.second.athlete_heats.first.athlete_id).to eq(6)
+        expect(semis.second.athlete_heats.first.position).to eq(3)
+      end
+
+      it 'progresses the first 3 of the second heat into the semifinals' do
+        score_and_end_heat(division.heats.second)
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.second.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.second.athlete_heats.first.position).to eq(1)
+
+        expect(semis.second.athlete_heats.last.athlete_id).to eq(5)
+        expect(semis.second.athlete_heats.last.position).to eq(2)
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(6)
+        expect(semis.first.athlete_heats.first.position).to eq(4)
+      end
+
+      it 'progresses the first 3 of the third heat into the semifinals' do
+        score_and_end_heat(division.heats[2])
+        semis = division.heats.where(round: 'Semifinal')
+
+        expect(semis.last.athlete_heats.first.athlete_id).to eq(4)
+        expect(semis.last.athlete_heats.first.position).to eq(0)
+
+        expect(semis.first.athlete_heats.first.athlete_id).to eq(5)
+        expect(semis.first.athlete_heats.first.position).to eq(2)
+
+        expect(semis.first.athlete_heats.last.athlete_id).to eq(6)
+        expect(semis.first.athlete_heats.last.position).to eq(3)
+      end
+    end
+
+    describe 'with 26 athletes' do
+      let(:division) { create(:division_with_athletes, athletes_count: 9) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the first heat into the final' do
+        heat = division.heats.first
+        heat.scores = {
+            1 => {'judge': [1, 2]},
+            2 => {'judge': [4, 4]},
+            3 => {'judge': [4, 3]},
+            4 => {'judge': [10, 10]},
+            5 => {'judge': [7, 7]},
+        }
+        division.end_heat(heat)
+
+        final = division.heats.where(round: 'Final').first
+
+        expect(final.athlete_heats.first.athlete_id).to eq(4)
+        expect(final.athlete_heats.first.position).to eq(0)
+
+        expect(final.athlete_heats.second.athlete_id).to eq(5)
+        expect(final.athlete_heats.second.position).to eq(2)
+
+        expect(final.athlete_heats.last.athlete_id).to eq(2)
+        expect(final.athlete_heats.last.position).to eq(4)
+      end
+
+      it 'progresses the first and only 2 of the last heat into the final' do
+        heat = division.heats.second
+        heat.scores = {
+            1 => {'judge': [1, 2]},
+            3 => {'judge': [4, 3]},
+            4 => {'judge': [10, 10]},
+            5 => {'judge': [7, 7]},
+        }
+        division.end_heat(heat)
+
+        final = division.heats.where(round: 'Final').first
+
+        expect(final.athlete_heats.size).to eq(2)
+        expect(final.athlete_heats.first.athlete_id).to eq(4)
+        expect(final.athlete_heats.first.position).to eq(1)
+
+        expect(final.athlete_heats.second.athlete_id).to eq(5)
+        expect(final.athlete_heats.second.position).to eq(3)
+      end
+    end
+
+    describe 'with 36 athletes' do
+
+      let(:division) { create(:division_with_athletes, athletes_count: 36) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the first heat into the quarters' do
+        score_and_end_heat(division.heats.first)
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+
+        expect(quarters.first.athlete_heats.first.athlete_id).to eq(4)
+        expect(quarters.first.athlete_heats.first.position).to eq(0)
+
+        expect(quarters.second.athlete_heats.first.athlete_id).to eq(5)
+        expect(quarters.second.athlete_heats.first.position).to eq(2)
+
+        expect(quarters.first.athlete_heats.last.athlete_id).to eq(6)
+        expect(quarters.first.athlete_heats.last.position).to eq(4)
+      end
+
+      it 'progresses the first 3 of the last heat into the quarters' do
+        score_and_end_heat(division.heats[5])
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+
+        expect(quarters[2].athlete_heats.first.athlete_id).to eq(4)
+        expect(quarters[2].athlete_heats.first.position).to eq(0)
+
+        expect(quarters[2].athlete_heats.second.athlete_id).to eq(5)
+        expect(quarters[2].athlete_heats.second.position).to eq(2)
+
+        expect(quarters[2].athlete_heats.last.athlete_id).to eq(6)
+        expect(quarters[2].athlete_heats.last.position).to eq(4)
+      end
+    end
+
+    describe 'with 48 athletes' do
+
+      let(:division) { create(:division_with_athletes, athletes_count: 48) }
+
+      before :each do
+        division.draw
+      end
+
+      it 'progresses the first 3 of the third heat into the quarters' do
+        score_and_end_heat(division.heats[2])
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+
+        expect(quarters.second.athlete_heats.first.athlete_id).to eq(4)
+        expect(quarters.second.athlete_heats.first.position).to eq(1)
+
+        expect(quarters.first.athlete_heats.first.athlete_id).to eq(5)
+        expect(quarters.first.athlete_heats.first.position).to eq(3)
+
+        expect(quarters.second.athlete_heats.last.athlete_id).to eq(6)
+        expect(quarters.second.athlete_heats.last.position).to eq(5)
+      end
+
+      it 'progresses the first 3 of the fifth heat into the quarters' do
+        score_and_end_heat(division.heats[4])
+
+        quarters = division.heats.where(round: 'Quarterfinal')
+
+        expect(quarters[2].athlete_heats.first.athlete_id).to eq(4)
+        expect(quarters[2].athlete_heats.first.position).to eq(0)
+
+        expect(quarters[3].athlete_heats.first.athlete_id).to eq(5)
+        expect(quarters[3].athlete_heats.first.position).to eq(2)
+
+        expect(quarters[2].athlete_heats.last.athlete_id).to eq(6)
+        expect(quarters[2].athlete_heats.last.position).to eq(4)
       end
     end
   end

@@ -19,7 +19,7 @@ class Heat < ApplicationRecord
   end
 
   def result
-    scores.map{|key, value| [key, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
+    scores.map{|athlete_id, value| [athlete_id, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
     .to_h
     .map { |athlete_id, waves|
       {athlete_id: athlete_id, total: waves.sort.reverse.slice(0, 2).reduce(:+).round(2), waves: waves}
