@@ -1,5 +1,6 @@
 class HeatsController < ApplicationController
-  before_action :set_heat, only: [:show, :add_score, :end]
+  before_action :set_heat
+  before_action :authenticate_user!, only: [:add_score]
 
   def show
     athletes = []
