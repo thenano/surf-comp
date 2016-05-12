@@ -74,6 +74,13 @@ class EventsController < ApplicationController
     render json: build_event_schedule_json
   end
 
+  def end_heat
+    @heat = Heat.find(params[:heat_id])
+    @heat.event_division.end_heat(@heat)
+
+    render json: build_event_schedule_json
+  end
+
   private
     def set_event
       @event = Event.find(params[:id])

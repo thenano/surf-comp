@@ -8,7 +8,7 @@ class Heat < ApplicationRecord
 
   validates_presence_of :round, :position, :round_position
 
-  def add_score!(judge_id, athlete_id, wave, score)
+  def add_score!(judge_id:, athlete_id:, wave:, score:)
     athletes.find(athlete_id) # will raise record not found
     self.scores ||= {}
     self.scores[athlete_id] ||= {}
