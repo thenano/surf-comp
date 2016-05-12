@@ -1,4 +1,5 @@
 import React from "react";
+import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
@@ -19,13 +20,13 @@ class WaveScore extends React.Component {
                 onMouseOut: () => this.props.mouseOut(this.props.number),
             },
 
-            forms.number("", `w8`, {})
+            forms.number("", `w8`, {disabled: this.props.disabled})
         );
     }
 }
 
-function waveScore(key, mouseOver, mouseOut) {
-    return React.createElement(WaveScore, {key, number: key+1, mouseOver, mouseOut});
+function waveScore(key, mouseOver, mouseOut, disabled) {
+    return React.createElement(WaveScore, {key, number: key+1, mouseOver, mouseOut, disabled});
 }
 
 class AthleteScoreRow extends React.Component {
@@ -50,13 +51,60 @@ class AthleteScoreRow extends React.Component {
     }
 }
 
+class DisabledScoreRow extends React.Component {
+    render() {
+        let waves = []
+        for (var i=0; i < 10; i++) {
+            waves.push(waveScore(i, this.props.mouseOverWave, this.props.mouseOutWave, true));
+        }
+
+        let jersey = JERSEYS[this.props.position];
+
+        return d.div(
+            {className: `disabled score-row ${jersey}`},
+            d.div(
+                {className: `jersey ${jersey}`},
+            ),
+
+            waves,
+        )
+    }
+}
+
 function athleteScore(athlete, position, mouseOverWave, mouseOutWave) {
-    return React.createElement(AthleteScoreRow, {key: athlete.get("name"), athlete, position, mouseOverWave, mouseOutWave,})
+    if (!athlete) {
+        return React.createElement(DisabledScoreRow, {key: position, position, mouseOverWave, mouseOutWave}, mouseOverWave, mouseOutWave);
+    } else {
+        return React.createElement(AthleteScoreRow, {key: position, athlete, position, mouseOverWave, mouseOutWave,})
+    }
 }
 
 class ScoreCard extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {};
+    }
+
+    onMouseOver(wave) {
+        this.setState({
+            hovered: wave
+        });
+    }
+
+    onMouseOut() {
+        this.setState({
+            hovered: null
+        });
+    }
+
     render() {
         let { heat } = this.props;
+
+        let hoverWave
+        if (this.state.hovered != null) {
+            hoverWave = `hover-wave-${this.state.hovered}`
+        }
 
         let waveTitles = []
         for (var i=0; i < 10; i++) {
@@ -68,13 +116,26 @@ class ScoreCard extends React.Component {
             );
         }
 
+        let scoreRows = [];
+        for (var i=0; i < 6; i++) {
+            let athlete = heat
+                .get("athletes", Immutable.List())
+                .get(i, null);
+
+            scoreRows.push(athleteScore(
+                athlete,
+                i,
+                this.onMouseOver.bind(this),
+                this.onMouseOut.bind(this)
+            ));
+        }
+
         return d.div(
-            {className: "card"},
+            {className: `card ${hoverWave ? hoverWave : ""}`},
 
             d.header(
                 {className: `${heat.get("division").toLowerCase()}`},
-                // TODO - don't hardcode the bank
-                `${heat.get("division")} : Heat ${heat.get("number")} : ${heat.get("round")} (South Bank)`
+                `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${heat.get("bank")} Bank)`
             ),
 
             d.section(
@@ -89,7 +150,7 @@ class ScoreCard extends React.Component {
                     waveTitles
                 ),
 
-                heat.get("athletes").map((a, i) => athleteScore(a, i, this.props.mouseOverWave, this.props.mouseOutWave))
+                scoreRows,
             ),
 
             d.button(
@@ -102,8 +163,8 @@ class ScoreCard extends React.Component {
     }
 }
 
-function scoreCard(heat, mouseOverWave, mouseOutWave) {
-    return React.createElement(ScoreCard, {heat, mouseOverWave, mouseOutWave});
+function scoreCard(heat) {
+    return React.createElement(ScoreCard, {key: heat.get("id"), heat});
 }
 
 @fetch((store, r) => {
@@ -130,33 +191,13 @@ function scoreCard(heat, mouseOverWave, mouseOutWave) {
     heats: state.events.getIn(["schedules", parseInt(props.params.id), "heats"])
 }))
 export class Scoring extends React.Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.state = {};
-    }
-
-    onMouseOver(wave) {
-        this.setState({
-            hovered: wave
-        });
-    }
-
-    onMouseOut() {
-        this.setState({
-            hovered: null
-        });
-    }
-
     render() {
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id));
-        let heats = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]);
-
-        let hoverWave
-        if (this.state.hovered != null) {
-            hoverWave = `hover-wave-${this.state.hovered}`
-        }
+        let allHeats = this.props.heats;
+        let northBank = event.getIn(["schedule", 0]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "North")]),
+            southBank = event.getIn(["schedule", 1]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "South")]);
+        let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
 
         return d.div(
             {
@@ -172,8 +213,10 @@ export class Scoring extends React.Component {
             ),
 
             d.div(
-                {className: `wrapper ${hoverWave ? hoverWave : ""}`},
-                scoreCard(heats.get("3"), this.onMouseOver.bind(this), this.onMouseOut.bind(this))
+                {className: "wrapper"},
+                heats.map((heat, k) => {
+                    return scoreCard(heat)
+                }).valueSeq()
             ),
         );
     }
