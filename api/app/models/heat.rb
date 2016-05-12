@@ -18,6 +18,13 @@ class Heat < ApplicationRecord
     save!
   end
 
+  def scores_for(judge_id)
+    scores.map{ |id, scores|
+      my_scores = scores.detect{|judge, scores| judge.eql?(judge_id)}
+      [id, my_scores[1]] if my_scores
+    }.compact.to_h
+  end
+
   def result
     scores.map{|athlete_id, value| [athlete_id, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
     .to_h
