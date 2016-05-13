@@ -6,13 +6,21 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-event = FactoryGirl.create(:event)
-groms = FactoryGirl.create(:division, name: 'Groms')
-women = FactoryGirl.create(:division, name: 'Women')
-opens = FactoryGirl.create(:division, name: 'Open')
+event = FactoryGirl.create(:event, name: 'Trial comp', date: '2016-05-14')
+groms = FactoryGirl.create(:division, name: 'Trial crew')
 
-FactoryGirl.create(:division_with_athletes, {event: event, division: groms})
-FactoryGirl.create(:division_with_athletes, {event: event, division: women, athletes_count: 14})
-FactoryGirl.create(:division_with_athletes, {event: event, division: opens, athletes_count: 25})
+['Ian Wallace',
+'Felix Ettelson',
+'Lara Demelian',
+'Luke Adam',
+'Archie MacDonald',
+'Finn Fillipek',
+'Jack Hobbs',
+'Andreas Thoma',
+'Saul Hirner',
+'Izzie Cremer',
+'Nic Mcgrath'].each { |athlete| FactoryGirl.create(:user, name: athlete)}
+
+EventDivision.create(event: event, division: groms, users: User.all)
 
 event.draw

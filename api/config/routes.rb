@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       put 'remove_athlete', on: :member
       put 'swap_athletes', on: :member
 
-      patch '/heats/:heat_id/end', on: :member, action: :end
+      patch '/heats/:heat_id/end', on: :member, action: :end_heat
     end
 
     resources :heats, only: [:show] do

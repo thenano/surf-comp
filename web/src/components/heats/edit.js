@@ -59,18 +59,22 @@ class AthleteSlot extends React.Component {
         let { name, position, hovering, connectDragSource, connectDropTarget, remove } = this.props;
         let jersey = JERSEYS[position];
 
+        let removeLink = remove ? d.a(
+            {
+                onClick: remove,
+                className: "danger submit " + (this.props.isSubmitting ? "disabled" : ""),
+                style: {marginLeft: '20px'}
+            },
+
+            d.i({className: "fa fa-trash"}),
+        ) : null;
+
         return connectDragSource(connectDropTarget(
             d.li(
                 {className: `athlete ${jersey} ${hovering ? "hovering" : ""}`},
                 name,
-                d.a(
-                    {
-                        onClick: remove,
-                        className: "button danger submit " + (this.props.isSubmitting ? "disabled" : "")
-                    },
-
-                    d.i({className: "fa fa-trash"}),
-                ))
+                removeLink
+            )
         ));
     }
 }
@@ -106,7 +110,7 @@ class Heat extends React.Component {
                 hovering = over == i;
 
             if (a) {
-                athletes.push(athleteSlot(heat.get("id"), i, a.get("name"), hover, swap, hovering, remove.bind(this, a)));
+                athletes.push(athleteSlot(heat.get("id"), i, a.get("name"), hover, swap, hovering, remove ? remove.bind(this, a) : undefined));
             } else {
                 athletes.push(emptySlot(heat.get("id"), i, hover, swap, hovering));
             }
@@ -114,12 +118,13 @@ class Heat extends React.Component {
 
         let division = heat.get("division"),
             round = heat.get("round"),
-            number = heat.get("number");
+            number = heat.get("number"),
+            time = heat.get("time") ? new Date(heat.get("time")) : undefined;
 
         return d.div(
             {className: "heat"},
 
-            d.header({className: `title ${division.toLowerCase()}`}, `${division} - ${round} - Heat ${number}`),
+            d.header({className: `title ${division.toLowerCase()}`}, `${division} - ${round} - Heat ${number}${time ? ` - ended: ${time.getHours()}:${time.getMinutes()}` : ''}`),
 
             d.ol(
                 {className: "athletes"},
@@ -232,10 +237,11 @@ export class EditHeats extends React.Component {
 
     render() {
         let heats = this.props.heats.map((h, heat_id) => {
+            let remove = (h.get("round_position") === 0 && !h.get('time')) ? this.remove.bind(this, h) : undefined;
             if (this.state.hover.get("heat") == heat_id) {
-                return heat(h, ::this.hover, ::this.swap, this.remove.bind(this, h), this.state.hover.get("position"));
+                return heat(h, ::this.hover, ::this.swap, remove, this.state.hover.get("position"));
             } else {
-                return heat(h, ::this.hover, ::this.swap, this.remove.bind(this, h));
+                return heat(h, ::this.hover, ::this.swap, remove);
             }
         }).valueSeq();
 

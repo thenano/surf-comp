@@ -24,7 +24,7 @@ class WaveScore extends React.Component {
 
             forms.number("", `w8`, {
                 disabled: this.props.disabled,
-                value: this.props.value,
+                value: this.props.value || '',
                 onChange: (e) => this.props.onChange(e.target.value),
                 onBlur: (e) => this.props.onBlur(e.target.value)
             })
@@ -199,7 +199,7 @@ class ScoreCard extends React.Component {
                     {className: "title-row"},
                     d.div(
                         {className: "jersey"},
-                        "Jersey"
+                        "Rashie"
                     ),
                     waveTitles
                 ),
@@ -208,7 +208,7 @@ class ScoreCard extends React.Component {
             ),
 
             d.button(
-                {className: "button flat"},
+                {className: "button flat", onClick: this.props.onClick.bind(this, heat.get("id"))},
                 "Finalise Heat",
             ),
 
@@ -217,8 +217,8 @@ class ScoreCard extends React.Component {
     }
 }
 
-function scoreCard(heat, onBlur) {
-    return React.createElement(ScoreCard, {key: heat.get("id"), heat, onBlur});
+function scoreCard(heat, onBlur, onClick) {
+    return React.createElement(ScoreCard, {key: heat.get("id"), heat, onBlur, onClick});
 }
 
 @fetch((store, r) => {
@@ -266,6 +266,10 @@ export class Scoring extends React.Component {
         this.props.dispatch(HeatActions.addScore(heat_id, athlete_id, wave, parseFloat(score)));
     }
 
+    endHeat(heat_id) {
+        this.props.dispatch(EventActions.endHeat(this.state.event.get("id"), heat_id));
+    }
+
     render() {
         return d.div(
             {
@@ -283,7 +287,7 @@ export class Scoring extends React.Component {
             d.div(
                 {className: "wrapper"},
                 this.state.heats.map((heat, k) => {
-                    return scoreCard(heat, this.saveScore.bind(this));
+                    return scoreCard(heat, this.saveScore.bind(this), this.endHeat.bind(this));
                 }).valueSeq()
             ),
         );
