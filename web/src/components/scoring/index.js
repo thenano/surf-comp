@@ -1,8 +1,10 @@
 import React from "react";
 import Immutable from "immutable";
-import * as EventActions from "../../actions/event";
-import { fetch } from "../../decorators";
 import { connect } from "react-redux";
+
+import * as EventActions from "../../actions/event";
+import * as HeatActions from "../../actions/heat";
+import { fetch } from "../../decorators";
 import * as forms from "../forms";
 
 var d = React.DOM;
@@ -17,13 +19,14 @@ class WaveScore extends React.Component {
             {
                 className: `wave number-${this.props.number}`,
                 onMouseOver: () => this.props.onMouseOver(this.props.number),
-                onMouseOut: () => this.props.onMouseOut(this.props.number),
+                onMouseOut: () => this.props.onMouseOut(this.props.number)
             },
 
             forms.number("", `w8`, {
                 disabled: this.props.disabled,
                 value: this.props.value,
-                onChange: (e) => this.props.onChange(e.target.value)
+                onChange: (e) => this.props.onChange(e.target.value),
+                onBlur: (e) => this.props.onBlur(e.target.value)
             })
         );
     }
@@ -32,7 +35,7 @@ class WaveScore extends React.Component {
 function waveScore(key, options) {
     let props = Object.assign({}, options, {
         key,
-        number: key+1
+        number: key
     });
 
     return React.createElement(WaveScore, props);
@@ -47,7 +50,7 @@ class AthleteScoreRow extends React.Component {
         };
     }
 
-    updateScore(athleteId, waveNumber, value) {
+    updateScore(waveNumber, value) {
         this.setState({
             scores: this.state.scores.set(waveNumber, value)
         });
@@ -56,13 +59,14 @@ class AthleteScoreRow extends React.Component {
     render() {
         let { athlete } = this.props;
 
-        let waves = []
-        for (var i=0; i < 10; i++) {
+        let waves = [];
+        for (let i=0; i < 10; i++) {
             waves.push(waveScore(i, {
-                value: this.state.scores.get(i.toString()),
-                onChange: (v) => this.updateScore(athlete.get("id"), i+1, v),
+                value: this.state.scores.get(i),
+                onChange: (v) => this.updateScore(i, v.trim()),
+                onBlur: (v) => this.props.onBlur(athlete.get("id"), i, v.trim()),
                 onMouseOver: this.props.onMouseOver,
-                onMouseOut: this.props.onMouseOut,
+                onMouseOut: this.props.onMouseOut
             }));
         }
 
@@ -81,11 +85,12 @@ class AthleteScoreRow extends React.Component {
 
 class DisabledScoreRow extends React.Component {
     render() {
-        let waves = []
+        let waves = [];
         for (var i=0; i < 10; i++) {
             waves.push(waveScore(i, {
                 value: "",
                 onChange: () => {},
+                onBlur: () => {},
                 onMouseOver: this.props.onMouseOver,
                 onMouseOut: this.props.onMouseOut,
                 disabled: true
@@ -139,39 +144,33 @@ class ScoreCard extends React.Component {
         });
     }
 
-    updatescore(athleteid, wavenumber, value) {
-        this.setstate({
-            heat: this.state.heat.setin([athleteid, wavenumber], value)
-        });
-    }
-
     render() {
         let { heat } = this.props;
 
-        let hoverWave
+        let hoverWave;
         if (this.state.hovered != null) {
             hoverWave = `hover-wave-${this.state.hovered}`
         }
 
-        let waveTitles = []
-        for (var i=0; i < 10; i++) {
+        let waveTitles = [];
+        for (let i=0; i < 10; i++) {
             waveTitles.push(
                 d.div(
-                    {key: i, className: `wave title number-${i+1}`},
+                    {key: i, className: `wave title number-${i}`},
                     `W${i+1}`
                 )
             );
         }
 
         let scoreRows = [];
-        for (var i=0; i < 6; i++) {
+        for (let i=0; i < 6; i++) {
             let athlete = heat
                 .get("athletes", Immutable.List())
                 .get(i, null);
 
             let scores = Immutable.List();
             if (athlete) {
-                scores = heat.getIn(["scores", athlete.get("id")], Immutable.List());
+                scores = heat.getIn(["scores", athlete.get("id").toString()], Immutable.List());
             }
 
             scoreRows.push(athleteScore(
@@ -179,7 +178,8 @@ class ScoreCard extends React.Component {
                 {
                     scores,
                     onMouseOver: this.onMouseOver.bind(this),
-                    onMouseOut: this.onMouseOut.bind(this)
+                    onMouseOut: this.onMouseOut.bind(this),
+                    onBlur: this.props.onBlur.bind(this, heat.get("id"))
                 }
             ));
         }
@@ -217,8 +217,8 @@ class ScoreCard extends React.Component {
     }
 }
 
-function scoreCard(heat, onChange) {
-    return React.createElement(ScoreCard, {key: heat.get("id"), heat, onChange});
+function scoreCard(heat, onBlur) {
+    return React.createElement(ScoreCard, {key: heat.get("id"), heat, onBlur});
 }
 
 @fetch((store, r) => {
@@ -250,9 +250,11 @@ export class Scoring extends React.Component {
 
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id));
-        let allHeats = this.props.heats.map(h => h.set("scores", Immutable.fromJS({})));
-        let northBank = event.getIn(["schedule", 0]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "North")]),
-            southBank = event.getIn(["schedule", 1]).map((v, i) => [i, allHeats.get(v.toString()).set("bank", "South")]);
+        let allHeats = this.props.heats;
+        let northBank = event.getIn(["schedule", 0]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "North")] : null),
+            southBank = event.getIn(["schedule", 1]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "South")] : null);
+        // this sort is bad, as ids are not guarantee of the order of the heats
+        // specially after schedule manipulation
         let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
 
         this.state = {
@@ -260,10 +262,14 @@ export class Scoring extends React.Component {
         };
     }
 
+    saveScore(heat_id, athlete_id, wave, score) {
+        this.props.dispatch(HeatActions.addScore(heat_id, athlete_id, wave, parseFloat(score)));
+    }
+
     render() {
         return d.div(
             {
-                id: "scoring",
+                id: "scoring"
             },
 
             d.h1(
@@ -277,7 +283,7 @@ export class Scoring extends React.Component {
             d.div(
                 {className: "wrapper"},
                 this.state.heats.map((heat, k) => {
-                    return scoreCard(heat);
+                    return scoreCard(heat, this.saveScore.bind(this));
                 }).valueSeq()
             ),
         );

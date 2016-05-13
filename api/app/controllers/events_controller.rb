@@ -122,7 +122,7 @@ class EventsController < ApplicationController
             number: heat.position.next,
             time: heat.time,
             athletes: athletes,
-            scores: user_signed_in? ? scores_for(current_user.id) : nil
+            scores: user_signed_in? ? heat.scores_for(current_user.id) : nil
           }]
         end
       end

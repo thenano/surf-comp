@@ -21,13 +21,12 @@ class HeatsController < ApplicationController
 
   def add_score
     params = add_score_params
-    params[:judge_id] = current_user.id
-    begin
-      @heat.add_score(*params)
+    # begin
+      @heat.add_score!(current_user.id, params[:athlete_id], params[:wave], params[:score])
       show
-    rescue Exception => e
-      render json: e, status: :unprocessable_entity
-    end
+    # rescue Exception => e
+    #   render plain: e, status: :unprocessable_entity
+    # end
   end
 
   private

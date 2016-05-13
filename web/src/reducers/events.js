@@ -9,6 +9,7 @@ export function reducer(state = defaultState, action) {
             .setIn(["schedules", action.res.data.id], Immutable.fromJS(action.res.data))
             .setIn(["meta", `@@loaded/schedules/${action.res.data.id}`], true)
             .deleteIn(["meta", `@@loaded/${action.res.data.id}`]);
+    case "END_HEAT":
     case "GET_EVENT_SCHEDULE":
         return state
             .setIn(["schedules", action.res.data.id], Immutable.fromJS(action.res.data))
