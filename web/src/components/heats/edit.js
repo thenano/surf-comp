@@ -121,10 +121,18 @@ class Heat extends React.Component {
             number = heat.get("number"),
             time = heat.get("time") ? new Date(heat.get("time")) : undefined;
 
+        let displayTime;
+        if (time) {
+            displayTime = `${time.getHours()}:${time.getMinutes()}`;
+        }
+
         return d.div(
             {className: "heat"},
 
-            d.header({className: `title ${division.toLowerCase()}`}, `${division} - ${round} - Heat ${number}${time ? ` - ended: ${time.getHours()}:${time.getMinutes()}` : ''}`),
+            d.header(
+                {className: `title ${division.toLowerCase()}`},
+                `${division} - ${round} - Heat ${number} ${displayTime ? "(" + displayTime + ")" : ""}`
+            ),
 
             d.ol(
                 {className: "athletes"},
@@ -175,12 +183,11 @@ export class EditHeats extends React.Component {
                 });
             })
             .then((result) => {
-                let message = "Athlete moved successfully.";
                 if (result.heat_offset !== 0) {
-                    message += ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`;
-                }
+                    let message = ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`;
 
-                dispatch(SnackbarActions.message(message));
+                     dispatch(SnackbarActions.message(message));
+                }
                 this.setState({ submitting: false });
             });
     }
