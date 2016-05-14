@@ -46,13 +46,19 @@ class Text extends Field {
     }
 
     render() {
+        let onBlur = (e) => {
+            this.setState({focus: false});
+            if (typeof this.props.onBlur == "function") {
+                this.props.onBlur(e)
+            }
+        };
+
         return d.div(
             {className: [this.props.name, "field", this.state.focus ? "focus" : "", this.errorClass()].join(" ") },
             d.label({htmlFor: this.props.name}, this.props.label),
             d.input(Object.assign({
-                onFocus: () => this.setState({focus: true}),
-                onBlur: () => this.setState({focus: false})
-            }, this.props)),
+                onFocus: () => this.setState({focus: true})
+            }, this.props, {onBlur})),
             this.hasErrors() ? d.div({className: `error-message ${this.props.name}-error`}, this.errorMessages()) : null
         );
     }
