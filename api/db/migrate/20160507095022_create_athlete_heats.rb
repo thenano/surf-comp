@@ -6,7 +6,7 @@ class CreateAthleteHeats < ActiveRecord::Migration[5.0]
       t.integer :position
 
       t.index [:position, :heat_id], unique: true
-      t.index [:user_id, :heat_id], unique: true
+      t.index [:athlete_id, :heat_id], unique: true
 
       t.timestamps
     end
