@@ -31,8 +31,8 @@ RSpec.describe Heat, :type => :model do
       heat.add_score!('judge_id_2', 1, 3, 8.25)
 
       expect(heat.scores).to eql({
-                                     1 => { 'judge_id_1' => [7.5, nil, nil, 9.5],
-                                            'judge_id_2' => [nil, nil, nil, 8.25]}
+                                     1 => {'judge_id_1' => [7.5, nil, nil, 9.5],
+                                           'judge_id_2' => [nil, nil, nil, 8.25]}
                                  })
     end
 
@@ -46,10 +46,10 @@ RSpec.describe Heat, :type => :model do
       heat.add_score!('judge_id_2', 2, 1, 1.75)
 
       expect(heat.scores).to eql({
-                                     1 => { 'judge_id_1' => [7.5, nil, nil, 9.5],
-                                            'judge_id_2' => [nil, nil, nil, 8.25]},
-                                     2 => { 'judge_id_1' => [3, 1.25],
-                                            'judge_id_2' => [3, 1.75]}
+                                     1 => {'judge_id_1' => [7.5, nil, nil, 9.5],
+                                           'judge_id_2' => [nil, nil, nil, 8.25]},
+                                     2 => {'judge_id_1' => [3, 1.25],
+                                           'judge_id_2' => [3, 1.75]}
                                  })
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Heat, :type => :model do
       athlete_id = 10
       wave = 3
       score = 7.5
-      expect{ heat.add_score!(judge_id, athlete_id, wave, score) }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect { heat.add_score!(judge_id, athlete_id, wave, score) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -160,26 +160,43 @@ RSpec.describe Heat, :type => :model do
       }
 
       expect(heat.result).to eql([
-                                     {athlete_id: 2, total: 14.5, waves: [3.85, 8.5, 3.5, 6.0]},
-                                     {athlete_id: 3, total: 12.39, waves: [1.18, 1.08, 8.97, 3.42, 2.21]},
+                                     {athlete_id: 8, total: 14.5, waves: [3.85, 8.5, 3.5, 6.0]},
+                                     {athlete_id: 9, total: 12.39, waves: [1.18, 1.08, 8.97, 3.42, 2.21]},
                                      {athlete_id: 1, total: 5.85, waves: [1.33, 1.5, 3.85, 1.33, 1.17, 2.0]}
                                  ])
     end
 
     it 'removes unscored waves from the average wave score' do
       heat.scores = {
-          1 => { 'judge_1': [7.5, 9.5],
-                 'judge_2': [nil, 8.25],
-                 'judge_3': [nil, 8.25]},
-          2 => { 'judge_1': [3, 1.25, 5.5],
-                 'judge_2': [3, 1.75],
-                 'judge_3': [3, nil, 5.5, 6]}
+          1 => {'judge_1': [7.5, 9.5],
+                'judge_2': [nil, 8.25],
+                'judge_3': [nil, 8.25]},
+          2 => {'judge_1': [3, 1.25, 5.5],
+                'judge_2': [3, 1.75],
+                'judge_3': [3, nil, 5.5, 6]}
       }
 
       expect(heat.result).to eql([
                                      {athlete_id: 1, total: 16.17, waves: [7.5, 8.67]},
                                      {athlete_id: 2, total: 11.5, waves: [3.0, 1.5, 5.5, 6.0]},
                                  ])
+    end
+
+    it 'handles unscored waves at the end of the wave score row' do
+      heat.scores = {
+          10 => { 14 => [1.75, 1, 1.5, 2.5, 3.2, 1, 2],
+                  15 => [1.00, 1, 1.0, 3.0, 3.0, 1, 1]},
+          8  => { 14 => [1.5, 2.5, 2.5, 2.5, nil],
+                  15 => [1.0, 2.0, 3.0, 2.0]},
+          4  => { 15 => [1, 3, 1, 1],
+                  14 => [0.75, 3, 1, 0.5, nil, nil]},
+          5  => { 14 => [2.5, nil],
+                  15 => [2]}}
+
+      expect(heat.result).to eql([{:athlete_id=>10, :total=>5.85, :waves=>[1.38, 1.0, 1.25, 2.75, 3.1, 1.0, 1.5]},
+                                  {:athlete_id=>8,  :total=>5.0,  :waves=>[1.25, 2.25, 2.75, 2.25]},
+                                  {:athlete_id=>4,  :total=>4.0,  :waves=>[0.88, 3.0, 1.0, 0.75]},
+                                  {:athlete_id=>5,  :total=>2.25, :waves=>[2.25]}])
     end
 
   end

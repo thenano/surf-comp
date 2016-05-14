@@ -29,7 +29,7 @@ class Heat < ApplicationRecord
     scores.map{|athlete_id, value| [athlete_id, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
     .to_h
     .map { |athlete_id, waves|
-      {athlete_id: athlete_id, total: waves.compact.sort.reverse.slice(0, 2).reject(&:nil?).reduce(:+).round(2), waves: waves.compact}
+      {athlete_id: athlete_id, total: waves.compact.sort.reverse.slice(0, 2).reduce(:+).round(2), waves: waves.compact}
     }
     .sort_by { |score| [-score[:total], *score[:waves].sort.reverse.map{|score| -score}] }
   end
@@ -39,6 +39,7 @@ class Heat < ApplicationRecord
       -> (scores) {
         return scores unless scores.is_a? Array
         flat_scores = scores.flatten.compact
+        return nil if flat_scores.empty?
         return (flat_scores.reduce(:+) / flat_scores.size.to_f).round(2)
       }
     end
