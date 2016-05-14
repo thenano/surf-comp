@@ -31,7 +31,7 @@ export class Header extends React.Component {
                         {id: "logo"},
                         React.createElement(
                             Link, {to: "/"},
-                            "site-name"
+                            "home"
                             // d.img({src: "/img/logo-small.png", alt: "surf"})
                         )
                     ),
@@ -59,7 +59,7 @@ export class Header extends React.Component {
                         {id: "logo"},
                         React.createElement(
                             Link, {to: "/"},
-                            "site-name"
+                            "home"
                             // d.img({src: "/img/logo-small.png", alt: "surf"})
                         )
                     ),

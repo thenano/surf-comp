@@ -41,7 +41,7 @@ export class Home extends React.Component {
                 d.div(
                     {id: "hero-content"},
 
-                    d.h1({}, "SURF")
+                    d.h1({}, "Bondi Boardriders")
                 ),
 
             ),
