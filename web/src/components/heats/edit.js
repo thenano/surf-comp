@@ -252,7 +252,7 @@ export class EditHeats extends React.Component {
                 {},
                 d.div(
                     {className: "wrapper"},
-                    "Arrange Surfers"
+                    `Heat draw`
                 ),
             ),
 
