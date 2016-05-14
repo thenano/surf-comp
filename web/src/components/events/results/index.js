@@ -68,7 +68,7 @@ class AthleteHeatResult extends React.Component {
 
                 scores.map((s, i) => {
                     return d.li(
-                        {className: `wave ${topTwo.contains(i) ? "top" : ""}`},
+                        {key: i, className: `wave ${topTwo.contains(i) ? "top" : ""}`},
                         d.sup({}, i+1),
                         Number(s).toFixed(2)
                     );
