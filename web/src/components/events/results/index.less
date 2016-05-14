@@ -1,0 +1,145 @@
+.heat-results {
+    ol {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    @row-height: 80px;
+    @header-height: 25px;
+
+    .athlete-heat-result {
+        height: @row-height;
+        display: flex;
+        flex-direction: row;
+        margin: 4px 0;
+
+        header {
+            height: @header-height;
+            line-height: @header-height;
+            background: #eceff1;
+            color: #757575;
+        }
+
+        & > div {
+            margin: 0 2px;
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+        }
+
+        .name {
+            position: relative;
+            flex: 2 1 0;
+            font-family: @serif;
+            font-size: 20px;
+            height: @row-height;
+            vertical-align: top;
+            float: left;
+            padding: 5px 20px;
+
+            .place {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+
+            & > div {
+                position: absolute;
+                left: 0;
+                top: 0;
+                padding: 15px 20px;
+                padding-left: 100px;
+            }
+        }
+
+        .overall {
+            color: white;
+            background: #b0bec5;
+
+            header {
+                background: #607d8b;
+                color: white;
+            }
+        }
+
+        .overall, .first-wave, .second-wave {
+            text-align: center;
+            flex: 1 1 0;
+
+            & > div {
+                font-family: @serif;
+                font-size: 28px;
+                line-height: @row-height - @header-height;
+            }
+        }
+
+        .all-wave-scores {
+            flex: 3 1 0;
+
+            .wave {
+                position: relative;
+                width: 20%;
+                height: @row-height / 3;
+                line-height: @row-height / 3;
+                float: left;
+                margin: 0;
+                text-align: center;
+                font-size: 14px;
+                font-family: @serif;
+
+                &.top {
+                    background: #00e676;
+                    color: white;
+                    font-weight: bold;
+
+                    sup {
+                        color: #eee;
+                    }
+                }
+
+                sup {
+                    position: absolute;
+                    left: 2px;
+                    top: 7px;
+                    color: #bdbdbd;
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+
+    .heat-header {
+        position: relative;
+        background: #eceff1;
+        color: #757575;
+        padding: 5px 20px;
+
+        .heat-name {
+            font-family: @serif;
+            font-size: 20px;
+            color: black;
+        }
+
+        .average-score {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15px;
+            font-variant: small-caps;
+
+            .score {
+                font-size: 19px;
+            }
+        }
+    }
+}
+
+#event-results {}
