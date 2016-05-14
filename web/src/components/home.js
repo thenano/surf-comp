@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { fetch } from "../decorators";
 
 import heroVideo from "../assets/v/perth.compressed.mp4";
+import heroPoster from "../assets/i/poster.jpg";
 
 var d = React.DOM;
 
@@ -33,7 +34,8 @@ export class Home extends React.Component {
                             loop: "loop",
                             autoPlay: "autoplay",
                             preload: "auto",
-                            src: heroVideo
+                            src: heroVideo,
+                            poster: heroPoster
                         },
                     )
                 ),
