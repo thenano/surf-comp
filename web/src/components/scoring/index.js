@@ -207,10 +207,17 @@ class ScoreCard extends React.Component {
                 scoreRows,
             ),
 
-            d.button(
-                {className: "button flat", onClick: this.props.onClick.bind(this, heat.get("id"))},
-                "Finalise Heat",
-            ),
+            heat.get("time") ?
+                null :
+                d.button(
+                    {className: "button flat", onClick: this.props.onClick.bind(this, heat.get("id"))},
+                    "Finalise Heat",
+                ),
+
+
+            heat.get("time") ?
+                d.i({className: "done fa fa-check"}) :
+                null,
 
             d.div({className: "clear"})
         );
