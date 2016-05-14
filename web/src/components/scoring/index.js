@@ -23,9 +23,9 @@ class WaveScore extends React.Component {
                 onMouseOut: () => this.props.onMouseOut(this.props.number)
             },
 
-            forms.number("", `w8`, {
+            forms.number("", `w-${this.props.number}`, {
                 disabled: this.props.disabled,
-                value: this.props.value || '',
+                value: this.props.value || "",
                 onChange: (e) => this.props.onChange(e.target.value),
                 onBlur: (e) => this.props.onBlur(e.target.value)
             })
@@ -79,8 +79,8 @@ class AthleteScoreRow extends React.Component {
                 {className: `jersey ${jersey}`},
             ),
 
-            waves,
-        )
+            waves
+        );
     }
 }
 
@@ -106,8 +106,8 @@ class DisabledScoreRow extends React.Component {
                 {className: `jersey ${jersey}`},
             ),
 
-            waves,
-        )
+            waves
+        );
     }
 }
 
@@ -150,7 +150,7 @@ class ScoreCard extends React.Component {
 
         let hoverWave;
         if (this.state.hovered != null) {
-            hoverWave = `hover-wave-${this.state.hovered}`
+            hoverWave = `hover-wave-${this.state.hovered}`;
         }
 
         let waveTitles = [];
@@ -295,7 +295,7 @@ export class Scoring extends React.Component {
 
             d.div(
                 {className: "wrapper"},
-                heats.map((heat, k) => {
+                heats.map(heat => {
                     return scoreCard(heat, this.saveScore.bind(this), this.endHeat.bind(this));
                 }).valueSeq()
             ),

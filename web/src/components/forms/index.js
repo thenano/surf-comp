@@ -49,7 +49,7 @@ class Text extends Field {
         let onBlur = (e) => {
             this.setState({focus: false});
             if (typeof this.props.onBlur == "function") {
-                this.props.onBlur(e)
+                this.props.onBlur(e);
             }
         };
 

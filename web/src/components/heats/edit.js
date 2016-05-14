@@ -63,7 +63,7 @@ class AthleteSlot extends React.Component {
             {
                 onClick: remove,
                 className: "danger submit " + (this.props.isSubmitting ? "disabled" : ""),
-                style: {marginLeft: '20px'}
+                style: {marginLeft: "20px"}
             },
 
             d.i({className: "fa fa-trash"}),
@@ -186,7 +186,7 @@ export class EditHeats extends React.Component {
                 if (result.heat_offset !== 0) {
                     let message = ` ${-1 * result.heat_offset} heats were removed, please check the schedule for changes.`;
 
-                     dispatch(SnackbarActions.message(message));
+                    dispatch(SnackbarActions.message(message));
                 }
                 this.setState({ submitting: false });
             });
@@ -244,7 +244,7 @@ export class EditHeats extends React.Component {
 
     render() {
         let heats = this.props.heats.map((h, heat_id) => {
-            let remove = (h.get("round_position") === 0 && !h.get('time')) ? this.remove.bind(this, h) : undefined;
+            let remove = (h.get("round_position") === 0 && !h.get("time")) ? this.remove.bind(this, h) : undefined;
             if (this.state.hover.get("heat") == heat_id) {
                 return heat(h, ::this.hover, ::this.swap, remove, this.state.hover.get("position"));
             } else {
