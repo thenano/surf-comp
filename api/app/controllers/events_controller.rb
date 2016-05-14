@@ -1,5 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, except: :index
+  before_action :authenticate_user!, only: [:end_heat]
 
   def index
     @events = Event.all

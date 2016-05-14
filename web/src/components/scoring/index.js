@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import * as EventActions from "../../actions/event";
 import * as HeatActions from "../../actions/heat";
+import * as SnackbarActions from "../../actions/snackbar";
 import { fetch } from "../../decorators";
 import * as forms from "../forms";
 
@@ -208,16 +209,11 @@ class ScoreCard extends React.Component {
             ),
 
             heat.get("time") ?
-                null :
+                d.i({className: "done fa fa-check"}) :
                 d.button(
                     {className: "button flat", onClick: this.props.onClick.bind(this, heat.get("id"))},
                     "Finalise Heat",
                 ),
-
-
-            heat.get("time") ?
-                d.i({className: "done fa fa-check"}) :
-                null,
 
             d.div({className: "clear"})
         );
@@ -257,15 +253,9 @@ export class Scoring extends React.Component {
 
         const { events } = this.props;
         let event = events.get(Number.parseInt(this.props.params.id));
-        let allHeats = this.props.heats;
-        let northBank = event.getIn(["schedule", 0]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "North")] : null),
-            southBank = event.getIn(["schedule", 1]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "South")] : null);
-        // this sort is bad, as ids are not guarantee of the order of the heats
-        // specially after schedule manipulation
-        let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
 
         this.state = {
-            event, heats
+            event
         };
     }
 
@@ -274,10 +264,22 @@ export class Scoring extends React.Component {
     }
 
     endHeat(heat_id) {
-        this.props.dispatch(EventActions.endHeat(this.state.event.get("id"), heat_id));
+        let { dispatch } = this.props;
+        dispatch(EventActions.endHeat(this.state.event.get("id"), heat_id))
+            .then(() => {
+                let message = "Heat finished, please check the heat draw to see who has progressed.";
+                dispatch(SnackbarActions.message(message));
+            });
     }
 
     render() {
+        let allHeats = this.props.heats;
+        let northBank = this.state.event.getIn(["schedule", 0]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "North")] : null),
+            southBank = this.state.event.getIn(["schedule", 1]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "South")] : null);
+        // this sort is bad, as ids are not guarantee of the order of the heats
+        // specially after schedule manipulation
+        let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
+
         return d.div(
             {
                 id: "scoring"
@@ -293,7 +295,7 @@ export class Scoring extends React.Component {
 
             d.div(
                 {className: "wrapper"},
-                this.state.heats.map((heat, k) => {
+                heats.map((heat, k) => {
                     return scoreCard(heat, this.saveScore.bind(this), this.endHeat.bind(this));
                 }).valueSeq()
             ),
