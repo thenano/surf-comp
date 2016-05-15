@@ -1,8 +1,10 @@
 import React from "react";
+import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
 import { link } from "../navigation";
+import { HeatResults } from "./results/card";
 
 var d = React.DOM;
 
@@ -92,16 +94,72 @@ export class ShowEvent extends React.Component {
         );
     }
 
-    renderScoring() {
-        const { events } = this.props;
-        let event = events.get(Number.parseInt(this.props.params.id));
+    renderActiveHeat() {
+        let { active } = this.props;
+        let heat = Immutable.fromJS({
+            started_at: new Date(),
+            athletes: [
+                {name: "Sam Gibson", uid: "10102339466916613"},
+                {name: "Fernando Friere", uid: "10102339466916613"},
+                {name: "Chris Friend", uid: "10102339466916613"}
+            ],
+            division: "Groms",
+            round: "Round 1",
+            number: "3"
+        });
+
+        let renderedScores;
+        if (active) {
+            renderedScores = d.div(
+                {className: "event-active-heat"},
+
+                d.h2(
+                    {},
+                    d.i({className: "fa fa-fire"}),
+                )
+            );
+        } else {
+            renderedScores = d.div(
+                {className: "scores"},
+                React.createElement(
+                    HeatResults,
+                    {heat, places: false}
+                )
+            );
+        }
 
         return d.div(
-            {className: "event-scoring"},
+            {className: "event-next-heat"},
 
-            d.h2({}, d.i({className: "fa fa-tachometer"}), "Scoring"),
+            d.h2(
+                {className: "next-heat"},
+                d.i({className: "fa fa-fire"}),
+                "Next Heat",
+            ),
 
-            link("start scoring", {to: `/events/${event.get("id")}/scoring`})
+            d.div(
+                {},
+                d.span({className: "time"}, "Scheduled Start"),
+                // todo - replace with a real time
+                d.span({className: "time"}, d.i({className: "fa fa-clock-o"}), "07:00")
+            ),
+
+            d.div(
+                {},
+                d.span({className: "time"}, "Connected Judges"),
+                d.span({className: "time"}, d.i({className: "fa fa-group"}), "0")
+            ),
+
+            renderedScores,
+
+            active ?
+                null :
+                d.button(
+                    {className: "start button"},
+                    "Start Heat"
+                ),
+
+            d.div({className: "clear"})
         );
     }
 
@@ -127,7 +185,7 @@ export class ShowEvent extends React.Component {
                 d.hr({}),
                 this.renderSchedule(),
                 d.hr({}),
-                this.renderScoring(),
+                this.renderActiveHeat(),
             )
         );
     }
