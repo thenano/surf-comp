@@ -11,6 +11,7 @@ gem 'puma'
 gem 'devise'
 gem 'omniauth-facebook'
 gem 'rack-rewrite'
+gem 'pusher'
 
 group :development, :test do
   gem 'rspec-rails'

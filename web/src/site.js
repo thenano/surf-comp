@@ -11,6 +11,7 @@ import { addLoaded } from "./enhancers";
 
 import { Application } from "./components/application";
 import { Home } from "./components/home";
+import { TestCable } from "./components/testCable";
 import { NotFound } from "./components/navigation";
 import { LoginForm } from "./components/login";
 import { EditTimetable } from "./components/timetables";
@@ -65,6 +66,7 @@ ReactDOM.render(
                 r("/events/:id/division/:division_id/edit", EditHeats),
                 r("/events/:id/scoring", Scoring),
                 r("/events/:id/results", Results),
+                r("/testCable", TestCable),
                 r("*", NotFound)
             )
         )
