@@ -8,10 +8,10 @@ export function getCurrentUser() {
 export function login(email, pass) {
     return {
         type: "LOGIN_USER",
-        promise: api => api.post("users/sign_in", {
+        promise: api => api.post("users/sign_in", { user: {
             email: email,
             password: pass
-        })
+        }})
     };
 }
 
