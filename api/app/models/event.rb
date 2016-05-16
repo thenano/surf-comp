@@ -35,6 +35,15 @@ class Event < ApplicationRecord
     (added_heats.size - removed_heats.size)
   end
 
+  def current_heats
+    bank_1_heat_id = schedule[0][current_schedule_index]
+    bank_2_heat_id = schedule[1][current_schedule_index]
+    [
+      bank_1_heat_id ? Heat.find(bank_1_heat_id) : nil,
+      bank_2_heat_id ? Heat.find(bank_2_heat_id) : nil
+    ]
+  end
+
   private
     def replace_and_remove_heats(removed_heats, added_heats)
       bank1, bank2 = schedule

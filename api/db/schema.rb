@@ -48,9 +48,10 @@ ActiveRecord::Schema.define(version: 20160507095022) do
   create_table "events", force: :cascade do |t|
     t.string   "name"
     t.date     "date"
+    t.integer  "current_schedule_index", default: 0
     t.text     "schedule"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   create_table "heats", force: :cascade do |t|
