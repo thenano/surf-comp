@@ -1,0 +1,43 @@
+#live-judging {
+    .wrapper {
+        position: relative;
+        min-height: 95vh - @site-header-height;
+    }
+
+    .connection-indicator {
+        transition: color ease-in 200ms;
+        &.connected {
+            color: #76ff03;
+        }
+
+        &.disconnected {
+            color: #f44336;
+        }
+    }
+
+    .loading {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+
+        .spinner {
+            margin: 0 auto;
+            display: block;
+        }
+
+        .content {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .message {
+            font-family: @serif;
+            font-size: 24px;
+            margin-bottom: 35px;
+        }
+    }
+}

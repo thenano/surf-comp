@@ -3,8 +3,33 @@ import Immutable from "immutable";
 import * as HeatActions from "../../../actions/heat";
 import { connect } from "react-redux";
 import { ScoreCard } from "../../scoring";
+import { Spinner } from "../../spinner";
 
 var d = React.DOM;
+
+class ConnectionIndicator extends React.Component {
+    render() {
+        return d.div(
+            {className: `connection-indicator ${this.props.connected ? "connected" : "disconnected"}`},
+
+            d.i({className: "fa fa-circle"})
+        );
+    }
+}
+
+class LoadingOverlay extends React.Component {
+    render() {
+        return d.div(
+            {className: "loading"},
+
+            d.div(
+                {className: "content"},
+                d.div({className: "message"}, this.props.message),
+                React.createElement(Spinner, {})
+            )
+        );
+    }
+}
 
 @connect(state => state)
 export class LiveJudging extends React.Component {
@@ -58,19 +83,16 @@ export class LiveJudging extends React.Component {
     }
 
     renderConnected() {
-        return d.div(
-            {},
-
-            this.state.heat ?
-                null :
-                "Waiting for heat to start..."
+        return React.createElement(
+            LoadingOverlay,
+            {message: "Waiting for organiser to start heat..."}
         );
     }
 
     renderDisconnected() {
-        return d.div(
-            {},
-            "Connecting to Event"
+        return React.createElement(
+            LoadingOverlay,
+            {message: "Connecting..."}
         );
     }
 
@@ -86,9 +108,18 @@ export class LiveJudging extends React.Component {
                 ),
             ),
 
-            this.state.connected ? 
-                this.renderConnected() :
-                this.renderDisconnected()
+            d.div(
+                {className: "wrapper"},
+
+                React.createElement(
+                    ConnectionIndicator,
+                    {connected: this.state.connected}
+                ),
+
+                this.state.connected ? 
+                    this.renderConnected() :
+                    this.renderDisconnected()
+            )
         )
     }
 }

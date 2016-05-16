@@ -18,10 +18,13 @@
 @import "scoring/index";
 @import "events/results/index";
 @import "events/results/card";
+@import "events/judging/index";
 
 @page-vert-padding: 15px;
 @page-horiz-padding: 35px;
 @page-max-width: 960px;
+
+@site-header-height: 30vh;
 
 @serif: "Source Serif Pro";
 @sans-serif: "Source Sans Pro";
@@ -77,7 +80,7 @@ h1 {
     margin-top: 0;
     background: #2196f3;
     color: white;
-    height: 30vh;
+    height: @site-header-height;
     line-height: 40vh;
 }
 

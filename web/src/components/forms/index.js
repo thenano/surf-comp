@@ -11,7 +11,7 @@ export function floatingActionButton(icon, submit, isSubmitting) {
     return React.createElement(FloatingActionButton, {icon, onClick: submit, isSubmitting});
 }
 
-function spinner(props) {
+export function spinner(props) {
     return React.createElement(Spinner, props);
 }
 
