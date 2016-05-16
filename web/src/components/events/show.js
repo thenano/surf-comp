@@ -45,6 +45,48 @@ export class ShowEvent extends React.Component {
         let heat = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first();
 
         dispatch(HeatActions.getResult(heat.get("id")));
+
+        let pusher = new Pusher("9228f4893a65786c6b33", {
+            encrypted: true,
+            authEndpoint: "/api/pubsubauth"
+        });
+
+        let channel = pusher.subscribe(`presence-${this.props.params.id}`);
+        channel.bind("pusher:subscription_succeeded", this.connected.bind(this));
+        channel.bind("pusher:subscription_error", this.disconnected.bind(this));
+        channel.bind("pusher:member_added", this.judgeConnected.bind(this));
+        channel.bind("pusher:member_removed", this.judgeDisconnected.bind(this));
+
+        this.state = {
+            channel: channel,
+            connected: false
+        };
+    }
+
+    judgeConnected() {
+        this.setState({
+            judges: this.state.judges + 1
+        });
+    }
+
+    judgeDisconnected() {
+        this.setState({
+            judges: this.state.judges - 1
+        });
+    }
+
+    disconnected() {
+        this.setState({
+            judges: 0,
+            connected: false
+        });
+    }
+
+    connected(judges) {
+        this.setState({
+            judges: Object.keys(judges.members).length-1,
+            connected: true
+        });
     }
 
     renderDivision(division) {
@@ -123,24 +165,10 @@ export class ShowEvent extends React.Component {
     renderActiveHeat() {
         let { heats, events } = this.props;
         let heatID = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first().get("id");
-        console.log(heats.toJS());
         let heat = heats.get(heatID);
         if (!heat) {
             return null;
         }
-        console.log(heat.toJS());
-        // let heat = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first();
-        // let heat = Immutable.fromJS({
-        //     started_at: new Date(),
-        //     athletes: [
-        //         {name: "Sam Gibson", uid: "10102339466916613"},
-        //         {name: "Fernando Friere", uid: "10102339466916613"},
-        //         {name: "Chris Friend", uid: "10102339466916613"}
-        //     ],
-        //     division: "Groms",
-        //     round: "Round 1",
-        //     number: "3"
-        // });
 
         let renderedScores = d.div(
             {className: "scores"},
@@ -169,7 +197,7 @@ export class ShowEvent extends React.Component {
             d.div(
                 {},
                 d.span({className: "time"}, "Connected Judges"),
-                d.span({className: "time"}, d.i({className: "fa fa-group"}), "0")
+                d.span({className: "time"}, d.i({className: "fa fa-group"}), this.state.judges)
             ),
 
             renderedScores,

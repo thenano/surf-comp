@@ -126,7 +126,7 @@ function athleteScore(athlete, key, options) {
     }
 }
 
-class ScoreCard extends React.Component {
+export class ScoreCard extends React.Component {
     constructor(props, context) {
         super(props, context);
 

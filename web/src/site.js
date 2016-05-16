@@ -11,13 +11,13 @@ import { addLoaded } from "./enhancers";
 
 import { Application } from "./components/application";
 import { Home } from "./components/home";
-import { TestCable } from "./components/testCable";
 import { NotFound } from "./components/navigation";
 import { LoginForm } from "./components/login";
 import { EditTimetable } from "./components/timetables";
 import { SignUp } from "./components/sign-up";
 import { EditHeats } from "./components/heats/edit";
 import { ShowEvent } from "./components/events/show";
+import { LiveJudging } from "./components/events/judging";
 import { Scoring } from "./components/scoring";
 import { Results } from "./components/events/results";
 
@@ -66,7 +66,7 @@ ReactDOM.render(
                 r("/events/:id/division/:division_id/edit", EditHeats),
                 r("/events/:id/scoring", Scoring),
                 r("/events/:id/results", Results),
-                r("/testCable", TestCable),
+                r("/events/:id/live-judging", LiveJudging),
                 r("*", NotFound)
             )
         )

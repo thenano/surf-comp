@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     devise_scope :user do
       get '/users/current', to: 'users/sessions#current'
     end
+
+    post "/pubsubauth", to: "pusher#auth"
   end
 
   # Serve websocket cable requests in-process

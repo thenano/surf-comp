@@ -21,8 +21,6 @@ class AthleteHeatResult extends React.Component {
             .sortBy(s => s[0])
             .slice(-2);
 
-        console.log(best.toJS());
-
         let topTwo = best.map(s => s[1]);
 
         return d.li(
