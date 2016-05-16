@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
     resources :heats, only: [:show] do
       put 'add_score', on: :member
+      patch 'start', on: :member
+      get 'scores', on: :member
     end
 
     devise_for :users, controllers: {sessions: 'users/sessions', registrations: 'users/registrations', :omniauth_callbacks => 'users/omniauth_callbacks'}
@@ -19,7 +21,7 @@ Rails.application.routes.draw do
       get '/users/current', to: 'users/sessions#current'
     end
 
-    post "/pubsubauth", to: "pusher#auth"
+    post '/pubsubauth', to: 'pusher#auth'
   end
 
   # Serve websocket cable requests in-process
