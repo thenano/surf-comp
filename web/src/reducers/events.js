@@ -29,6 +29,10 @@ export function reducer(state = defaultState, action) {
             .setIn(["schedules", action.res.data.event.id], Immutable.fromJS(action.res.data.event))
             .setIn(["meta", `@@loaded/schedules/${action.res.data.event.id}`], true)
             .deleteIn(["meta", `@@loaded/${action.res.data.event.id}`]);
+    case "GET_CURRENT_HEATS":
+        return state
+            .setIn(["current_heats", action.res.data.id], Immutable.fromJS(action.res.data.heats))
+            .setIn(["meta", `@@loaded/current_heats/${action.res.data.id}`], true);
     default:
         return state;
     }

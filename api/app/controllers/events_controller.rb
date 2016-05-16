@@ -20,20 +20,23 @@ class EventsController < ApplicationController
   end
 
   def current_heats
-    render json: @event.current_heats.map { |heat|
-      {
-        id: heat.id,
-        division: heat.event_division.division.name,
-        round: heat.round,
-        number: heat.position.next,
-        start_time: heat.start_time,
-        scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
-        result: heat.result,
-        athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
-          athlete = athlete_heat.athlete
-          {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
-        }
-      } if heat
+    render json: {
+      id: @event.id,
+      heats: @event.current_heats.map { |heat|
+        {
+          id: heat.id,
+          division: heat.event_division.division.name,
+          round: heat.round,
+          number: heat.position.next,
+          start_time: heat.start_time,
+          scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
+          result: heat.result,
+          athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
+            athlete = athlete_heat.athlete
+            {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
+          }
+        } if heat
+      }
     }
   end
 

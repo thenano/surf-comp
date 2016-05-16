@@ -1,7 +1,7 @@
 import React from "react";
-import Immutable from "immutable";
-import * as HeatActions from "../../../actions/heat";
+import * as EventActions from "../../../actions/event";
 import { connect } from "react-redux";
+import { fetch } from "../../../decorators";
 import { ScoreCard } from "../../scoring";
 import { Spinner } from "../../spinner";
 
@@ -31,7 +31,10 @@ class LoadingOverlay extends React.Component {
     }
 }
 
-@connect(state => state)
+@fetch((store, r) => {store.dispatch(EventActions.getCurrentHeats(r.params.id))})
+@connect((state, props) => ({
+    heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
+}))
 export class LiveJudging extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -59,15 +62,10 @@ export class LiveJudging extends React.Component {
 
     heatStarted(message) {
         console.log(message);
-        let { heat_id } = message;
         let { dispatch } = this.props;
+        let event_id = this.props.params.id;
 
-        dispatch(
-            HeatActions.getScoringDetails(heat_id)
-        ).then(heat => {
-            console.log(heat);
-            this.setState({ heat });
-        });
+        dispatch(EventActions.getCurrentHeats(event_id));
     }
 
     disconnected() {
@@ -83,10 +81,16 @@ export class LiveJudging extends React.Component {
     }
 
     renderConnected() {
-        return React.createElement(
-            LoadingOverlay,
-            {message: "Waiting for organiser to start heat..."}
-        );
+        let heat = this.props.heats.get(0);
+        return heat.get('start_time') ?
+            React.createElement(
+                ScoreCard,
+                {heat, onBlur: () => {}, onClick: () => {}}
+            ) :
+            React.createElement(
+                LoadingOverlay,
+                {message: "Waiting for organiser to start heat..."}
+            )
     }
 
     renderDisconnected() {

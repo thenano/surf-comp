@@ -66,3 +66,10 @@ export function endHeat(event_id, heat_id) {
         promise: api => api.patch(`events/${event_id}/heats/${heat_id}/end`)
     };
 }
+
+export function getCurrentHeats(event_id) {
+    return {
+        type: "GET_CURRENT_HEATS",
+        promise: api => api.get(`events/${event_id}/current_heats`)
+    };
+}
