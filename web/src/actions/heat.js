@@ -20,3 +20,12 @@ export function addScore(heat_id, athlete_id, wave, score) {
         })
     };
 }
+
+export function getScoringDetails(heat_id) {
+    return {
+        type: "GET_HEAT_SCORING_DETAILS",
+        promise: api => api.get(`heats/${heat_id}/scores`, {
+            score: {heat_id}
+        })
+    };
+}

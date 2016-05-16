@@ -1,5 +1,6 @@
 import React from "react";
 import Immutable from "immutable";
+import * as HeatActions from "../../../actions/heat";
 import { connect } from "react-redux";
 import { ScoreCard } from "../../scoring";
 
@@ -19,10 +20,29 @@ export class LiveJudging extends React.Component {
         channel.bind("pusher:subscription_succeeded", this.connected.bind(this));
         channel.bind("pusher:subscription_error", this.disconnected.bind(this));
 
+        let scoresChannel = pusher.subscribe(`scores-${this.props.params.id}`);
+        scoresChannel.bind("pusher:subscription_succeeded", this.connected.bind(this));
+        scoresChannel.bind("pusher:subscription_error", this.disconnected.bind(this));
+        scoresChannel.bind("heat-started", this.heatStarted.bind(this));
+
         this.state = {
             channel: channel,
+            scores: scoresChannel,
             connected: false
         };
+    }
+
+    heatStarted(message) {
+        console.log(message);
+        let { heat_id } = message;
+        let { dispatch } = this.props;
+
+        dispatch(
+            HeatActions.getScoringDetails(heat_id)
+        ).then(heat => {
+            console.log(heat);
+            this.setState({ heat });
+        });
     }
 
     disconnected() {
@@ -65,7 +85,6 @@ export class LiveJudging extends React.Component {
                     "Live Scorecard"
                 ),
             ),
-
 
             this.state.connected ? 
                 this.renderConnected() :

@@ -165,7 +165,7 @@ export class ShowEvent extends React.Component {
     startHeat(heatID) {
         let { dispatch } = this.props;
 
-        dispath(HeatActions.start(heatID));
+        dispatch(HeatActions.start(heatID));
     }
 
     renderActiveHeat() {
@@ -211,7 +211,7 @@ export class ShowEvent extends React.Component {
             // active ?
             //     null :
             d.button(
-                {className: "start button", onClick: this.startHeat(heatID)},
+                {className: "start button", onClick: this.startHeat.bind(this, heatID)},
                 "Start Heat"
             ),
 

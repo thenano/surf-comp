@@ -2,8 +2,8 @@ class CreateHeats < ActiveRecord::Migration[5.0]
   def change
     create_table :heats do |t|
       t.string :round
-      t.start_time :time
-      t.end_time :time
+      t.time :start_time
+      t.time :end_time
 
       t.integer :position
       t.integer :round_position

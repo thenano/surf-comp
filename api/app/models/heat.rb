@@ -29,7 +29,7 @@ class Heat < ApplicationRecord
     all_athletes = athletes.map{|athlete| [athlete.id, []]}.to_h
 
     merged_athletes = all_athletes.merge(
-      scores.map{ |athlete_id, value|
+      (scores || []).map{ |athlete_id, value|
         [
           athlete_id,
           value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)

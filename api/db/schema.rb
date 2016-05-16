@@ -19,12 +19,10 @@ ActiveRecord::Schema.define(version: 20160507095022) do
     t.integer  "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["athlete_id", "heat_id"], name: "index_athlete_heats_on_athlete_id_and_heat_id", unique: true
+    t.index ["heat_id"], name: "index_athlete_heats_on_heat_id"
+    t.index ["position", "heat_id"], name: "index_athlete_heats_on_position_and_heat_id", unique: true
   end
-
-  add_index "athlete_heats", ["athlete_id", "heat_id"], name: "index_athlete_heats_on_athlete_id_and_heat_id", unique: true
-  add_index "athlete_heats", ["athlete_id"], name: "index_athlete_heats_on_athlete_id"
-  add_index "athlete_heats", ["heat_id"], name: "index_athlete_heats_on_heat_id"
-  add_index "athlete_heats", ["position", "heat_id"], name: "index_athlete_heats_on_position_and_heat_id", unique: true
 
   create_table "divisions", force: :cascade do |t|
     t.string   "name"
@@ -37,17 +35,15 @@ ActiveRecord::Schema.define(version: 20160507095022) do
     t.integer  "division_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["division_id"], name: "index_event_divisions_on_division_id"
+    t.index ["event_id"], name: "index_event_divisions_on_event_id"
   end
-
-  add_index "event_divisions", ["division_id"], name: "index_event_divisions_on_division_id"
-  add_index "event_divisions", ["event_id"], name: "index_event_divisions_on_event_id"
 
   create_table "event_divisions_users", id: false, force: :cascade do |t|
     t.integer "event_division_id", null: false
     t.integer "user_id",           null: false
+    t.index ["user_id", "event_division_id"], name: "index_event_divisions_users_on_user_id_and_event_division_id", unique: true
   end
-
-  add_index "event_divisions_users", ["user_id", "event_division_id"], name: "index_event_divisions_users_on_user_id_and_event_division_id", unique: true
 
   create_table "events", force: :cascade do |t|
     t.string   "name"
@@ -59,16 +55,16 @@ ActiveRecord::Schema.define(version: 20160507095022) do
 
   create_table "heats", force: :cascade do |t|
     t.string   "round"
-    t.time     "time"
+    t.time     "start_time"
+    t.time     "end_time"
     t.integer  "position"
     t.integer  "round_position"
     t.text     "scores"
     t.integer  "event_division_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.index ["event_division_id"], name: "index_heats_on_event_division_id"
   end
-
-  add_index "heats", ["event_division_id"], name: "index_heats_on_event_division_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -87,9 +83,8 @@ ActiveRecord::Schema.define(version: 20160507095022) do
     t.string   "image"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end

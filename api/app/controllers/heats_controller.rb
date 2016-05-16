@@ -37,12 +37,10 @@ class HeatsController < ApplicationController
   end
 
   def start
-    @heat.update_attribute!(:start_time, Time.now)
+    @heat.update_attributes!({start_time: Time.now})
 
     Pusher.trigger("scores-#{@heat.event_division.event.id}", 'heat-started', {
-        message: {
-            heat_id: @heat.id
-        }
+      heat_id: @heat.id
     })
 
     render status: :no_content
