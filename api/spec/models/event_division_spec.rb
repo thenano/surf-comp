@@ -616,7 +616,7 @@ RSpec.describe EventDivision, :type => :model do
           6 => {'judge': [6, 5]}
       }
 
-      division.end_heat(heat)
+      division.end_heat!(heat)
     end
 
     describe 'with 24 athletes' do
@@ -792,7 +792,7 @@ RSpec.describe EventDivision, :type => :model do
             4 => {'judge': [10, 10]},
             5 => {'judge': [7, 7]},
         }
-        division.end_heat(heat)
+        division.end_heat!(heat)
 
         final = division.heats.where(round: 'Final').first
 
@@ -814,7 +814,7 @@ RSpec.describe EventDivision, :type => :model do
             4 => {'judge': [10, 10]},
             5 => {'judge': [7, 7]},
         }
-        division.end_heat(heat)
+        division.end_heat!(heat)
 
         final = division.heats.where(round: 'Final').first
 

@@ -95,7 +95,8 @@ class EventsController < ApplicationController
 
   def end_heat
     @heat = Heat.find(params[:heat_id])
-    @heat.event_division.end_heat(@heat)
+    @heat.event_division.end_heat!(@heat)
+    @event.update!({current_schedule_index: @event.current_schedule_index.next})
 
     render json: build_event_schedule_json
   end
