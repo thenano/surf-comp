@@ -36,8 +36,6 @@ class Heat < ApplicationRecord
         ]
       }.to_h)
 
-    puts merged_athletes
-
     merged_athletes.map { |athlete_id, waves|
       {
         athlete_id: athlete_id,

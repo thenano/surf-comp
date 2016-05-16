@@ -29,7 +29,7 @@ class EventsController < ApplicationController
         start_time: heat.start_time,
         scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
         result: heat.result,
-        athletes: heat.athlete_heats.map { |athlete_heat|
+        athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
           athlete = athlete_heat.athlete
           {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
         }
