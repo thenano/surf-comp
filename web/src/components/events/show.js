@@ -162,6 +162,12 @@ export class ShowEvent extends React.Component {
         );
     }
 
+    startHeat(heatID) {
+        let { dispatch } = this.props;
+
+        dispath(HeatActions.start(heatID));
+    }
+
     renderActiveHeat() {
         let { heats, events } = this.props;
         let heatID = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first().get("id");
@@ -204,10 +210,10 @@ export class ShowEvent extends React.Component {
 
             // active ?
             //     null :
-            //     d.button(
-            //         {className: "start button"},
-            //         "Start Heat"
-            //     ),
+            d.button(
+                {className: "start button", onClick: this.startHeat(heatID)},
+                "Start Heat"
+            ),
 
             d.div({className: "clear"})
         );

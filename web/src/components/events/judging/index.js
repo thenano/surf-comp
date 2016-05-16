@@ -37,6 +37,23 @@ export class LiveJudging extends React.Component {
         });
     }
 
+    renderConnected() {
+        return d.div(
+            {},
+
+            this.state.heat ?
+                null :
+                "Waiting for heat to start..."
+        );
+    }
+
+    renderDisconnected() {
+        return d.div(
+            {},
+            "Connecting to Event"
+        );
+    }
+
     render() {
         return d.div(
             {id: "live-judging"},
@@ -47,20 +64,12 @@ export class LiveJudging extends React.Component {
                     {className: "wrapper"},
                     "Live Scorecard"
                 ),
-
-                null
-
-                // React.createElement(
-                //     ScoreCard,
-                //     {
-                //         heat: Immutable.fromJS({
-                //             division: "groms"
-                //         }),
-                //         onBlur: () => {},
-                //         onClick: () => {}
-                //     }
-                // )
             ),
+
+
+            this.state.connected ? 
+                this.renderConnected() :
+                this.renderDisconnected()
         )
     }
 }
