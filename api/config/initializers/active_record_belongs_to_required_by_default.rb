@@ -4,3 +4,4 @@
 # default, so it is introduced as a configuration option to ensure that apps
 # made on earlier versions of Rails are not affected when upgrading.
 Rails.application.config.active_record.belongs_to_required_by_default = true
+Rails.application.config.active_record.time_zone_aware_types = [:datetime, :time]
