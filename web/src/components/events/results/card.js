@@ -21,6 +21,8 @@ class AthleteHeatResult extends React.Component {
             .sortBy(s => s[0])
             .slice(-2);
 
+        console.log(best.toJS());
+
         let topTwo = best.map(s => s[1]);
 
         return d.li(
@@ -85,42 +87,20 @@ export class HeatResults extends React.Component {
         return d.div(
             {className: `heat-results ${this.props.places ? "" : "no-places"}`},
 
-            d.header(
-                {className: "heat-header"},
-                d.div(
-                    {className: "heat-name"},
-                    `${heat.get("division")} - ${heat.get("round")} - Heat ${heat.get("number")}`
-                )
-            ),
-
             d.ol(
                 {},
 
-                heat.get("athletes", Immutable.List()).map((athlete, i) => {
+                heat.get("result", Immutable.List()).map((result, i) => {
+                    let athlete = heat.getIn(["athletes", "" + result.get("athlete_id")]);
+
                     return React.createElement(AthleteHeatResult, {
                         key: i,
                         athlete,
-                        scores: heat.getIn(["scores", "athlete"], Immutable.List()),
-                        total: heat.get("total", 0),
+                        scores: result.get("waves", Immutable.List()),
+                        total: result.get("total", 0),
                         place: i+1
                     });
                 })
-                // React.createElement(AthleteHeatResult, {
-                //     // athlete: Immutable.fromJS({name: "Sam Gibson", uid: "10102339466916613"}),
-                //     // scores: Immutable.List([
-                //     //     1, 2.2, 9.23, 7, 5.2, 3, 4
-                //     // ]),
-                //     // total: 8.85,
-                //     // place: 1
-                // }),
-                // React.createElement(AthleteHeatResult, {
-                //     // athlete: Immutable.fromJS({name: "Fernando Freire", uid: "10102339466916613"}),
-                //     // scores: Immutable.List([
-                //     //     5, 7.2, 8.23, 7, 5.2, 9, 4, 4.3, 2.2, 1, 1, 1
-                //     // ]),
-                //     // total: 6.5,
-                //     // place: 2
-                // })
             )
         );
     }

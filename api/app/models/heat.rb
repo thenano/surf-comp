@@ -26,10 +26,24 @@ class Heat < ApplicationRecord
   end
 
   def result
-    scores.map{|athlete_id, value| [athlete_id, value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)]}
-    .to_h
-    .map { |athlete_id, waves|
-      {athlete_id: athlete_id, total: waves.compact.sort.reverse.slice(0, 2).reduce(:+).round(2), waves: waves.compact}
+    all_athletes = athletes.map{|athlete| [athlete.id, []]}.to_h
+
+    merged_athletes = all_athletes.merge(
+      scores.map{ |athlete_id, value|
+        [
+          athlete_id,
+          value.values.sort_by(&:size).reverse.reduce(:zip).map(&average_score)
+        ]
+      }.to_h)
+
+    puts merged_athletes
+
+    merged_athletes.map { |athlete_id, waves|
+      {
+        athlete_id: athlete_id,
+        total: !waves.nil? && waves.compact.sort.reverse.slice(0, 2).inject(0) { |m, o| m + o }.round(2),
+        waves: !waves.nil? && waves.compact
+      }
     }
     .sort_by { |score| [-score[:total], *score[:waves].sort.reverse.map{|score| -score}] }
   end

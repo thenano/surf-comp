@@ -30,10 +30,10 @@ class HeatsController < ApplicationController
     end
 
     def build_heat_json
-      athletes = []
+      athletes = {}
       @heat.athlete_heats.includes(:athlete).each do |athlete_heat|
         athlete = athlete_heat.athlete
-        athletes[athlete_heat.position] = {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
+        athletes[athlete_heat.id] = {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
       end
 
       return {

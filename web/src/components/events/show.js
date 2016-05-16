@@ -1,5 +1,6 @@
 import React from "react";
 import Immutable from "immutable";
+import * as HeatActions from "../../actions/heat";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
@@ -14,13 +15,38 @@ function zeroPad(num, places) {
 }
 
 @fetch((store, r) => {
+    let resources = [];
+
     if (!store.loaded(`events.${r.params.id}`)) {
-        return store
-            .dispatch(EventActions.get(r.params.id));
+        resources.push(
+            store
+                .dispatch(EventActions.get(r.params.id))
+        );
     }
+
+    if (!store.loaded(`events.schedules.${r.params.id}`)) {
+        resources.push(
+            store.dispatch(EventActions.getSchedule(r.params.id))
+        );
+    }
+
+    return Promise.all(resources);
 })
-@connect(state => ({events: state.events}))
+@connect(state => ({
+    events: state.events,
+    heats: state.heats
+}))
 export class ShowEvent extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+
+        // todo change to current
+        let { events, dispatch } = this.props;
+        let heat = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first();
+
+        dispatch(HeatActions.getResult(heat.get("id")));
+    }
+
     renderDivision(division) {
         let event_id = Number.parseInt(this.props.params.id);
 
@@ -95,38 +121,34 @@ export class ShowEvent extends React.Component {
     }
 
     renderActiveHeat() {
-        let { active } = this.props;
-        let heat = Immutable.fromJS({
-            started_at: new Date(),
-            athletes: [
-                {name: "Sam Gibson", uid: "10102339466916613"},
-                {name: "Fernando Friere", uid: "10102339466916613"},
-                {name: "Chris Friend", uid: "10102339466916613"}
-            ],
-            division: "Groms",
-            round: "Round 1",
-            number: "3"
-        });
-
-        let renderedScores;
-        if (active) {
-            renderedScores = d.div(
-                {className: "event-active-heat"},
-
-                d.h2(
-                    {},
-                    d.i({className: "fa fa-fire"}),
-                )
-            );
-        } else {
-            renderedScores = d.div(
-                {className: "scores"},
-                React.createElement(
-                    HeatResults,
-                    {heat, places: false}
-                )
-            );
+        let { heats, events } = this.props;
+        let heatID = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first().get("id");
+        console.log(heats.toJS());
+        let heat = heats.get(heatID);
+        if (!heat) {
+            return null;
         }
+        console.log(heat.toJS());
+        // let heat = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first();
+        // let heat = Immutable.fromJS({
+        //     started_at: new Date(),
+        //     athletes: [
+        //         {name: "Sam Gibson", uid: "10102339466916613"},
+        //         {name: "Fernando Friere", uid: "10102339466916613"},
+        //         {name: "Chris Friend", uid: "10102339466916613"}
+        //     ],
+        //     division: "Groms",
+        //     round: "Round 1",
+        //     number: "3"
+        // });
+
+        let renderedScores = d.div(
+            {className: "scores"},
+            React.createElement(
+                HeatResults,
+                {heat}
+            )
+        );
 
         return d.div(
             {className: "event-next-heat"},
@@ -152,12 +174,12 @@ export class ShowEvent extends React.Component {
 
             renderedScores,
 
-            active ?
-                null :
-                d.button(
-                    {className: "start button"},
-                    "Start Heat"
-                ),
+            // active ?
+            //     null :
+            //     d.button(
+            //         {className: "start button"},
+            //         "Start Heat"
+            //     ),
 
             d.div({className: "clear"})
         );
