@@ -1,13 +1,28 @@
 #live-judging {
+    background-color: #ececec;
+    height: 100%;
+
+    h1 {
+        background: #546e7a;
+    }
+
     .wrapper {
         position: relative;
         min-height: 95vh - @site-header-height;
     }
 
     .connection-indicator {
+        font-size: 14px;
+        position: absolute;
+        right: @page-horiz-padding;
+        top: -15px;
         transition: color ease-in 200ms;
+        margin-bottom: 30px;
+        font-family: @sans-serif;
+        transform: translate(0, -150%);
+
         &.connected {
-            color: #76ff03;
+            color: #00b0ff;
         }
 
         &.disconnected {

@@ -185,37 +185,46 @@ export class ScoreCard extends React.Component {
             ));
         }
 
-        return d.div(
-            {className: `card ${hoverWave ? hoverWave : ""}`},
-
-            d.header(
-                {className: `${heat.get("division").toLowerCase()}`},
-                `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${heat.get("bank")} Bank)`
-            ),
-
-            d.section(
-                {className: "score-table"},
-
-                d.div(
-                    {className: "title-row"},
-                    d.div(
-                        {className: "jersey"},
-                        "Rashie"
-                    ),
-                    waveTitles
-                ),
-
-                scoreRows,
-            ),
-
-            heat.get("time") ?
-                d.i({className: "done fa fa-check"}) :
+        let maybeFinalise = heat.get("time") ?
+            d.i({className: "done fa fa-check"}) :
                 d.button(
                     {className: "button flat", onClick: this.props.onClick.bind(this, heat.get("id"))},
                     "Finalise Heat",
+                );
+
+        if (!this.props.canFinalise) {
+            maybeFinalise = null;
+        }
+
+        return d.div(
+            {className: "score-card"},
+            d.div(
+                {className: `card ${hoverWave ? hoverWave : ""}`},
+
+                d.header(
+                    {className: `${heat.get("division").toLowerCase()}`},
+                    `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${heat.get("bank")} Bank)`
                 ),
 
-            d.div({className: "clear"})
+                d.section(
+                    {className: "score-table"},
+
+                    d.div(
+                        {className: "title-row"},
+                        d.div(
+                            {className: "jersey"},
+                            "Rashie"
+                        ),
+                        waveTitles
+                    ),
+
+                    scoreRows,
+                ),
+
+                maybeFinalise,
+
+                d.div({className: "clear"})
+            )
         );
     }
 }

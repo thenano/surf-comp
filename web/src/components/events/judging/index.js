@@ -14,7 +14,13 @@ class ConnectionIndicator extends React.Component {
         return d.div(
             {className: `connection-indicator ${this.props.connected ? "connected" : "disconnected"}`},
 
-            d.i({className: "fa fa-circle"})
+            d.i({className: "fa fa-circle"}),
+
+            d.span(
+                {className: "text"},
+                !this.props.connected ? " Not" : "",
+                " Connected"
+            )
         );
     }
 }
@@ -88,7 +94,7 @@ export class LiveJudging extends React.Component {
         return heat.get("start_time") ?
             React.createElement(
                 ScoreCard,
-                {heat, onBlur: () => {}, onClick: () => {}}
+                {canFinalise: false, heat, onBlur: () => {}, onClick: () => {}}
             ) :
             React.createElement(
                 LoadingOverlay,
