@@ -1,5 +1,6 @@
+/* global Pusher */
+
 import React from "react";
-import Immutable from "immutable";
 import * as HeatActions from "../../actions/heat";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";

@@ -1,3 +1,5 @@
+/* global Pusher */
+
 import React from "react";
 import * as EventActions from "../../../actions/event";
 import { connect } from "react-redux";
@@ -31,7 +33,9 @@ class LoadingOverlay extends React.Component {
     }
 }
 
-@fetch((store, r) => {store.dispatch(EventActions.getCurrentHeats(r.params.id))})
+@fetch((store, r) => {
+    store.dispatch(EventActions.getCurrentHeats(r.params.id));
+})
 @connect((state, props) => ({
     heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
 }))
@@ -60,8 +64,7 @@ export class LiveJudging extends React.Component {
         };
     }
 
-    heatStarted(message) {
-        console.log(message);
+    heatStarted() {
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
 
@@ -82,7 +85,7 @@ export class LiveJudging extends React.Component {
 
     renderConnected() {
         let heat = this.props.heats.get(0);
-        return heat.get('start_time') ?
+        return heat.get("start_time") ?
             React.createElement(
                 ScoreCard,
                 {heat, onBlur: () => {}, onClick: () => {}}
@@ -90,7 +93,7 @@ export class LiveJudging extends React.Component {
             React.createElement(
                 LoadingOverlay,
                 {message: "Waiting for organiser to start heat..."}
-            )
+            );
     }
 
     renderDisconnected() {
@@ -124,6 +127,6 @@ export class LiveJudging extends React.Component {
                     this.renderConnected() :
                     this.renderDisconnected()
             )
-        )
+        );
     }
 }
