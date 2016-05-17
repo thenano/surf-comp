@@ -29,7 +29,9 @@ class AthleteHeatResult extends React.Component {
             d.div(
                 {className: "name"},
                 d.section({className: "place"}, PLACES[this.props.place-1]),
-                d.img({className: "avatar", src: `//res.cloudinary.com/adventure/image/facebook/w_70,h_70,c_fill,r_max,g_face,bo_2px_solid_white/${athlete.get("uid")}.jpg`}),
+                // todo - add jersey colour all up in here
+                // todo - show pictures when we hook up FB login
+                // d.img({className: "avatar", src: `//res.cloudinary.com/adventure/image/facebook/w_70,h_70,c_fill,r_max,g_face,bo_2px_solid_white/${athlete.get("uid")}.jpg`}),
                 d.div({}, athlete.get("name"))
             ),
 

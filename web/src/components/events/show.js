@@ -1,6 +1,7 @@
 /* global Pusher */
 
 import React from "react";
+import Immutable from "immutable";
 import * as HeatActions from "../../actions/heat";
 import * as EventActions from "../../actions/event";
 import { fetch } from "../../decorators";
@@ -52,8 +53,15 @@ export class ShowEvent extends React.Component {
         channel.bind("pusher:member_added", this.judgeConnected.bind(this));
         channel.bind("pusher:member_removed", this.judgeDisconnected.bind(this));
 
+        let scoresChannel = pusher.subscribe(`scores-${this.props.params.id}`);
+        // scoresChannel.bind("pusher:subscription_succeeded", this.connected.bind(this));
+        // scoresChannel.bind("pusher:subscription_error", this.disconnected.bind(this));
+        scoresChannel.bind("score-changed", this.scoreReceived.bind(this));
+
         this.state = {
             pusher, channel,
+            scores: scoresChannel,
+            liveScores: Immutable.Map(),
             connected: false
         };
     }
@@ -83,7 +91,7 @@ export class ShowEvent extends React.Component {
 
     connected(judges) {
         this.setState({
-            judges: Object.keys(judges.members).length-1,
+            judges: Object.keys(judges.members || {}).length-1,
             connected: true
         });
     }
@@ -167,12 +175,21 @@ export class ShowEvent extends React.Component {
         dispatch(HeatActions.start(heatID));
     }
 
+    scoreReceived(m) {
+        let heat = Immutable.fromJS(m.message);
+        this.setState({
+            liveScores: this.state.liveScores.set(heat.get("id"), heat.get("result"))
+        });
+    }
+
     renderActiveHeat() {
         let { heats } = this.props;
         let renderedScores = heats.map((heat, i) => {
             if (heat == null) {
                 return null;
             }
+
+            let liveScores = this.state.liveScores.get(heat.get("id"), heat.get("result"));
 
             return d.div(
                 {key: i, className: "scores"},
@@ -184,7 +201,7 @@ export class ShowEvent extends React.Component {
 
                 React.createElement(
                     HeatResults,
-                    {heat}
+                    {heat: heat.set("result", liveScores)}
                 )
             );
         }).filter(h => h != null);

@@ -10,7 +10,7 @@ class HeatsController < ApplicationController
     params = add_score_params
     # begin
       @heat.add_score!(current_user.id, params[:athlete_id], params[:wave], params[:score])
-      Pusher.trigger('scores_channel', 'score_added', {
+      Pusher.trigger("scores-#{@heat.event_division.event.id}", 'score-changed', {
           message: build_heat_json
       })
 
