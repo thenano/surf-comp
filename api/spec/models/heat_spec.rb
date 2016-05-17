@@ -126,6 +126,22 @@ RSpec.describe Heat, :type => :model do
                                  ])
     end
 
+    it 'calculates the result even with empty waves for one judge' do
+      heat.scores.create([
+                             {athlete_id: 2, judge_id: 6, wave: 0, score: 1},
+                             {athlete_id: 2, judge_id: 6, wave: 3, score: 3},
+                         ])
+
+      expect(heat.result).to eql([
+                                     {athlete_id: 2, total: 4.0, waves: [1.0, nil, nil, 3.0]},
+                                     {athlete_id: 1, total: 0.0, waves: []},
+                                     {athlete_id: 3, total: 0.0, waves: []},
+                                     {athlete_id: 4, total: 0.0, waves: []},
+                                     {athlete_id: 5, total: 0.0, waves: []},
+                                     {athlete_id: 6, total: 0.0, waves: []},
+                                 ])
+    end
+
     it 'ranks the athletes based on the total highest score' do
       heat.scores.create([
         {athlete_id: 1, judge_id: 10, wave: 0, score: 1},

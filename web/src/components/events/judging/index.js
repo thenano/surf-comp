@@ -119,7 +119,7 @@ export class LiveJudging extends React.Component {
         } else {
             return React.createElement(
                 LoadingOverlay,
-                {key: i, message: "Waiting for organiser to start heat..."}
+                {key: 'waiting', message: "Waiting for organiser to start heat..."}
             );
         }
     }
@@ -127,7 +127,7 @@ export class LiveJudging extends React.Component {
     renderDisconnected() {
         return React.createElement(
             LoadingOverlay,
-            {message: "Connecting..."}
+            {key: 'connecting', message: "Connecting..."}
         );
     }
 

@@ -9,12 +9,11 @@ class Heat < ApplicationRecord
 
   def add_score!(score)
     athletes.find(score[:athlete_id]) # will raise record not found
-
-    score = scores.where(athlete_id: score[:athlete_id], judge_id: score[:judge_id], wave: score[:wave])
+    record = scores.where(athlete_id: score[:athlete_id], judge_id: score[:judge_id], wave: score[:wave])
                 .first_or_create(score)
 
-    score.update!(score: score[:score]) unless score[:score].nil?
-    score.destroy! if score[:score].nil?
+    record.update!(score: score[:score]) unless score[:score].nil?
+    scores.destroy(record) if score[:score].nil?
   end
 
   def scores_for(judge_id)
@@ -47,8 +46,8 @@ class Heat < ApplicationRecord
     )
 
     merged_athletes.map { |athlete_id, waves|
-      {athlete_id: athlete_id, total: waves.sort.reverse.slice(0, 2).inject(0) { |s, r| r + s }.round(2) , waves: waves}
-    }.sort_by { |score| [-score[:total], *score[:waves].sort.reverse.map{|score| -score}] }
+      {athlete_id: athlete_id, total: waves.compact.sort.reverse.slice(0, 2).inject(0) { |s, r| r + s }.round(2) , waves: waves}
+    }.sort_by { |score| [-score[:total], *score[:waves].compact.sort.reverse.map{|score| -score}] }
   end
 
   private
