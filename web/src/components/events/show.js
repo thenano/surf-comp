@@ -168,16 +168,26 @@ export class ShowEvent extends React.Component {
     }
 
     renderActiveHeat() {
-        // TODO render both banks
-        let heat = this.props.heats.get(0);
+        let { heats } = this.props;
+        let renderedScores = heats.map((heat, i) => {
+            if (heat == null) {
+                return null;
+            }
 
-        let renderedScores = d.div(
-            {className: "scores"},
-            React.createElement(
-                HeatResults,
-                {heat}
-            )
-        );
+            return d.div(
+                {key: i, className: "scores"},
+
+                d.header(
+                    {className: `heat-header ${heat.get("division").toLowerCase()}`},
+                    `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${i == 0 ? "North" : "South"} Bank)`
+                ),
+
+                React.createElement(
+                    HeatResults,
+                    {heat}
+                )
+            );
+        }).filter(h => h != null);
 
         return d.div(
             {className: "event-next-heat"},
@@ -203,10 +213,8 @@ export class ShowEvent extends React.Component {
 
             renderedScores,
 
-            // active ?
-            //     null :
             d.button(
-                {className: "start button", onClick: this.startHeat.bind(this, heat.get("id"))},
+                {className: "start button", onClick: this.startHeat.bind(this, heats.first().get("id"))},
                 "Start Heat"
             ),
 

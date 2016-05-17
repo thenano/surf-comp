@@ -94,16 +94,29 @@ export class LiveJudging extends React.Component {
     }
 
     renderConnected() {
-        let heat = this.props.heats.get(0);
-        return heat.get("start_time") ?
-            React.createElement(
-                ScoreCard,
-                {canFinalise: false, heat, onBlur: () => {}, onClick: () => {}}
-            ) :
-            React.createElement(
+        if (this.props.heats.get(0) && this.props.heats.get(0).get("start_time")) {
+            return this.props.heats.map((heat, i) => {
+                if (heat == null) {
+                    return null;
+                }
+
+                return React.createElement(
+                    ScoreCard,
+                    {
+                        key: i,
+                        canFinalise: false,
+                        heat: heat.set("bank", i==0 ? "North" : "South"),
+                        onBlur: () => {},
+                        onClick: () => {}
+                    }
+                );
+            }).filter(h => h != null);
+        } else {
+            return React.createElement(
                 LoadingOverlay,
-                {message: "Waiting for organiser to start heat..."}
+                {key: i, message: "Waiting for organiser to start heat..."}
             );
+        }
     }
 
     renderDisconnected() {

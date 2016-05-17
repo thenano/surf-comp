@@ -202,7 +202,7 @@ export class ScoreCard extends React.Component {
                 {className: `card ${hoverWave ? hoverWave : ""}`},
 
                 d.header(
-                    {className: `${heat.get("division").toLowerCase()}`},
+                    {className: `heat-header ${heat.get("division").toLowerCase()}`},
                     `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${heat.get("bank")} Bank)`
                 ),
 
