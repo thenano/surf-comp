@@ -19,6 +19,12 @@ const heatAthleteSource = {
     }
 };
 
+// TODO repeated
+function zeroPad(num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
+}
+
 const heatAthleteTarget = {
     drop(props, monitor) {
         const hoverPos = props.position,
@@ -119,11 +125,11 @@ class Heat extends React.Component {
         let division = heat.get("division"),
             round = heat.get("round"),
             number = heat.get("number"),
-            time = heat.get("time") ? new Date(heat.get("time")) : undefined;
+            startTime = heat.get("start_time") ? new Date(heat.get("start_time")) : undefined;
 
         let displayTime;
-        if (time) {
-            displayTime = `${time.getHours()}:${time.getMinutes()}`;
+        if (startTime) {
+            displayTime = `${zeroPad(startTime.getHours(), 2)}:${zeroPad(startTime.getMinutes(), 2)}`;
         }
 
         return d.div(
@@ -244,7 +250,7 @@ export class EditHeats extends React.Component {
 
     render() {
         let heats = this.props.heats.map((h, heat_id) => {
-            let remove = (h.get("round_position") === 0 && !h.get("time")) ? this.remove.bind(this, h) : undefined;
+            let remove = (h.get("round_position") === 0 && !h.get("start_time")) ? this.remove.bind(this, h) : undefined;
             if (this.state.hover.get("heat") == heat_id) {
                 return heat(h, ::this.hover, ::this.swap, remove, this.state.hover.get("position"));
             } else {

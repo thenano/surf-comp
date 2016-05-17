@@ -66,12 +66,9 @@ class Heat extends React.Component {
     }
 }
 
-function heat(row, col, move, heat) {
-    let hours = Math.floor(row * 16 / 60) + 7,
-        mins = (row * 16) % 60;
-
+function heat(row, col, move, heat, time) {
     return React.createElement(Heat, {
-        heat, move, position: [col, row], time: `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`
+        heat, move, position: [col, row], time
     });
 }
 
@@ -95,7 +92,7 @@ function empty(row, col, move) {
 
 class TimeRow extends React.Component {
     render() {
-        let { row, left, right, move } = this.props;
+        let { row, left, right, move, time } = this.props;
 
         return d.div(
             {className: "time-row"},
@@ -103,14 +100,14 @@ class TimeRow extends React.Component {
             d.div(
                 {className: "time-cell left"},
                 left ?
-                    heat(row, 0, move, left) :
+                    heat(row, 0, move, left, time) :
                     empty(row, 0, move)
             ),
 
             d.div(
                 {className: "time-cell right"},
                 right ?
-                    heat(row, 1, move, right) :
+                    heat(row, 1, move, right, time) :
                     empty(row, 1, move)
             ),
 
@@ -119,11 +116,11 @@ class TimeRow extends React.Component {
     }
 }
 
-function timeRow(row, left, right, move) {
+function timeRow(row, left, right, move, time) {
     let key = row;
     return React.createElement(
         TimeRow,
-        {key, row, left, right, move}
+        {key, row, left, right, move, time}
     );
 }
 
@@ -142,6 +139,7 @@ export class EditTimetable extends React.Component {
         let schedule = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
 
         this.state = {
+            date: schedule.get("date"),
             schedule: schedule.get("schedule"),
             heats: schedule.get("heats")
         };
@@ -166,48 +164,35 @@ export class EditTimetable extends React.Component {
         });
     }
 
-    renderTime(row, left, right) {
-        return timeRow(row, left, right, this.move);
+    renderTime(row, left, right, time) {
+        return timeRow(row, left, right, this.move, time);
     }
 
     renderTimes() {
         let times = [];
 
-        for (var i=0; i < 12 * 60 / 16; i++) {
+        let startTime = new Date(this.state.date);
+        startTime.setHours(7);
+
+        for (var i=0; i < 45; i++) {
             let left = "" + this.state.schedule.getIn([0, i]),
                 right = "" + this.state.schedule.getIn([1, i]);
 
-            times.push(this.renderTime(i, this.state.heats.get(left), this.state.heats.get(right)));
+            let heatStartTime = this.state.heats.getIn([left, 'start_time']) ||
+                            this.state.heats.getIn([right, 'start_time']);
+
+            startTime = heatStartTime ? new Date(heatStartTime) : startTime;
+
+            let time = `${zeroPad(startTime.getHours(), 2)}:${zeroPad(startTime.getMinutes(), 2)}`;
+
+            times.push(this.renderTime(i, this.state.heats.get(left), this.state.heats.get(right), time));
+
+            startTime.setMinutes(startTime.getMinutes() + 16);
         }
 
         return d.div(
             {className: "times"},
             times
-        );
-    }
-
-    renderTicks() {
-        let ticks = [];
-
-        for (var i=0; i < 12 * 4; i++) {
-            let hours = Math.floor(i * 15 / 60) + 7,
-                mins = (i * 15) % 60;
-
-            ticks.push(d.div(
-                {key: i, className: "tick"},
-                i % 4 == 0 ?
-                    d.div({className: "big-tick"}, `${zeroPad(hours, 2)}:${zeroPad(mins, 2)}`) :
-                    d.div({className: "small-tick"})
-            ));
-        }
-
-        return ticks;
-    }
-
-    renderTickColumn() {
-        return d.div(
-            {className: "ticks"},
-            this.renderTicks()
         );
     }
 
