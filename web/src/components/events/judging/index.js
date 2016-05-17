@@ -2,6 +2,7 @@
 
 import React from "react";
 import * as EventActions from "../../../actions/event";
+import * as HeatActions from "../../../actions/heat";
 import { connect } from "react-redux";
 import { fetch } from "../../../decorators";
 import { ScoreCard } from "../../scoring";
@@ -93,6 +94,10 @@ export class LiveJudging extends React.Component {
         });
     }
 
+    saveScore(heatID, athleteID, wave, score) {
+        this.props.dispatch(HeatActions.addScore(heatID, athleteID, wave, parseFloat(score)));
+    }
+
     renderConnected() {
         if (this.props.heats.get(0) && this.props.heats.get(0).get("start_time")) {
             return this.props.heats.map((heat, i) => {
@@ -106,7 +111,7 @@ export class LiveJudging extends React.Component {
                         key: i,
                         canFinalise: false,
                         heat: heat.set("bank", i==0 ? "North" : "South"),
-                        onBlur: () => {},
+                        onBlur: this.saveScore.bind(this),
                         onClick: () => {}
                     }
                 );

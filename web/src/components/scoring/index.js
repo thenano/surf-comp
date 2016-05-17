@@ -163,11 +163,13 @@ export class ScoreCard extends React.Component {
             );
         }
 
-        let scoreRows = [];
+        let scoreRows = [],
+            athletes = heat
+                .get("athletes", Immutable.Map())
+                .valueSeq()
+                .sortBy(a => a.position);
         for (let i=0; i < 6; i++) {
-            let athlete = heat
-                .get("athletes", Immutable.List())
-                .get(i, null);
+            let athlete = athletes.get(i, null);
 
             let scores = Immutable.List();
             if (athlete) {
