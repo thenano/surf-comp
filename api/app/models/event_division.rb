@@ -82,7 +82,7 @@ class EventDivision < ApplicationRecord
   end
 
   def end_heat!(heat)
-    heat.update_attribute(:time, Time.now)
+    heat.update!(end_time: Time.now)
     return if heat.round.eql?('Final')
 
     result = heat.result

@@ -169,10 +169,16 @@ export class ShowEvent extends React.Component {
         );
     }
 
-    startHeat(heatID) {
+    startHeat(heatId) {
         let { dispatch } = this.props;
 
-        dispatch(HeatActions.start(heatID));
+        dispatch(HeatActions.start(heatId));
+    }
+
+    endHeat(heatId) {
+        let { dispatch } = this.props;
+
+        dispatch(EventActions.endHeat(this.props.params.id, heatId));
     }
 
     scoreReceived(m) {
@@ -206,13 +212,15 @@ export class ShowEvent extends React.Component {
             );
         }).filter(h => h != null);
 
+        let heatStarted = () => (heats.getIn([0, 'start_time']) || heats.getIn([1, 'start_time']));
+
         return d.div(
             {className: "event-next-heat"},
 
             d.h2(
                 {className: "next-heat"},
                 d.i({className: "fa fa-fire"}),
-                "Next Heat",
+                heatStarted() ? "Live Heat" : "Next Heat",
             ),
 
             d.div(
@@ -230,10 +238,15 @@ export class ShowEvent extends React.Component {
 
             renderedScores,
 
-            d.button(
-                {className: "start button", onClick: this.startHeat.bind(this, heats.first().get("id"))},
-                "Start Heat"
-            ),
+            heatStarted() ?
+                d.button(
+                    {className: "end button", onClick: this.endHeat.bind(this, heats.first().get("id"))},
+                    "End Heat"
+                ) :
+                d.button(
+                    {className: "start button", onClick: this.startHeat.bind(this, heats.first().get("id"))},
+                    "Start Heat"
+                ),
 
             d.div({className: "clear"})
         );
