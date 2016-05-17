@@ -53,9 +53,13 @@ export class ShowEvent extends React.Component {
         channel.bind("pusher:member_removed", this.judgeDisconnected.bind(this));
 
         this.state = {
-            channel: channel,
+            pusher, channel,
             connected: false
         };
+    }
+
+    componentWillUnmount() {
+        this.state.pusher.disconnect();
     }
 
     judgeConnected() {

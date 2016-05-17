@@ -64,10 +64,14 @@ export class LiveJudging extends React.Component {
         scoresChannel.bind("heat-started", this.heatStarted.bind(this));
 
         this.state = {
-            channel: channel,
+            pusher, channel,
             scores: scoresChannel,
             connected: false
         };
+    }
+
+    componentWillUnmount() {
+        this.state.pusher.disconnect();
     }
 
     heatStarted() {
