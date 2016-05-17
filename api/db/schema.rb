@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160507095022) do
+ActiveRecord::Schema.define(version: 20160517091922) do
 
   create_table "athlete_heats", force: :cascade do |t|
     t.integer  "heat_id"
@@ -56,15 +56,26 @@ ActiveRecord::Schema.define(version: 20160507095022) do
 
   create_table "heats", force: :cascade do |t|
     t.string   "round"
-    t.time     "start_time"
-    t.time     "end_time"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.integer  "position"
     t.integer  "round_position"
-    t.text     "scores"
     t.integer  "event_division_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.index ["event_division_id"], name: "index_heats_on_event_division_id"
+  end
+
+  create_table "scores", force: :cascade do |t|
+    t.integer  "heat_id"
+    t.integer  "judge_id"
+    t.integer  "athlete_id"
+    t.integer  "wave"
+    t.float    "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["heat_id"], name: "index_scores_on_heat_id"
+    t.index ["judge_id", "heat_id", "athlete_id", "wave"], name: "index_scores_on_judge_id_and_heat_id_and_athlete_id_and_wave", unique: true
   end
 
   create_table "users", force: :cascade do |t|

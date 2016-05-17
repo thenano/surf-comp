@@ -1,6 +1,6 @@
 FactoryGirl.define do
   sequence :position do |n|
-    n % 7
+    (n-1) % 6
   end
 
   factory :athlete_heat do

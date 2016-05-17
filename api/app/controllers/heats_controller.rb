@@ -7,17 +7,17 @@ class HeatsController < ApplicationController
   end
 
   def add_score
-    params = add_score_params
-    # begin
-      @heat.add_score!(current_user.id, params[:athlete_id], params[:wave], params[:score])
+    score = add_score_params.merge({judge_id: current_user.id})
+    begin
+      @heat.add_score!(score)
       Pusher.trigger("scores-#{@heat.event_division.event.id}", 'score-changed', {
           message: build_heat_json
       })
 
       render json: build_heat_json
-    # rescue Exception => e
-    #   render plain: e, status: :unprocessable_entity
-    # end
+    rescue Exception => e
+      render plain: e.message, status: :unprocessable_entity
+    end
   end
 
   def start
