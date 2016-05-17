@@ -33,8 +33,8 @@ class EventsController < ApplicationController
           result: heat.result,
           athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
             athlete = athlete_heat.athlete
-            {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}
-          }
+            [athlete.id, {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}]
+          }.to_h
         } if heat
       }
     }

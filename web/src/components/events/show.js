@@ -25,27 +25,21 @@ function zeroPad(num, places) {
         );
     }
 
-    if (!store.loaded(`events.schedules.${r.params.id}`)) {
+    if (!store.loaded(`events.current_heats.${r.params.id}`)) {
         resources.push(
-            store.dispatch(EventActions.getSchedule(r.params.id))
+            store.dispatch(EventActions.getCurrentHeats(r.params.id))
         );
     }
 
     return Promise.all(resources);
 })
-@connect(state => ({
+@connect((state, props) => ({
     events: state.events,
-    heats: state.heats
+    heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
 }))
 export class ShowEvent extends React.Component {
     constructor(props, context) {
         super(props, context);
-
-        // todo change to current
-        let { events, dispatch } = this.props;
-        let heat = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first();
-
-        dispatch(HeatActions.getResult(heat.get("id")));
 
         let pusher = new Pusher("9228f4893a65786c6b33", {
             encrypted: true,
@@ -170,12 +164,8 @@ export class ShowEvent extends React.Component {
     }
 
     renderActiveHeat() {
-        let { heats, events } = this.props;
-        let heatID = events.getIn(["schedules", parseInt(this.props.params.id), "heats"]).first().get("id");
-        let heat = heats.get(heatID);
-        if (!heat) {
-            return null;
-        }
+        // TODO render both banks
+        let heat = this.props.heats.get(0);
 
         let renderedScores = d.div(
             {className: "scores"},
@@ -212,7 +202,7 @@ export class ShowEvent extends React.Component {
             // active ?
             //     null :
             d.button(
-                {className: "start button", onClick: this.startHeat.bind(this, heatID)},
+                {className: "start button", onClick: this.startHeat.bind(this, heat.get("id"))},
                 "Start Heat"
             ),
 
