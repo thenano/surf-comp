@@ -62,7 +62,8 @@ export class LiveJudging extends React.Component {
         let scoresChannel = pusher.subscribe(`scores-${this.props.params.id}`);
         scoresChannel.bind("pusher:subscription_succeeded", this.connected.bind(this));
         scoresChannel.bind("pusher:subscription_error", this.disconnected.bind(this));
-        scoresChannel.bind("heat-started", this.heatStarted.bind(this));
+        scoresChannel.bind("heats-started", this.heatsStarted.bind(this));
+        scoresChannel.bind("heats-finished", this.heatsFinished.bind(this));
 
         this.state = {
             pusher, channel,
@@ -75,7 +76,15 @@ export class LiveJudging extends React.Component {
         this.state.pusher.disconnect();
     }
 
-    heatStarted() {
+    heatsStarted() {
+        let { dispatch } = this.props;
+        let event_id = this.props.params.id;
+
+        dispatch(EventActions.getCurrentHeats(event_id));
+    }
+
+    heatsFinished() {
+        // console.log
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
 

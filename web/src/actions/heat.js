@@ -1,10 +1,3 @@
-export function start(heat_id) {
-    return {
-        type: "START_HEAT",
-        promise: api => api.patch(`heats/${heat_id}/start`)
-    };
-}
-
 export function getResult(heat_id) {
     return {
         type: "GET_HEAT_RESULT",

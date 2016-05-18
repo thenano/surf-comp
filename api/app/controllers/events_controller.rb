@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, except: :index
-  before_action :authenticate_user!, only: [:end_heat]
+  before_action :authenticate_user!, except: :index
 
   def index
     @events = Event.all
@@ -20,24 +20,7 @@ class EventsController < ApplicationController
   end
 
   def current_heats
-    render json: {
-      id: @event.id,
-      heats: @event.current_heats.map { |heat|
-        {
-          id: heat.id,
-          division: heat.event_division.division.name,
-          round: heat.round,
-          number: heat.position.next,
-          start_time: heat.start_time,
-          scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
-          result: heat.result,
-          athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
-            athlete = athlete_heat.athlete
-            [athlete.id, {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}]
-          }.to_h
-        } if heat
-      }
-    }
+    render json: current_heats_json
   end
 
   def add_athlete
@@ -96,12 +79,25 @@ class EventsController < ApplicationController
     render json: build_event_schedule_json
   end
 
-  def end_heat
-    @heat = Heat.find(params[:heat_id])
-    @heat.event_division.end_heat!(@heat)
+  def end_current_heats
+    @event.current_heats.each do |heat|
+      heat.event_division.end_heat!(heat) if heat
+    end
     @event.update!({current_schedule_index: @event.current_schedule_index.next})
 
-    render json: build_event_schedule_json
+    Pusher.trigger("scores-#{@event.id}", 'heats-finished', {})
+
+    render json: current_heats_json
+  end
+
+  def start_next_heats
+    @event.current_heats.each do |heat|
+      heat.update!({start_time: Time.now}) if heat
+    end
+
+    Pusher.trigger("scores-#{@event.id}", 'heats-started', {})
+
+    render json: current_heats_json
   end
 
   private
@@ -125,6 +121,27 @@ class EventsController < ApplicationController
 
     def swap_athletes_params
       params.require(:swap_athletes).permit(from: [:heat_id, :position], to: [:heat_id, :position])
+    end
+
+    def current_heats_json
+      {
+          id: @event.id,
+          heats: @event.current_heats.map { |heat|
+            {
+                id: heat.id,
+                division: heat.event_division.division.name,
+                round: heat.round,
+                number: heat.position.next,
+                start_time: heat.start_time,
+                scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
+                result: heat.result,
+                athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
+                  athlete = athlete_heat.athlete
+                  [athlete.id, {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}]
+                }.to_h
+            } if heat
+          }
+      }
     end
 
     def build_event_schedule_json

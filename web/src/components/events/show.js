@@ -8,6 +8,7 @@ import { fetch } from "../../decorators";
 import { connect } from "react-redux";
 import { link } from "../navigation";
 import { HeatResults } from "./results/card";
+import { Spinner } from "../spinner";
 
 var d = React.DOM;
 
@@ -171,16 +172,30 @@ export class ShowEvent extends React.Component {
         );
     }
 
-    startHeat(heatId) {
-        let { dispatch } = this.props;
+    startHeats() {
+        let { dispatch, params } = this.props;
 
-        dispatch(HeatActions.start(heatId));
+        this.setState({
+            starting: true
+        });
+        dispatch(EventActions.startHeats(params.id)).then(() => {
+            this.setState({
+                starting: false
+            });
+        });
     }
 
-    endHeat(heatId) {
-        let { dispatch } = this.props;
+    endHeats() {
+        let {dispatch, params} = this.props;
 
-        dispatch(EventActions.endHeat(this.props.params.id, heatId));
+        this.setState({
+            ending: true
+        });
+        dispatch(EventActions.endHeats(params.id)).then(() => {
+            this.setState({
+                ending: false
+            });
+        });
     }
 
     scoreReceived(m) {
@@ -190,8 +205,36 @@ export class ShowEvent extends React.Component {
         });
     }
 
-    renderActiveHeat() {
+    renderLiveHeats(message, heats) {
+        return d.div(
+            {className: "event-next-heat"},
+
+            d.h2(
+                {className: "next-heat"},
+                d.i({className: "fa fa-fire"}),
+                message
+            ),
+
+            d.div(
+                {},
+                d.span({className: "time"}, "Scheduled Start"),
+                // todo - replace with a real time
+                d.span({className: "time"}, d.i({className: "fa fa-clock-o"}), "07:00")
+            ),
+
+            d.div(
+                {},
+                d.span({className: "time"}, "Connected Judges"),
+                d.span({className: "time"}, d.i({className: "fa fa-group"}), this.state.judges)
+            ),
+
+            heats
+        )
+    }
+
+    renderActiveHeats() {
         let { heats } = this.props;
+
         let renderedScores = heats.map((heat, i) => {
             if (heat == null) {
                 return null;
@@ -216,46 +259,52 @@ export class ShowEvent extends React.Component {
 
         let heatStarted = () => (heats.getIn([0, 'start_time']) || heats.getIn([1, 'start_time']));
 
-        return d.div(
-            {className: "event-next-heat"},
-
-            d.h2(
-                {className: "next-heat"},
-                d.i({className: "fa fa-fire"}),
-                heatStarted() ? "Live Heat" : "Next Heat",
-            ),
-
-            d.div(
-                {},
-                d.span({className: "time"}, "Scheduled Start"),
-                // todo - replace with a real time
-                d.span({className: "time"}, d.i({className: "fa fa-clock-o"}), "07:00")
-            ),
-
-            d.div(
-                {},
-                d.span({className: "time"}, "Connected Judges"),
-                d.span({className: "time"}, d.i({className: "fa fa-group"}), this.state.judges)
-            ),
+        return this.renderLiveHeats(heatStarted() ? "Live Heat" : "Next Heat", d.div({},
 
             renderedScores,
 
-            heatStarted() ?
+            d.div({className: 'start-action'},
                 d.button(
-                    {className: "end button", onClick: this.endHeat.bind(this, heats.first().get("id"))},
-                    "End Heat"
-                ) :
-                d.button(
-                    {className: "start button", onClick: this.startHeat.bind(this, heats.first().get("id"))},
+                    {
+                        className: `button secondary submit ${(this.state.starting || heatStarted()) ? 'disabled':''}`,
+                        onClick: this.startHeats.bind(this),
+                        disabled: (this.state.starting || heatStarted())
+                    },
                     "Start Heat"
                 ),
 
+                React.createElement(Spinner, {
+                    style: {
+                        display: this.state.starting ? "inline-block" : "none"
+                    }
+                }),
+            ),
+
+            heatStarted() ?
+                d.div({className: 'end-action'},
+                    React.createElement(Spinner, {
+                        style: {
+                            display: this.state.ending ? "inline-block" : "none"
+                        }
+                    }),
+                    d.button(
+                        {
+                            className: `button submit ${this.state.ending ? 'disabled':''}`,
+                            onClick: this.endHeats.bind(this),
+                            disabled: this.state.ending
+                        },
+                        "End Heat"
+                    ),
+                ) : null,
+
             d.div({className: "clear"})
-        );
+        ));
     }
 
     render() {
         const { events } = this.props;
+        const { heats } = this.props;
+
         let event = events.get(Number.parseInt(this.props.params.id));
 
         return d.div(
@@ -276,7 +325,8 @@ export class ShowEvent extends React.Component {
                 d.hr({}),
                 this.renderSchedule(),
                 d.hr({}),
-                this.renderActiveHeat(),
+                (heats.first() || heats.last()) ?
+                    this.renderActiveHeats() : this.renderLiveHeats("Event Finished")
             )
         );
     }

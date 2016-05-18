@@ -7,12 +7,12 @@ Rails.application.routes.draw do
       put 'swap_athletes', on: :member
       get 'current_heats', on: :member
 
-      patch '/heats/:heat_id/end', on: :member, action: :end_heat
+      patch 'start_next_heats', on: :member
+      patch 'end_current_heats', on: :member
     end
 
     resources :heats, only: [:show] do
       put 'add_score', on: :member
-      patch 'start', on: :member
     end
 
     devise_for :users, controllers: {sessions: 'users/sessions', registrations: 'users/registrations', :omniauth_callbacks => 'users/omniauth_callbacks'}

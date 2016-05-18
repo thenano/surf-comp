@@ -20,16 +20,6 @@ class HeatsController < ApplicationController
     end
   end
 
-  def start
-    @heat.update!({start_time: Time.now})
-
-    Pusher.trigger("scores-#{@heat.event_division.event.id}", 'heat-started', {
-      heat_id: @heat.id
-    })
-
-    render status: :no_content
-  end
-
   private
     def set_heat
       @heat = Heat.find(params[:id])

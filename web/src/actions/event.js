@@ -60,10 +60,17 @@ export function swapAthletes(event_id, heat1, pos1, heat2, pos2) {
     };
 }
 
-export function endHeat(event_id, heat_id) {
+export function startHeats(event_id) {
     return {
-        type: "END_HEAT",
-        promise: api => api.patch(`events/${event_id}/heats/${heat_id}/end`)
+        type: "START_NEXT_HEATS",
+        promise: api => api.patch(`events/${event_id}/start_next_heats`)
+    };
+}
+
+export function endHeats(event_id) {
+    return {
+        type: "END_CURRENT_HEATS",
+        promise: api => api.patch(`events/${event_id}/end_current_heats`)
     };
 }
 
