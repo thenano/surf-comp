@@ -1,12 +1,27 @@
 #show-event {
     font-size: 24px;
 
+    h1 {
+        background: #546e7a;
+    }
+
     h2 i {
         margin-right: 20px;
     }
 
     hr {
         margin: 35px auto;
+    }
+
+    .wrapper {
+        position: relative;
+    }
+
+    .connection-indicator {
+        position: absolute;
+        right: @page-horiz-padding;
+        top: -15px;
+        transform: translate(0, -150%);
     }
 
     .heat-header {

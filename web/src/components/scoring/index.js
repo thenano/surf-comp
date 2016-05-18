@@ -7,12 +7,9 @@ import * as HeatActions from "../../actions/heat";
 import * as SnackbarActions from "../../actions/snackbar";
 import { fetch } from "../../decorators";
 import * as forms from "../forms";
+import { JERSEYS } from "../surfing";
 
 var d = React.DOM;
-
-const JERSEYS = [
-    "red", "white", "yellow", "blue", "green", "pink"
-];
 
 class WaveScore extends React.Component {
     render() {

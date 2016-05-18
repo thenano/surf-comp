@@ -7,6 +7,7 @@ import { DropTarget, DragSource, DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { fetch } from "../../decorators";
 import { connect } from "react-redux";
+import { JERSEYS } from "../surfing";
 
 var d = React.DOM;
 
@@ -48,10 +49,6 @@ const heatAthleteTarget = {
         props.hover(hoverHeat, hoverPos);
     }
 };
-
-const JERSEYS = [
-    "red", "white", "yellow", "blue", "green", "pink"
-];
 
 @DropTarget("athlete-slot", heatAthleteTarget, connect => ({
     connectDropTarget: connect.dropTarget()

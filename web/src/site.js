@@ -13,7 +13,7 @@ import { Application } from "./components/application";
 import { Home } from "./components/home";
 import { NotFound } from "./components/navigation";
 import { LoginForm } from "./components/login";
-import { EditTimetable } from "./components/timetables";
+import { EditSchedule } from "./components/events/schedules/edit";
 import { SignUp } from "./components/sign-up";
 import { EditHeats } from "./components/heats/edit";
 import { ShowEvent } from "./components/events/show";
@@ -64,11 +64,11 @@ ReactDOM.render(
                 r("/sign-up", SignUp),
                 r("/events/:id", ShowEvent),
                 r("/events/:id/schedule", ShowSchedule),
-                r("/events/:id/schedule/edit", EditTimetable),
+                r("/events/:id/schedule/edit", EditSchedule),
                 r("/events/:id/division/:division_id/edit", EditHeats),
-                r("/events/:id/scoring", Scoring),
-                r("/events/:id/results", Results),
-                r("/events/:id/live-judging", LiveJudging),
+                r("/events/:id/scoring", LiveJudging),
+                r("/events/:id/backup-scoring", Scoring),
+                // r("/events/:id/results", Results),
                 r("*", NotFound)
             )
         )
