@@ -22,9 +22,7 @@ export function logout() {
     };
 }
 
-export function registerFacebook(response) {
-    // var cookie_name = "fbsr_1569714466676200";
-    // document.cookie = `${cookie_name}=${response.authResponse.signedRequest}`;
+export function registerFacebook() {
     return {
         type: "REGISTER_FB_USER",
         promise: api => {

@@ -46,11 +46,11 @@ export class LoginForm extends forms.ValidatedForm {
 
         return new Promise((resolve, reject) => {
             // eslint-disable-next-line no-undef
-            FB.login(function(response) {
+            FB.login((response) => {
                 if (response.authResponse) {
-                    resolve(dispatch(UserActions.registerFacebook(response)));
+                    resolve(dispatch(UserActions.registerFacebook()));
                 } else {
-                    reject(response);
+                    reject();
                 }
             }, {scope: "public_profile,email"});
         })
