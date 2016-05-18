@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { link } from "../navigation";
 import { HeatResults } from "./results/card";
 import { Spinner } from "../spinner";
+import { ConnectionIndicator } from "../connection-indicator";
 
 var d = React.DOM;
 
@@ -321,6 +322,12 @@ export class ShowEvent extends React.Component {
 
             d.div(
                 {className: "wrapper"},
+
+                React.createElement(
+                    ConnectionIndicator,
+                    {connected: this.state.connected}
+                ),
+
                 this.renderParticipants(),
                 d.hr({}),
                 this.renderSchedule(),
