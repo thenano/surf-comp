@@ -64,57 +64,69 @@ export class SignUp extends forms.ValidatedForm {
         return d.div(
             {id: "sign-up", className: "page"},
 
-            d.button({onClick: this.signUpWithFacebook.bind(this)}, "Facebook"),
-
-            d.h2({}, "or"),
-
-            d.form(
-                {action: "/sign-up", method: "POST"},
-
+            d.h1(
+                {},
                 d.div(
-                    {
-                        className: "notification error plain",
-                        style: {
-                            display: this.state.error ? "block" : "none"
+                    {className: "wrapper"},
+                    "Sign up"
+                ),
+            ),
+
+            d.div(
+                {className: "wrapper"},
+
+                d.button({onClick: this.signUpWithFacebook.bind(this)}, "Facebook"),
+
+                d.h2({}, "or"),
+
+                d.form(
+                    {action: "/sign-up", method: "POST"},
+
+                    d.div(
+                        {
+                            className: "notification error plain",
+                            style: {
+                                display: this.state.error ? "block" : "none"
+                            }
+                        },
+                        this.state.error
+                    ),
+
+                    forms.text(
+                        "Email",
+                        "email",
+                        {
+                            errors: this.errors("email"),
+                            placeholder: "email@example.com",
+                            onChange: this.set("email"),
+                            disabled: this.state.submitting
                         }
-                    },
-                    this.state.error
-                ),
+                    ),
 
-                forms.text(
-                    "Email",
-                    "email",
-                    {
-                        errors: this.errors("email"),
-                        placeholder: "email@example.com",
-                        onChange: this.set("email"),
-                        disabled: this.state.submitting
-                    }
-                ),
+                    forms.text(
+                        "Full Name",
+                        "name",
+                        {
+                            errors: this.errors("name"),
+                            onChange: this.set("name"),
+                            disabled: this.state.submitting
+                        }
+                    ),
 
-                forms.text(
-                    "Full Name",
-                    "name",
-                    {
-                        errors: this.errors("name"),
-                        onChange: this.set("name"),
-                        disabled: this.state.submitting
-                    }
-                ),
+                    forms.password(
+                        "Password",
+                        "password",
+                        {
+                            errors: this.errors("password"),
+                            placeholder: "super secret",
+                            onChange: this.set("password"),
+                            type: "password",
+                            disabled: this.state.submitting
+                        }
+                    ),
 
-                forms.password(
-                    "Password",
-                    "password",
-                    {
-                        errors: this.errors("password"),
-                        placeholder: "super secret",
-                        onChange: this.set("password"),
-                        type: "password",
-                        disabled: this.state.submitting
-                    }
-                ),
-
-                forms.submit("Create Account", this.submit.bind(this), this.state.submitting)
+                    forms.submit("Create Account", this.submit.bind(this), this.state.submitting)
+                )
             )
         );
     }
