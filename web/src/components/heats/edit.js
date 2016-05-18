@@ -150,7 +150,7 @@ class Heat extends React.Component {
 
 function heat(heat, hover, swap, remove, over) {
     return d.li(
-        {className: "heat-list-item", key: heat.get("id")},
+        {className: "interactive heat-list-item", key: heat.get("id")},
         React.createElement(Heat, {heat, hover, swap, over, remove})
     );
 }

@@ -26,15 +26,18 @@
         &.women { background: @women-color; }
     }
 
-    .heat-list-item .athlete {
-        position: relative;
+    .heat-list-item.interactive .athlete {
         padding: 5px 20px;
-        height: 35px;
-        line-height: 25px;
-        background: white;
 
-        &.hovering {
-            background: #fff6e6;
+        &:before {
+            content: '\f142';
+            position: absolute;
+            font-family: FontAwesome;
+            font-style: normal;
+            left: 5px;
+            top: 50%;
+            color: #e0e0e0;
+            transform: translate(0, -50%);
         }
 
         &:hover {
@@ -43,6 +46,19 @@
             &:before {
                 color: black;
             }
+        }
+
+    }
+
+    .heat-list-item .athlete {
+        position: relative;
+        padding: 5px 10px;
+        height: 35px;
+        line-height: 25px;
+        background: white;
+
+        &.hovering {
+            background: #fff6e6;
         }
 
         &.empty:hover {
@@ -61,17 +77,6 @@
 
         &.empty:before {
             content: ' ';
-        }
-
-        &:before {
-            content: '\f142';
-            position: absolute;
-            font-family: FontAwesome;
-            font-style: normal;
-            left: 5px;
-            top: 50%;
-            color: #e0e0e0;
-            transform: translate(0, -50%);
         }
 
         &:after {

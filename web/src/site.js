@@ -17,6 +17,7 @@ import { EditTimetable } from "./components/timetables";
 import { SignUp } from "./components/sign-up";
 import { EditHeats } from "./components/heats/edit";
 import { ShowEvent } from "./components/events/show";
+import { ShowSchedule } from "./components/events/schedules/show";
 import { LiveJudging } from "./components/events/judging";
 import { Scoring } from "./components/scoring";
 import { Results } from "./components/events/results";
@@ -62,6 +63,7 @@ ReactDOM.render(
                 r("/login", LoginForm),
                 r("/sign-up", SignUp),
                 r("/events/:id", ShowEvent),
+                r("/events/:id/schedule", ShowSchedule),
                 r("/events/:id/schedule/edit", EditTimetable),
                 r("/events/:id/division/:division_id/edit", EditHeats),
                 r("/events/:id/scoring", Scoring),
