@@ -2,12 +2,9 @@ import React from "react";
 import * as EventActions from "../../../actions/event";
 import { fetch } from "../../../decorators";
 import { connect } from "react-redux";
+import { JERSEYS } from "../../surfing";
 
 var d = React.DOM;
-
-const JERSEYS = [
-    "red", "white", "yellow", "blue", "green", "pink"
-];
 
 function zeroPad(num, places) {
     var zero = places - num.toString().length + 1;

@@ -66,9 +66,9 @@ ReactDOM.render(
                 r("/events/:id/schedule", ShowSchedule),
                 r("/events/:id/schedule/edit", EditTimetable),
                 r("/events/:id/division/:division_id/edit", EditHeats),
-                r("/events/:id/scoring", Scoring),
-                r("/events/:id/results", Results),
-                r("/events/:id/live-judging", LiveJudging),
+                r("/events/:id/scoring", LiveJudging),
+                r("/events/:id/backup-scoring", Scoring),
+                // r("/events/:id/results", Results),
                 r("*", NotFound)
             )
         )
