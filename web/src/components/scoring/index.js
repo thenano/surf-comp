@@ -73,7 +73,8 @@ class AthleteScoreRow extends React.Component {
         return d.div(
             {className: `score-row ${jersey}`},
             d.div(
-                {className: `jersey ${jersey}`},
+                {className: `jersey athlete ${jersey}`},
+                athlete.get("name")
             ),
 
             waves

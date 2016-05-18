@@ -26,13 +26,15 @@
             font-size: 14px;
             flex: 1 1 0;
             align-items: center;
+            padding-right: 2em;
 
-            &:after {
+            &.athlete:before {
                 content: '\f0c8';
                 position: absolute;
                 font-family: FontAwesome;
                 font-style: normal;
-                left: 50%;
+                right: 0;
+                font-size: 1.5em;
                 top: 50%;
                 transform: translate(-50%, -50%);
                 text-shadow: 1px 0 black,
@@ -41,12 +43,12 @@
                              0 -1px black;
             }
 
-            &.red:after { color: @jersey-red; }
-            &.blue:after { color: @jersey-blue; }
-            &.yellow:after { color: @jersey-yellow; }
-            &.white:after { color: @jersey-white; }
-            &.green:after { color: @jersey-green; }
-            &.pink:after { color: @jersey-pink; }
+            &.red:before { color: @jersey-red; }
+            &.blue:before { color: @jersey-blue; }
+            &.yellow:before { color: @jersey-yellow; }
+            &.white:before { color: @jersey-white; }
+            &.green:before { color: @jersey-green; }
+            &.pink:before { color: @jersey-pink; }
         }
 
     }
