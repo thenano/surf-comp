@@ -1,11 +1,11 @@
 import React from "react";
 import HTML5Backend from "react-dnd-html5-backend";
-import * as EventActions from "../../actions/event";
-import * as SnackbarActions from "../../actions/snackbar";
-import * as forms from "../forms";
+import * as EventActions from "../../../actions/event";
+import * as SnackbarActions from "../../../actions/snackbar";
+import * as forms from "../../forms";
 import { DragDropContext } from "react-dnd";
 import { DropTarget, DragSource } from "react-dnd";
-import { fetch } from "../../decorators";
+import { fetch } from "../../../decorators";
 import { connect } from "react-redux";
 
 var d = React.DOM;
@@ -131,7 +131,7 @@ function timeRow(row, left, right, move, time) {
 })
 @DragDropContext(HTML5Backend)
 @connect(state => ({ events: state.events }))
-export class EditTimetable extends React.Component {
+export class EditSchedule extends React.Component {
     constructor(props, context) {
         super(props, context);
 
