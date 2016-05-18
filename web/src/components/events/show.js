@@ -164,7 +164,9 @@ export class ShowEvent extends React.Component {
 
             d.div(
                 {className: "edit schedule"},
-                link("edit", {to: `/events/${event.get("id")}/schedule/edit`})
+                link("edit", {to: `/events/${event.get("id")}/schedule/edit`}),
+                " - ",
+                link("view", {to: `/events/${event.get("id")}/schedule`})
             )
         );
     }
