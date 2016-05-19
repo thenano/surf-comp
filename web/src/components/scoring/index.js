@@ -219,7 +219,7 @@ export class ScoreCard extends React.Component {
                         {className: "title-row"},
                         d.div(
                             {className: "jersey"},
-                            "Rashie"
+                            "Athlete"
                         ),
                         waveTitles
                     ),
