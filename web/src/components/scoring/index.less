@@ -23,32 +23,52 @@
 
         .jersey {
             position: relative;
-            font-size: 14px;
+            font-size: 12px;
+            display: flex;
             flex: 1 1 0;
             align-items: center;
-            padding-right: 2em;
+            overflow: hidden;
+            padding: 0 5px;
 
-            &.athlete:before {
-                content: '\f0c8';
-                position: absolute;
-                font-family: FontAwesome;
-                font-style: normal;
-                right: 0;
-                font-size: 1.5em;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                text-shadow: 1px 0 black,
-                             0 1px black,
-                             -1px 0 black,
-                             0 -1px black;
+            // &.athlete:before {
+            //     content: '\f0c8';
+            //     position: absolute;
+            //     font-family: FontAwesome;
+            //     font-style: normal;
+            //     right: 0;
+            //     font-size: 1.5em;
+            //     top: 50%;
+            //     transform: translate(-50%, -50%);
+            //     text-shadow: 1px 0 black,
+            //                  0 1px black,
+            //                  -1px 0 black,
+            //                  0 -1px black;
+            // }
+
+            &.red {
+                border-right: 10px solid @jersey-red;
+                background-color: lighten(@jersey-red, 30%);
             }
-
-            &.red:before { color: @jersey-red; }
-            &.blue:before { color: @jersey-blue; }
-            &.yellow:before { color: @jersey-yellow; }
-            &.white:before { color: @jersey-white; }
-            &.green:before { color: @jersey-green; }
-            &.pink:before { color: @jersey-pink; }
+            &.blue {
+                border-right: 10px solid @jersey-blue;
+                background-color: lighten(@jersey-blue, 30%);
+            }
+            &.yellow {
+                border-right: 10px solid @jersey-yellow;
+                background-color: lighten(@jersey-yellow, 30%);
+            }
+            &.white {
+                border-right: 10px solid @jersey-white;
+                background-color: lighten(@jersey-white, 30%);
+            }
+            &.green {
+                border-right: 10px solid @jersey-green;
+                background-color: lighten(@jersey-green, 30%);
+            }
+            &.pink {
+                border-right: 10px solid @jersey-pink;
+                background-color: lighten(@jersey-pink, 30%);
+            }
         }
 
     }

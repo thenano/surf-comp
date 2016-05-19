@@ -12,6 +12,12 @@ import { JERSEYS } from "../surfing";
 var d = React.DOM;
 
 class WaveScore extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = { value: this.props.value || "" };
+    }
+
     render() {
         return d.div(
             {
@@ -22,7 +28,7 @@ class WaveScore extends React.Component {
 
             forms.number("", `w-${this.props.number}`, {
                 disabled: this.props.disabled,
-                value: this.props.value || "",
+                value: this.state.value,
                 onChange: (e) => this.props.onChange(e.target.value),
                 onBlur: (e) => this.props.onBlur(e.target.value)
             })
