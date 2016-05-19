@@ -20,6 +20,16 @@ export function get(event_id) {
 }
 
 export function save(event_id, schedule) {
+    schedule = schedule.map(bank => {
+        return bank.map(id => {
+            if (id === null || typeof id === "undefined") {
+                return 0; // rails can't handle null's in arrays
+            } else {
+                return id;
+            }
+        });
+    });
+
     return {
         type: "SAVE_EVENT_SCHEDULE",
         promise: api => api.patch(`events/${event_id}`, {
