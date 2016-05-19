@@ -20,10 +20,23 @@ const heatCardSource = {
         return {
             position: props.position
         };
+    },
+
+    endDrag(props, monitor) {
+        const didDrop = monitor.didDrop();
+
+        if (!didDrop) {
+            props.save();
+        }
     }
 };
 
 const heatCardTarget = {
+    drop(props, monitor) {
+        console.log(props);
+        props.save();
+    },
+
     hover(props, monitor) {
         const dragPos = monitor.getItem().position;
         const hoverPos = props.position;
@@ -66,9 +79,9 @@ class Heat extends React.Component {
     }
 }
 
-function heat(row, col, move, heat, time) {
+function heat(row, col, move, save, heat, time) {
     return React.createElement(Heat, {
-        heat, move, position: [col, row], time
+        heat, move, save, position: [col, row], time
     });
 }
 
@@ -92,7 +105,7 @@ function empty(row, col, move) {
 
 class TimeRow extends React.Component {
     render() {
-        let { row, left, right, move, time } = this.props;
+        let { row, left, right, move, time, save } = this.props;
 
         return d.div(
             {className: "time-row"},
@@ -100,14 +113,14 @@ class TimeRow extends React.Component {
             d.div(
                 {className: "time-cell left"},
                 left ?
-                    heat(row, 0, move, left, time) :
+                    heat(row, 0, move, save, left, time) :
                     empty(row, 0, move)
             ),
 
             d.div(
                 {className: "time-cell right"},
                 right ?
-                    heat(row, 1, move, right, time) :
+                    heat(row, 1, move, save, right, time) :
                     empty(row, 1, move)
             ),
 
@@ -116,11 +129,11 @@ class TimeRow extends React.Component {
     }
 }
 
-function timeRow(row, left, right, move, time) {
+function timeRow(row, left, right, move, save, time) {
     let key = row;
     return React.createElement(
         TimeRow,
-        {key, row, left, right, move, time}
+        {key, row, left, right, move, save, time}
     );
 }
 
@@ -145,6 +158,7 @@ export class EditSchedule extends React.Component {
         };
 
         this.move = this.move.bind(this);
+        this.save = this.save.bind(this);
     }
 
     move(from, to) {
@@ -165,7 +179,7 @@ export class EditSchedule extends React.Component {
     }
 
     renderTime(row, left, right, time) {
-        return timeRow(row, left, right, this.move, time);
+        return timeRow(row, left, right, this.move, this.save, time);
     }
 
     renderTimes() {
@@ -196,7 +210,7 @@ export class EditSchedule extends React.Component {
         );
     }
 
-    send() {
+    save() {
         let { dispatch } = this.props;
         let eventId = this.props.params.id;
 
@@ -210,10 +224,8 @@ export class EditSchedule extends React.Component {
                 });
             })
             .then(() => {
-                dispatch(SnackbarActions.message("Saved."));
                 this.setState({ submitting: false });
             });
-
     }
 
     render() {
@@ -243,9 +255,7 @@ export class EditSchedule extends React.Component {
 
                     this.renderTimes()
                 ),
-            ),
-
-            forms.floatingActionButton("save", ::this.send, this.state.submitting),
+            )
         );
     }
 }
