@@ -1,4 +1,5 @@
 import request from "axios";
+import { browserHistory } from "react-router";
 
 var base = "/api";
 
@@ -9,6 +10,16 @@ const CONFIG = {
 const urlTo = (resource) => {
     return `${base}/${resource}`;
 };
+
+function handleCall(apiCall) {
+    return apiCall.catch(e => {
+        if (e.status !== 401) {
+            return Promise.reject(e);
+        } else {
+            browserHistory.push('/login');
+        }
+    });
+}
 
 export function api(cookie) {
     let headers = {};
@@ -21,41 +32,41 @@ export function api(cookie) {
 
     return {
         delete: (resource) => {
-            return request.delete(
+            return handleCall(request.delete(
                 urlTo(resource),
                 opts
-            );
+            ));
         },
 
         get: (resource) => {
-            return request.get(
+            return handleCall(request.get(
                 urlTo(resource),
                 opts
-            );
+            ))
         },
 
         post: (resource, data) => {
-            return request.post(
+            return handleCall(request.post(
                 urlTo(resource),
                 data,
                 opts
-            );
+            ));
         },
 
         put: (resource, data) => {
-            return request.put(
+            return handleCall(request.put(
                 urlTo(resource),
                 data,
                 opts
-            );
+            ));
         },
 
         patch: (resource, data) => {
-            return request.patch(
+            return handleCall(request.patch(
                 urlTo(resource),
                 data,
                 opts
-            );
+            ));
         }
     };
 }

@@ -1,6 +1,6 @@
 import * as UserActions from "../actions/user";
 import React from "react";
-import { Link } from "react-router";
+import { Link, browserHistory } from "react-router";
 import { connect } from "react-redux";
 
 var d = React.DOM;
@@ -14,7 +14,7 @@ export class Header extends React.Component {
         e.stopPropagation();
 
         dispatch(UserActions.logout()).then(() => {
-            this.props.history.pushState({}, "/");
+            browserHistory.push("/");
         });
     }
 

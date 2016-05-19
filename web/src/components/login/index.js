@@ -1,5 +1,7 @@
 import * as forms from "../forms";
 import React from "react";
+import { browserHistory } from "react-router";
+
 import * as UserActions from "../../actions/user";
 import { connect } from "react-redux";
 import { facebookLogin } from "../facebook";
@@ -24,7 +26,7 @@ export class LoginForm extends forms.ValidatedForm {
             )
         ).then(() => {
             // todo - redirect back to where they were going?
-            this.props.history.pushState({}, "/");
+            browserHistory.push("/");
         })
         .catch(e => {
             this.setState({ submitting: false });
@@ -58,7 +60,7 @@ export class LoginForm extends forms.ValidatedForm {
 
                 facebookLogin({
                     onClick: () => { this.setState({submitting: true}); },
-                    onLogin: () => { this.props.history.pushState({}, "/"); }
+                    onLogin: () => { browserHistory.push("/"); }
                 }),
 
                 d.h2({}, "or"),

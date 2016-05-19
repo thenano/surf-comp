@@ -13,13 +13,7 @@ var d = React.DOM;
 
 @fetch((store) => {
     if (!store.loaded("users.current")) {
-        return store
-            .dispatch(UserActions.getCurrentUser())
-            .catch(e => {
-                if (e.status != 401) {
-                    return Promise.reject(e);
-                }
-            });
+        return store.dispatch(UserActions.getCurrentUser())
     }
 })
 @connect(state => ({

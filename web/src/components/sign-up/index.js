@@ -1,6 +1,7 @@
 import * as UserActions from "../../actions/user";
 import * as forms from "../forms";
 import React from "react";
+import { browserHistory } from "react-router";
 import { connect } from "react-redux";
 import { facebookLogin } from "../facebook";
 
@@ -38,7 +39,7 @@ export class SignUp extends forms.ValidatedForm {
             }
         })
         .then(() => {
-            this.props.history.pushState({}, "/");
+            browserHistory.push("/");
         });
     }
 
@@ -59,7 +60,7 @@ export class SignUp extends forms.ValidatedForm {
 
                 facebookLogin({
                     onClick: () => { this.setState({submitting: true}); },
-                    onLogin: () => { this.props.history.pushState({}, "/"); }
+                    onLogin: () => { browserHistory.push("/"); }
                 }),
 
                 d.h2({}, "or"),
