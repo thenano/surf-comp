@@ -38,9 +38,13 @@ class Event < ApplicationRecord
   def current_heats
     bank_1_heat_id = schedule[0][current_schedule_index]
     bank_2_heat_id = schedule[1][current_schedule_index]
+
+    has_bank_1 = !bank_1_heat_id.nil? && bank_1_heat_id != 0
+    has_bank_2 = !bank_2_heat_id.nil? && bank_2_heat_id != 0
+
     [
-      bank_1_heat_id ? Heat.find(bank_1_heat_id) : nil,
-      bank_2_heat_id ? Heat.find(bank_2_heat_id) : nil
+      has_bank_1 ? Heat.find(bank_1_heat_id) : nil,
+      has_bank_2 ? Heat.find(bank_2_heat_id) : nil
     ]
   end
 

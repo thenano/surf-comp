@@ -16,6 +16,23 @@ RSpec.describe Event, :type => :model do
     end
   end
 
+  describe "#current_heats" do
+    describe "when a bank's heat id is 0" do
+      it "should not include that bank in the current heats" do
+        event = create(:event)
+        create(:division_with_athletes, {event: event})
+        event.draw
+
+        event.schedule[1] = [0, 0, 0, 2]
+
+        expect(event.current_heats).to eq([
+          Heat.find(event.schedule.first.first),
+          nil
+        ])
+      end
+    end
+  end
+
   describe '#add_athlete' do
 
     describe 'when there is a division with 24 athletes' do
