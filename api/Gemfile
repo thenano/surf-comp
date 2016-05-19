@@ -12,6 +12,7 @@ gem 'devise'
 gem 'omniauth-facebook'
 gem 'rack-rewrite'
 gem 'pusher'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'rspec-rails'

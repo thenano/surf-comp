@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'csv'
 
-event = Event.create(name: 'BBR comp 3', date: '2016-22-05')
+event = Event.create(name: 'BBR comp 3', date: '2016-05-22')
 
 CSV.foreach('./db/comp3_seeds.csv', headers: true) do |row|
   division = Division.find_by(name: row['DIVISON'].downcase.capitalize)
