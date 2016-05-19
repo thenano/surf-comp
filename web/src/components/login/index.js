@@ -2,6 +2,7 @@ import * as forms from "../forms";
 import React from "react";
 import * as UserActions from "../../actions/user";
 import { connect } from "react-redux";
+import { facebookLogin } from "../facebook";
 
 var d = React.DOM;
 
@@ -40,25 +41,6 @@ export class LoginForm extends forms.ValidatedForm {
         });
     }
 
-    loginWithFacebook() {
-        this.setState({ submitting: true });
-        let { dispatch } = this.props;
-
-        return new Promise((resolve, reject) => {
-            // eslint-disable-next-line no-undef
-            FB.login((response) => {
-                if (response.authResponse) {
-                    resolve(dispatch(UserActions.registerFacebook()));
-                } else {
-                    reject();
-                }
-            }, {scope: "public_profile,email"});
-        })
-        .then(() => {
-            this.props.history.pushState({}, "/");
-        });
-    }
-
     render() {
         return d.div(
             {id: "login", className: "page"},
@@ -73,7 +55,13 @@ export class LoginForm extends forms.ValidatedForm {
 
             d.div(
                 {className: "wrapper"},
-                d.button({onClick: this.loginWithFacebook.bind(this)}, "Facebook"),
+
+                facebookLogin({
+                    onClick: () => { this.setState({submitting: true}); },
+                    onLogin: () => { this.props.history.pushState({}, "/"); }
+                }),
+
+                d.h2({}, "or"),
 
                 d.form(
                     {},
