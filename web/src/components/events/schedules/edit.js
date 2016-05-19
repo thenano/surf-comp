@@ -63,14 +63,11 @@ class Heat extends React.Component {
             d.div(
                 {className: `heat ${heat.get("division").toLowerCase()}`},
 
-                d.div({},
-                    d.header({}, heat.get("division")),
-                    d.div({}, `heat ${heat.get("number")}, ${heat.get("round")}`),
-                    d.div(
-                        {className: "heat-time"},
-                        d.i({className: "fa fa-clock-o"}),
-                        this.props.time
-                    )
+                d.div({}, `${heat.get("division")} : ${heat.get("round")} : heat ${heat.get("number")}`),
+                d.div(
+                    {className: "heat-time"},
+                    d.i({className: "fa fa-clock-o"}),
+                    this.props.time
                 )
             )
         );

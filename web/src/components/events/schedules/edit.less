@@ -48,38 +48,31 @@
     }
 
     .heat {
-        header {
-            font-family: @serif;
-            font-weight: bold;
-        }
-
         display: flex;
         align-items: center;
-        justify-content: center;
-        text-align: center;
         padding: 5px 20px;
         cursor: move;
         height: 100%;
         color: white;
-        font-family: @sans-serif;
+        font-family: @serif;
         background: #b6b6b6;
         position: relative;
+        border-right: 1px solid white;
 
         &.micro { background: @groms-color; }
         &.trial { background: @groms-color; }
         &.opens { background: @open-color; }
         &.masters { background: @master-color; }
         &.girls { background: @women-color; }
-        &.gms { background: @gm-color; }
+        &.gm { background: @gm-color; }
         &.juniors { background: @juniors-color; }
+        &.cadets { background: @cadets-color; }
 
         .heat-time {
             position: absolute;
             font-family: @sans-serif;
-            right: 5px;
-            top: 5px;
-            color: grey;
-            font-size: 11px;
+            right: 10px;
+            top: 14px;
             font-weight: bold;
             color: #eee;
 
@@ -91,41 +84,6 @@
 
     .times {
         flex: 5 1 0;
-    }
-
-    .ticks {
-        background: #eee;
-        flex: 1 1 0;
-
-        .tick {
-            position: relative;
-            height: @tick-height;
-            font-weight: bold;
-
-            .big-tick, .small-tick {
-                position: absolute;
-                top: 0;
-                right: 0;
-                height: 100%;
-                line-height: @tick-height;
-                padding: 0 25px;
-            }
-
-            .small-tick:after, .big-tick:after {
-                position: absolute;
-                content: ' ';
-                width: 15px;
-                height: 1px;
-                background: @info-color;
-                top: 50%;
-                right: 5px;
-                transform: translate(0, 50%);
-            }
-
-            .small-tick:after {
-                width: 10px;
-            }
-        }
     }
 
     .time-row {
