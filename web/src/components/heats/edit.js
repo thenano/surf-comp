@@ -65,8 +65,7 @@ class AthleteSlot extends React.Component {
         let removeLink = remove ? d.a(
             {
                 onClick: remove,
-                className: "danger submit " + (this.props.isSubmitting ? "disabled" : ""),
-                style: {marginLeft: "20px"}
+                className: "danger submit " + (this.props.isSubmitting ? "disabled" : "")
             },
 
             d.i({className: "fa fa-trash"}),
@@ -75,8 +74,8 @@ class AthleteSlot extends React.Component {
         return connectDragSource(connectDropTarget(
             d.li(
                 {className: `athlete ${jersey} ${hovering ? "hovering" : ""}`},
-                name,
-                removeLink
+                removeLink,
+                name
             )
         ));
     }
