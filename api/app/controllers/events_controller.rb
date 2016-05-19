@@ -31,9 +31,12 @@ class EventsController < ApplicationController
       user.name = params[:name]
     end
 
-    heat_offset = @event.add_athlete(athlete, params[:division_id])
-
-    render json: {heat_offset: heat_offset, event: build_event_schedule_json}
+    begin
+      heat_offset = @event.add_athlete(athlete, params[:division_id])
+      render json: {heat_offset: heat_offset, event: build_event_schedule_json}
+    rescue ActiveRecord::RecordNotUnique
+      render json: {error: "#{params[:name]} is already in the heat draw"}, status: :unprocessable_entity
+    end
   end
 
   def remove_athlete
@@ -162,8 +165,7 @@ class EventsController < ApplicationController
             number: heat.position.next,
             start_time: heat.start_time,
             end_time: heat.end_time,
-            athletes: athletes,
-            scores: user_signed_in? ? heat.scores_for(current_user.id) : nil
+            athletes: athletes
           }]
         end
       end

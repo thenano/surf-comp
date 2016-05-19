@@ -289,7 +289,7 @@ export class AddAthleteForm extends forms.ValidatedForm {
         return this.props.send(model).catch(e => {
             this.setState({
                 submitting: false,
-                error: `The was an unexpected problem: ${e.data}`
+                error: `Error: ${e.data.error}`
             });
         }).then(() => {
             this.setState({ submitting: false });
