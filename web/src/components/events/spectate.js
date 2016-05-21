@@ -310,6 +310,7 @@ export class Spectate extends React.Component {
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
 
+        dispatch(EventActions.getPreviousHeats(event_id));
         dispatch(EventActions.getCurrentHeats(event_id));
         dispatch(EventActions.getUpcomingHeats(event_id));
     }
@@ -320,6 +321,7 @@ export class Spectate extends React.Component {
 
         dispatch(EventActions.getPreviousHeats(event_id));
         dispatch(EventActions.getCurrentHeats(event_id));
+        dispatch(EventActions.getUpcomingHeats(event_id));
     }
 
     renderActiveHeats() {
