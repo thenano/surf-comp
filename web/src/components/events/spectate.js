@@ -132,13 +132,17 @@ class ResultsMarquee extends React.Component {
 
                 previousHeats.map(bank => {
                     return bank.map((h, i) => {
-                        return d.div(
-                            {className: "heat-scroll-point"},
-                            React.createElement(
-                                TinyHeatResults,
-                                {key: i, heat: h}
-                            )
-                        );
+                        if (h) {
+                            return d.div(
+                                {className: "heat-result heat-scroll-point"},
+                                React.createElement(
+                                    TinyHeatResults,
+                                    {key: i, heat: h}
+                                )
+                            );
+                        } else {
+                            return null;
+                        }
                     });
                 })
             )
