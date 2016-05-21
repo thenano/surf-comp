@@ -124,27 +124,42 @@ class ResultsMarquee extends React.Component {
     renderLastHeatsScores() {
         let { previousHeats } = this.props;
 
+        let bank1 = previousHeats.first(),
+            bank2 = previousHeats.last();
+
+        let heats = [];
+        for (var i=0; i < Math.max(bank1.size, bank2.size); i++) {
+            if (bank1.get(i)) {
+                heats.push(
+                    d.div(
+                        {key: `${i}-1`, className: "heat-result heat-scroll-point"},
+                        React.createElement(
+                            TinyHeatResults,
+                            {heat: bank1.get(i)}
+                        )
+                    )
+                );
+            }
+
+            if (bank2.get(i)) {
+                heats.push(
+                    d.div(
+                        {key: `${i}-2`, className: "heat-result heat-scroll-point"},
+                        React.createElement(
+                            TinyHeatResults,
+                            {heat: bank2.get(i)}
+                        )
+                    )
+                );
+            }
+        }
+
         return d.div(
             {className: "last-heat-score"},
 
             d.div(
                 {className: "last-heat-results"},
-
-                previousHeats.map(bank => {
-                    return bank.map((h, i) => {
-                        if (h) {
-                            return d.div(
-                                {className: "heat-result heat-scroll-point"},
-                                React.createElement(
-                                    TinyHeatResults,
-                                    {key: i, heat: h}
-                                )
-                            );
-                        } else {
-                            return null;
-                        }
-                    });
-                })
+                heats
             )
         );
     }
@@ -198,13 +213,13 @@ class HeatMarquee extends React.Component {
         for (var i=0; i < Math.max(bank1.size, bank2.size); i++) {
             if (bank1.get(i)) {
                 heats.push(
-                    d.div({className: "heat-scroll-point", key: key++}, heat(bank1.get(i)))
+                    d.div({className: "heat-scroll-point", key: `${i}-1`}, heat(bank1.get(i)))
                 );
             }
 
             if (bank2.get(i)) {
                 heats.push(
-                    d.div({className: "heat-scroll-point", key: key++}, heat(bank2.get(i)))
+                    d.div({className: "heat-scroll-point", key: `${i}-2`}, heat(bank2.get(i)))
                 );
             }
         }
@@ -310,7 +325,6 @@ export class Spectate extends React.Component {
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
 
-        dispatch(EventActions.getPreviousHeats(event_id));
         dispatch(EventActions.getCurrentHeats(event_id));
         dispatch(EventActions.getUpcomingHeats(event_id));
     }
@@ -321,7 +335,6 @@ export class Spectate extends React.Component {
 
         dispatch(EventActions.getPreviousHeats(event_id));
         dispatch(EventActions.getCurrentHeats(event_id));
-        dispatch(EventActions.getUpcomingHeats(event_id));
     }
 
     renderActiveHeats() {
@@ -350,8 +363,6 @@ export class Spectate extends React.Component {
                 );
             }).filter(h => h != null);
 
-            let heatStarted = () => (heats.getIn([0, 'start_time']) || heats.getIn([1, 'start_time']));
-
             return d.div(
                 {className: "live-heat"},
                 renderedScores
@@ -367,8 +378,6 @@ export class Spectate extends React.Component {
     render() {
         const { events } = this.props;
         const { heats } = this.props;
-
-        let event = events.get(Number.parseInt(this.props.params.id));
 
         return d.div(
             {id: "spectate", className: "heat-wrapper"},
