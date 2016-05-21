@@ -49,8 +49,8 @@ class Event < ApplicationRecord
       start_time = heat_start_time || (start_time + 16.minutes)
     end
 
-    bank_1 = schedule[0][current_schedule_index+1..-1] || []
-    bank_2 = schedule[1][current_schedule_index+1..-1] || []
+    bank_1 = schedule[0][current_schedule_index..-1] || []
+    bank_2 = schedule[1][current_schedule_index..-1] || []
     bank_1_start_time = bank_2_start_time = start_time
 
     [

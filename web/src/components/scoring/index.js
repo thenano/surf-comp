@@ -203,7 +203,8 @@ export class ScoreCard extends React.Component {
             athletes = heat
                 .get("athletes", Immutable.Map())
                 .valueSeq()
-                .sortBy(a => a.position);
+                .sortBy(a => a.get("position"));
+
         for (let i=0; i < 6; i++) {
             let athlete = athletes.get(i, null);
 

@@ -6,9 +6,9 @@ import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
 import { fetch, liveScores } from "../../decorators";
 import { connect } from "react-redux";
-import { HeatResults } from "./results/card";
+import { HeatResults, TinyHeatResults } from "./results/card";
 import { JERSEYS } from "../surfing";
-import { Spinner } from "../spinner";
+import { Spinner } from "../spinner"
 
 class LoadingOverlay extends React.Component {
     render() {
@@ -25,33 +25,33 @@ class LoadingOverlay extends React.Component {
 }
 
 const Easing = {
-  // no easing, no acceleration
-  linear: function (t) { return t },
-  // accelerating from zero velocity
-  easeInQuad: function (t) { return t*t },
-  // decelerating to zero velocity
-  easeOutQuad: function (t) { return t*(2-t) },
-  // acceleration until halfway, then deceleration
-  easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
-  // accelerating from zero velocity 
-  easeInCubic: function (t) { return t*t*t },
-  // decelerating to zero velocity 
-  easeOutCubic: function (t) { return (--t)*t*t+1 },
-  // acceleration until halfway, then deceleration 
-  easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
-  // accelerating from zero velocity 
-  easeInQuart: function (t) { return t*t*t*t },
-  // decelerating to zero velocity 
-  easeOutQuart: function (t) { return 1-(--t)*t*t*t },
-  // acceleration until halfway, then deceleration
-  easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
-  // accelerating from zero velocity
-  easeInQuint: function (t) { return t*t*t*t*t },
-  // decelerating to zero velocity
-  easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
-  // acceleration until halfway, then deceleration 
-  easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
-};
+    // no easing, no acceleration
+    linear: function (t) { return t },
+    // accelerating from zero velocity
+    easeInQuad: function (t) { return t*t },
+    // decelerating to zero velocity
+    easeOutQuad: function (t) { return t*(2-t) },
+    // acceleration until halfway, then deceleration
+    easeInOutQuad: function (t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t },
+    // accelerating from zero velocity 
+    easeInCubic: function (t) { return t*t*t },
+    // decelerating to zero velocity 
+    easeOutCubic: function (t) { return (--t)*t*t+1 },
+    // acceleration until halfway, then deceleration 
+    easeInOutCubic: function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 },
+    // accelerating from zero velocity 
+    easeInQuart: function (t) { return t*t*t*t },
+    // decelerating to zero velocity 
+    easeOutQuart: function (t) { return 1-(--t)*t*t*t },
+    // acceleration until halfway, then deceleration
+    easeInOutQuart: function (t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t },
+    // accelerating from zero velocity
+    easeInQuint: function (t) { return t*t*t*t*t },
+    // decelerating to zero velocity
+    easeOutQuint: function (t) { return 1+(--t)*t*t*t*t },
+    // acceleration until halfway, then deceleration 
+    easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
+}
 
 var d = React.DOM;
 
@@ -106,7 +106,7 @@ class TinyHeat extends React.Component {
             d.ol(
                 {className: "athletes"},
                 heat.get("athletes", Immutable.Map()).valueSeq().map((a, i) => {
-                    return athleteSlot(heat.get("id"), i, a.get("name"));
+                    return athleteSlot(heat.get("id"), a.get("position"), a.get("name"));
                 })
             )
         );
@@ -149,6 +149,11 @@ class HeatMarquee extends React.Component {
         let start = this.refs.marquee.scrollTop;
         let points = this.refs.marquee.querySelectorAll(".heat-scroll-point");
         let next = points[this.props.active];
+
+        if (!next) {
+            return;
+        }
+
         let top = next.offsetTop;
         let distance = Math.abs(top - start);
         let i = 0;
@@ -224,6 +229,24 @@ export class Spectate extends React.Component {
         this.props.scores.bind("heats-finished", this.heatsFinished.bind(this));
     }
 
+    renderLastHeatsScores() {
+        return d.div(
+            {className: "last-heat-score"},
+
+            d.div(
+                {className: "last-heat-results"},
+                React.createElement(
+                    TinyHeatResults,
+                    {heat: this.props.heats.get(0)}
+                ),
+                React.createElement(
+                    TinyHeatResults,
+                    {heat: this.props.heats.get(0)}
+                )
+            )
+        );
+    }
+
     heatsStarted() {
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
@@ -291,6 +314,7 @@ export class Spectate extends React.Component {
             d.div(
                 {className: "display header"},
                 d.h2({className: "active-heats"}, "Live"),
+                d.h2({className: "previous-heats"}, "Results"),
                 d.h2({className: "upcoming-heats"}, "Upcoming")
             ),
 
@@ -298,7 +322,11 @@ export class Spectate extends React.Component {
                 {className: "display main"},
                 d.div(
                     {className: "active-heats"},
-                    this.renderActiveHeats()
+                    this.renderActiveHeats(),
+                ),
+                d.div(
+                    {className: "previous-heats"},
+                    this.renderLastHeatsScores()
                 ),
                 React.createElement(
                     HeatMarquee,

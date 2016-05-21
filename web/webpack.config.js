@@ -65,6 +65,9 @@ module.exports = {
         ]
     },
 
+    quiet: false,
+    noInfo: false,
+
     plugins: plugins,
 
     devtool: devtool,
