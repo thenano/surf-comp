@@ -41,12 +41,14 @@ class Event < ApplicationRecord
 
   def upcoming_heats
     start_time = Time.new(date.year, date.month, date.day, 7, 0, 0)
+    # TODO fix this because of US server timezone
+    start_time -= 10.hours
 
     (0..current_schedule_index).each do |index|
       heat_start_time = heat_for_bank_and_index(0, index)&.start_time ||
           heat_for_bank_and_index(1, index)&.start_time
 
-      start_time = heat_start_time || (start_time + 16.minutes)
+      start_time = (heat_start_time || start_time) + 16.minutes
     end
 
     bank_1_start_time = bank_2_start_time = start_time
@@ -58,16 +60,16 @@ class Event < ApplicationRecord
       bank_1.map { |id|
         heat = heat_for_id(id)
 
-        bank_1_start_time += 16.minutes
         heat&.start_time = bank_1_start_time
+        bank_1_start_time += 16.minutes
 
         heat
       },
       bank_2.map { |id|
         heat = heat_for_id(id)
 
-        bank_2_start_time += 16.minutes
         heat&.start_time = bank_2_start_time
+        bank_2_start_time += 16.minutes
 
         heat
       }
