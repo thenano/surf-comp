@@ -49,21 +49,22 @@ class Event < ApplicationRecord
       start_time = heat_start_time || (start_time + 16.minutes)
     end
 
-    bank_1 = schedule[0][current_schedule_index..-1] || []
-    bank_2 = schedule[1][current_schedule_index..-1] || []
     bank_1_start_time = bank_2_start_time = start_time
 
+    bank_1 = schedule[0][current_schedule_index..-1] || []
+    bank_2 = schedule[1][current_schedule_index..-1] || []
+
     [
-      bank_1.map { |index|
-        heat = heat_for_bank_and_index(0, index)
+      bank_1.map { |id|
+        heat = heat_for_id(id)
 
         bank_1_start_time += 16.minutes
         heat&.start_time = bank_1_start_time
 
         heat
       },
-      bank_2.map { |index|
-        heat = heat_for_bank_and_index(1, index)
+      bank_2.map { |id|
+        heat = heat_for_id(id)
 
         bank_2_start_time += 16.minutes
         heat&.start_time = bank_2_start_time
@@ -78,17 +79,19 @@ class Event < ApplicationRecord
     bank_2 = schedule[1][0...current_schedule_index] || []
 
     [
-        bank_1.map { |index| heat_for_bank_and_index(0, index) },
-        bank_2.map { |index| heat_for_bank_and_index(1, index) }
+        bank_1.map { |id| heat_for_id(id) },
+        bank_2.map { |id| heat_for_id(id) }
     ]
   end
 
   def heat_for_bank_and_index(bank, schedule_index)
     heat_id = schedule[bank][schedule_index]
-
-    is_heat?(heat_id) ? Heat.find(heat_id) : nil
+    heat_for_id(heat_id)
   end
 
+  def heat_for_id(heat_id)
+    is_heat?(heat_id) ? Heat.find(heat_id) : nil
+  end
 
   def current_heats
     [
