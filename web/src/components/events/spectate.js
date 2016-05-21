@@ -83,7 +83,7 @@ class TinyHeat extends React.Component {
         let division = heat.get("division"),
             round = heat.get("round"),
             number = heat.get("number"),
-            startTime = heat.get("estimated_start_time");
+            startTime = new Date(heat.get("start_time"));
 
         let displayTime;
         if (startTime) {
@@ -95,7 +95,12 @@ class TinyHeat extends React.Component {
 
             d.header(
                 {className: `title ${division.toLowerCase()}`},
-                `${division} - ${round} - Heat ${number} ${displayTime ? "(" + displayTime + ")" : ""}`
+                d.div({}, `${division} : ${round} : Heat ${number}`),
+                d.div(
+                    {className: "heat-time"},
+                    d.i({className: "fa fa-clock-o"}),
+                    displayTime
+                )
             ),
 
             d.ol(
@@ -224,7 +229,7 @@ export class Spectate extends React.Component {
         let event_id = this.props.params.id;
 
         dispatch(EventActions.getCurrentHeats(event_id));
-        dispatch(EventActions.getUpcomingHeats(event.id));
+        dispatch(EventActions.getUpcomingHeats(event_id));
     }
 
     heatsFinished() {
@@ -255,7 +260,7 @@ export class Spectate extends React.Component {
 
                     React.createElement(
                         HeatResults,
-                        {heat: heat.set("result", liveScores)}
+                        {heat: heat.set("result", liveScores), places: true}
                     )
                 );
             }).filter(h => h != null);
