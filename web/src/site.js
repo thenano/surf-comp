@@ -21,6 +21,7 @@ import { ShowSchedule } from "./components/events/schedules/show";
 import { LiveJudging } from "./components/events/judging";
 import { Scoring } from "./components/scoring";
 import { Results } from "./components/events/results";
+import { Spectate } from "./components/events/spectate";
 
 const reducer = combineReducers(reducers);
 const store = compose(
@@ -68,6 +69,7 @@ ReactDOM.render(
                 r("/events/:id/division/:division_id/edit", EditHeats),
                 r("/events/:id/scoring", LiveJudging),
                 r("/events/:id/backup-scoring", Scoring),
+                r("/events/:id/spectate", Spectate),
                 // r("/events/:id/results", Results),
                 r("*", NotFound)
             )

@@ -118,7 +118,6 @@ export class ShowSchedule extends React.Component {
     render() {
         const { events } = this.props;
         let schedule = events.getIn(["schedules", Number.parseInt(this.props.params.id)]);
-        console.log(schedule.toJS());
 
         let scheduleSize = Math.max(
             schedule.getIn(["schedule","0"]).size,

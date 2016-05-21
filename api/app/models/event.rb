@@ -35,6 +35,16 @@ class Event < ApplicationRecord
     (added_heats.size - removed_heats.size)
   end
 
+  def upcoming_heats
+    bank_1 = schedule[0][current_schedule_index+1..-1] || []
+    bank_2 = schedule[1][current_schedule_index+1..-1] || []
+
+    [
+      bank_1.map { |id| !id.nil? && id != 0 ? Heat.find(id) : nil },
+      bank_2.map { |id| !id.nil? && id != 0 ? Heat.find(id) : nil }
+    ]
+  end
+
   def current_heats
     bank_1_heat_id = schedule[0][current_schedule_index]
     bank_2_heat_id = schedule[1][current_schedule_index]

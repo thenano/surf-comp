@@ -1,9 +1,7 @@
-/* global Pusher */
-
 import React from "react";
 import Immutable from "immutable";
 import * as EventActions from "../../actions/event";
-import { fetch } from "../../decorators";
+import { fetch, liveScores } from "../../decorators";
 import { connect } from "react-redux";
 import { link } from "../navigation";
 import { HeatResults } from "./results/card";
@@ -35,6 +33,7 @@ function zeroPad(num, places) {
 
     return Promise.all(resources);
 })
+@liveScores()
 @connect((state, props) => ({
     events: state.events,
     heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
@@ -43,10 +42,7 @@ export class ShowEvent extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        let pusher = new Pusher("9228f4893a65786c6b33", {
-            encrypted: true,
-            authEndpoint: "/api/pubsubauth"
-        });
+        let pusher = this.props.pusher;
 
         let channel = pusher.subscribe(`presence-${this.props.params.id}`);
         channel.bind("pusher:subscription_succeeded", this.connected.bind(this));
@@ -54,21 +50,13 @@ export class ShowEvent extends React.Component {
         channel.bind("pusher:member_added", this.judgeConnected.bind(this));
         channel.bind("pusher:member_removed", this.judgeDisconnected.bind(this));
 
-        let scoresChannel = pusher.subscribe(`scores-${this.props.params.id}`);
-        // scoresChannel.bind("pusher:subscription_succeeded", this.connected.bind(this));
-        // scoresChannel.bind("pusher:subscription_error", this.disconnected.bind(this));
-        scoresChannel.bind("score-changed", this.scoreReceived.bind(this));
-
         this.state = {
-            pusher, channel,
-            scores: scoresChannel,
-            liveScores: Immutable.Map(),
             connected: false
         };
     }
 
     componentWillUnmount() {
-        this.state.pusher.disconnect();
+        this.props.pusher.disconnect();
     }
 
     judgeConnected() {
@@ -198,13 +186,6 @@ export class ShowEvent extends React.Component {
         });
     }
 
-    scoreReceived(m) {
-        let heat = Immutable.fromJS(m.message);
-        this.setState({
-            liveScores: this.state.liveScores.set(heat.get("id"), heat.get("result"))
-        });
-    }
-
     renderLiveHeats(message, heats) {
         return d.div(
             {className: "event-next-heat"},
@@ -240,7 +221,7 @@ export class ShowEvent extends React.Component {
                 return null;
             }
 
-            let liveScores = this.state.liveScores.get(heat.get("id"), heat.get("result"));
+            let liveScores = this.props.liveScores.get(heat.get("id"), heat.get("result"));
 
             return d.div(
                 {key: i, className: "scores"},

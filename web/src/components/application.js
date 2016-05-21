@@ -72,7 +72,10 @@ export class Application extends React.Component {
         return d.div(
             {id: pathname == "/" ? "home-container" : "page-container"},
 
-            React.createElement(Header, this.props),
+            pathname.indexOf("spectate") == -1 ?
+                React.createElement(Header, this.props) :
+                null,
+
             this.props.children,
 
             React.createElement(

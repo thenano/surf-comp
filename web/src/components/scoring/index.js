@@ -96,7 +96,8 @@ class AthleteScoreRow extends React.Component {
                 errors: this.state.errors.get(i, Immutable.List()),
                 onChange: this.set(i),
                 onBlur: (v) => {
-                    if (!this.state.errors.get(i)) {
+                    if (this.state.errors.get(i) &&
+                        this.state.errors.get(i).size == 0) {
                         this.props.onBlur(athlete.get("id"), i, v.trim());
                     }
                 },

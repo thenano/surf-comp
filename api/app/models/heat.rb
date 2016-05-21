@@ -9,9 +9,11 @@ class Heat < ApplicationRecord
 
   def add_score!(score)
     athletes.find(score[:athlete_id]) # will raise record not found
+    puts "all about to grab the record"
     record = scores.where(athlete_id: score[:athlete_id], judge_id: score[:judge_id], wave: score[:wave])
                 .first_or_create(score)
 
+    puts "updating record #{score.inspect}"
     record.update!(score: score[:score]) unless score[:score].nil?
     scores.destroy(record) if score[:score].nil?
   end
