@@ -1,10 +1,16 @@
 #spectate {
     .display{
-        height: 100vh;
-        padding: 0 50px 50px 50px;
+        padding: 0 50px 0 50px;
         display: flex;
         flex-direction: row;
         overflow: hidden;
+
+        &.header {
+            height: 10vh;
+        }
+        &.main {
+            height: 90vh;
+        }
     }
 
     .active-heats {
@@ -12,7 +18,17 @@
     }
 
     .upcoming-heats {
+        position: relative;
         margin-left: 20px;
         flex: 1 1 0;
+    }
+
+    .heat-list-item {
+        scroll-behavior: smooth;
+    }
+
+    .marquee {
+        height: 100vh;
+        overflow-y: scroll;
     }
 }
