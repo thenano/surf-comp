@@ -14,8 +14,6 @@ var d = React.DOM;
 class WaveScore extends React.Component {
     constructor(props, context) {
         super(props, context);
-
-        this.state = { value: this.props.value || "" };
     }
 
     render() {
@@ -28,8 +26,9 @@ class WaveScore extends React.Component {
 
             forms.number("", `w-${this.props.number}`, {
                 disabled: this.props.disabled,
-                value: this.state.value,
-                onChange: (e) => this.props.onChange(e.target.value),
+                errors: this.props.errors || Immutable.List(),
+                value: this.props.value || "",
+                onChange: (e) => this.props.onChange(e),
                 onBlur: (e) => this.props.onBlur(e.target.value)
             })
         );
@@ -50,6 +49,7 @@ class AthleteScoreRow extends React.Component {
         super(props, context);
 
         this.state = {
+            errors: this.props.scores.map(_ => Immutable.List()),
             scores: this.props.scores
         };
     }
@@ -60,6 +60,32 @@ class AthleteScoreRow extends React.Component {
         });
     }
 
+    set(i) {
+        let setter = (e) => {
+            let v = e.target.value.trim();
+            if (v.match(/^\d*\.?\d+$/)) {
+                if (parseFloat(v) > 10.0) {
+                    this.setState({
+                        errors: this.state.errors.set(i, Immutable.List(["invalid"]))
+                    });
+                }
+                else {
+                    this.setState({
+                        errors: this.state.errors.set(i, Immutable.List())
+                    });
+                }
+            } else {
+                this.setState({
+                    errors: this.state.errors.set(i, Immutable.List(["invalid"]))
+                });
+            }
+
+            this.updateScore(i, v);
+        };
+
+        return setter.bind(this);
+    }
+
     render() {
         let { athlete } = this.props;
 
@@ -67,8 +93,13 @@ class AthleteScoreRow extends React.Component {
         for (let i=0; i < 10; i++) {
             waves.push(waveScore(i, {
                 value: this.state.scores.get(i),
-                onChange: (v) => this.updateScore(i, v.trim()),
-                onBlur: (v) => this.props.onBlur(athlete.get("id"), i, v.trim()),
+                errors: this.state.errors.get(i, Immutable.List()),
+                onChange: this.set(i),
+                onBlur: (v) => {
+                    if (!this.state.errors.get(i)) {
+                        this.props.onBlur(athlete.get("id"), i, v.trim());
+                    }
+                },
                 onMouseOver: this.props.onMouseOver,
                 onMouseOut: this.props.onMouseOut
             }));

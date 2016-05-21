@@ -75,7 +75,7 @@ export const password = function(label, name, options) {
 };
 
 export const number = function(label, name, options) {
-    let props = Object.assign({}, options, {errors: Immutable.Seq(), label: label, name: name, type: "number", inputmode: "numeric"});
+    let props = Object.assign({}, {errors: Immutable.List()}, options, {label: label, name: name, type: "number", inputmode: "numeric"});
     return React.createElement(Text, props);
 };
 
