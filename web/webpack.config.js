@@ -19,6 +19,10 @@ if (isDev) {
     devtool = 'source-map';
 }
 
+if (isProd) {
+    entry.unshift("babel-polyfill")
+}
+
 let plugins = [
     new ExtractTextPlugin(isProd ? '[name].[hash].css' : '[name].css'),
 
