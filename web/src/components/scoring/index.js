@@ -200,10 +200,14 @@ export class ScoreCard extends React.Component {
         }
 
         let scoreRows = [],
-            athletes = heat
-                .get("athletes", Immutable.Map())
-                .valueSeq()
-                .sortBy(a => a.get("position"));
+            athletes = Immutable.Map();
+
+        heat.get("athletes", Immutable.Map())
+            .forEach((a, id) => {
+                if (a) {
+                    athletes = athletes.set(a.get("position"), a);
+                }
+            });
 
         for (let i=0; i < 6; i++) {
             let athlete = athletes.get(i, null);
@@ -322,11 +326,23 @@ export class Scoring extends React.Component {
 
     render() {
         let allHeats = this.props.heats;
-        let northBank = this.state.event.getIn(["schedule", 0]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "North")] : null),
-            southBank = this.state.event.getIn(["schedule", 1]).map((v, i) => v ? [i, allHeats.get(v.toString()).set("bank", "South")] : null);
+        let northBank = this.state.event.getIn(["schedule", 0]).map((v, i) => {
+                if (v) {
+                    return allHeats.get(v.toString()).set("bank", "North")
+                } else {
+                    return null;
+                }
+            }),
+            southBank = this.state.event.getIn(["schedule", 1]).map((v, i) => {
+                if (v) {
+                    return allHeats.get(v.toString()).set("bank", "South")
+                } else {
+                    return null;
+                }
+            });
         // this sort is bad, as ids are not guarantee of the order of the heats
         // specially after schedule manipulation
-        let heats = northBank.concat(southBank).sortBy(h => h[0]).map(h => h[1]);
+        let heats = northBank.concat(southBank);
 
         return d.div(
             {
@@ -344,7 +360,11 @@ export class Scoring extends React.Component {
             d.div(
                 {className: "wrapper"},
                 heats.map(heat => {
-                    return scoreCard(heat, this.saveScore.bind(this), this.endHeat.bind(this));
+                    if (heat) {
+                        return scoreCard(heat, this.saveScore.bind(this), this.endHeat.bind(this));
+                    } else {
+                        return null;
+                    }
                 }).valueSeq()
             ),
         );
