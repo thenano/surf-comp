@@ -120,6 +120,69 @@ function heat(heat) {
     );
 }
 
+class ResultsMarquee extends React.Component {
+    renderLastHeatsScores() {
+        let { previousHeats } = this.props;
+
+        return d.div(
+            {className: "last-heat-score"},
+
+            d.div(
+                {className: "last-heat-results"},
+
+                previousHeats.map(bank => {
+                    return bank.map((h, i) => {
+                        return d.div(
+                            {className: "heat-scroll-point"},
+                            React.createElement(
+                                TinyHeatResults,
+                                {key: i, heat: h}
+                            )
+                        );
+                    });
+                })
+            )
+        );
+    }
+
+    componentDidUpdate() {
+        let start = this.refs.marquee.scrollTop;
+        let points = this.refs.marquee.querySelectorAll(".heat-scroll-point");
+        let next = points[this.props.active];
+
+        if (!next) {
+            return;
+        }
+
+        let top = next.offsetTop;
+        let distance = Math.abs(top - start);
+        let i = 0;
+        let duration = 1000;
+        let t = setInterval(() => {
+            if (start > top) {
+                let d = Easing.easeOutCubic(i / duration);
+                this.refs.marquee.scrollTop = start - distance * d
+            } else {
+                let d = Easing.easeOutCubic(i / duration);
+                this.refs.marquee.scrollTop = start + distance * d
+            }
+
+            i += 10;
+            if (i > duration) {
+                this.refs.marquee.scrollTop = top;
+                clearInterval(t);
+            }
+        }, 10);
+    }
+
+    render() {
+        return d.div(
+            {ref: "marquee", className: "previous-heats marquee"},
+            this.renderLastHeatsScores(),
+        );
+    }
+}
+
 class HeatMarquee extends React.Component {
     renderNextHeats() {
         let { upcomingHeats } = this.props;
@@ -239,27 +302,6 @@ export class Spectate extends React.Component {
         this.props.scores.bind("heats-finished", this.heatsFinished.bind(this));
     }
 
-    renderLastHeatsScores() {
-        let { previousHeats } = this.props;
-
-        return d.div(
-            {className: "last-heat-score"},
-
-            d.div(
-                {className: "last-heat-results"},
-
-                previousHeats.map(bank => {
-                    return bank.map((h, i) => {
-                        return React.createElement(
-                            TinyHeatResults,
-                            {key: i, heat: h}
-                        );
-                    })
-                })
-            )
-        );
-    }
-
     heatsStarted() {
         let { dispatch } = this.props;
         let event_id = this.props.params.id;
@@ -339,7 +381,13 @@ export class Spectate extends React.Component {
                 ),
                 d.div(
                     {className: "previous-heats"},
-                    this.renderLastHeatsScores()
+                    React.createElement(
+                        ResultsMarquee,
+                        {
+                            active: this.state.resultTop,
+                            previousHeats: this.props.previousHeats
+                        }
+                    )
                 ),
                 React.createElement(
                     HeatMarquee,
