@@ -51,8 +51,8 @@ class Event < ApplicationRecord
 
     bank_1_start_time = bank_2_start_time = start_time
 
-    bank_1 = schedule[0][current_schedule_index..-1] || []
-    bank_2 = schedule[1][current_schedule_index..-1] || []
+    bank_1 = schedule[0][current_schedule_index.next..-1] || []
+    bank_2 = schedule[1][current_schedule_index.next..-1] || []
 
     [
       bank_1.map { |id|
