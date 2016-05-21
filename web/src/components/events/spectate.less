@@ -14,6 +14,7 @@
     }
 
     .active-heats {
+        position: relative;
         flex: 3 1 0;
 
         .live-heat {
@@ -22,6 +23,33 @@
 
             .scores {
                 flex: 1 1 0;
+            }
+        }
+
+        .loading {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            text-align: center;
+
+            .spinner {
+                margin: 0 auto;
+                display: block;
+            }
+
+            .content {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .message {
+                font-family: @serif;
+                font-size: 24px;
+                margin-bottom: 35px;
             }
         }
     }

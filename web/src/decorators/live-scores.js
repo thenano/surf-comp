@@ -29,6 +29,10 @@ export function decorator() {
             };
         }
 
+        componentWillUnmount() {
+            this.state.pusher.disconnect();
+        }
+
         scoreReceived(m) {
             let heat = Immutable.fromJS(m.message);
             this.setState({

@@ -8,6 +8,21 @@ import { fetch, liveScores } from "../../decorators";
 import { connect } from "react-redux";
 import { HeatResults } from "./results/card";
 import { JERSEYS } from "../surfing";
+import { Spinner } from "../spinner";
+
+class LoadingOverlay extends React.Component {
+    render() {
+        return d.div(
+            {className: "loading"},
+
+            d.div(
+                {className: "content"},
+                d.div({className: "message"}, this.props.message),
+                React.createElement(Spinner, {})
+            )
+        );
+    }
+}
 
 const Easing = {
   // no easing, no acceleration
@@ -68,7 +83,7 @@ class TinyHeat extends React.Component {
         let division = heat.get("division"),
             round = heat.get("round"),
             number = heat.get("number"),
-            startTime = null;
+            startTime = heat.get("estimated_start_time");
 
         let displayTime;
         if (startTime) {
@@ -199,39 +214,64 @@ export class Spectate extends React.Component {
                 top: (this.state.top + 1) % heatCount
             });
         }, 5000);
+
+        this.props.scores.bind("heats-started", this.heatsStarted.bind(this));
+        this.props.scores.bind("heats-finished", this.heatsFinished.bind(this));
+    }
+
+    heatsStarted() {
+        let { dispatch } = this.props;
+        let event_id = this.props.params.id;
+
+        dispatch(EventActions.getCurrentHeats(event_id));
+        dispatch(EventActions.getUpcomingHeats(event.id));
+    }
+
+    heatsFinished() {
+        let { dispatch } = this.props;
+        let event_id = this.props.params.id;
+
+        dispatch(EventActions.getCurrentHeats(event_id));
     }
 
     renderActiveHeats() {
         let { heats } = this.props;
 
-        let renderedScores = heats.map((heat, i) => {
-            if (heat == null) {
-                return null;
-            }
+        if (heats.get(0) && heats.get(0).get("start_time")) {
+            let renderedScores = heats.map((heat, i) => {
+                if (heat == null) {
+                    return null;
+                }
 
-            let liveScores = this.props.liveScores.get(heat.get("id"), heat.get("result"));
+                let liveScores = this.props.liveScores.get(heat.get("id"), heat.get("result"));
+
+                return d.div(
+                    {key: i, className: "scores"},
+
+                    d.header(
+                        {className: `heat-header ${heat.get("division").toLowerCase()}`},
+                        `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${i == 0 ? "North" : "South"} Bank)`
+                    ),
+
+                    React.createElement(
+                        HeatResults,
+                        {heat: heat.set("result", liveScores)}
+                    )
+                );
+            }).filter(h => h != null);
+
+            let heatStarted = () => (heats.getIn([0, 'start_time']) || heats.getIn([1, 'start_time']));
 
             return d.div(
-                {key: i, className: "scores"},
-
-                d.header(
-                    {className: `heat-header ${heat.get("division").toLowerCase()}`},
-                    `${heat.get("division")} : ${heat.get("round")} : Heat ${heat.get("number")} (${i == 0 ? "North" : "South"} Bank)`
-                ),
-
-                React.createElement(
-                    HeatResults,
-                    {heat: heat.set("result", liveScores)}
-                )
+                {className: "live-heat"},
+                renderedScores
             );
-        }).filter(h => h != null);
-
-        let heatStarted = () => (heats.getIn([0, 'start_time']) || heats.getIn([1, 'start_time']));
-
-        return d.div(
-            {className: "live-heat"},
-            renderedScores
-        );
+        } else {
+            return React.createElement(
+                LoadingOverlay,
+                {key: "connecting", message: "Waiting for heat to start..."}
+            );
+        }
     }
 
     render() {

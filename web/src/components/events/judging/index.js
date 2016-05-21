@@ -26,7 +26,7 @@ class LoadingOverlay extends React.Component {
 }
 
 @fetch((store, r) => {
-    store.dispatch(EventActions.getCurrentHeats(r.params.id));
+    return store.dispatch(EventActions.getCurrentHeats(r.params.id));
 })
 @connect((state, props) => ({
     heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
