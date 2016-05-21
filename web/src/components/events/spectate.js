@@ -199,6 +199,12 @@ class HeatMarquee extends React.Component {
         );
     }
 
+    if (!store.loaded(`events.previous_heats.${r.params.id}`)) {
+        resources.push(
+            store.dispatch(EventActions.getPreviousHeats(r.params.id))
+        );
+    }
+
     if (!store.loaded(`events.upcoming_heats.${r.params.id}`)) {
         resources.push(
             store.dispatch(EventActions.getUpcomingHeats(r.params.id))
@@ -211,17 +217,21 @@ class HeatMarquee extends React.Component {
 @connect((state, props) => ({
     events: state.events,
     upcomingHeats: state.events.getIn(["upcoming_heats", parseInt(props.params.id)]),
+    previousHeats: state.events.getIn(["previous_heats", parseInt(props.params.id)]),
     heats: state.events.getIn(["current_heats", parseInt(props.params.id)])
 }))
 export class Spectate extends React.Component {
     constructor(props, context) {
         super(props, context);
 
-        let heatCount = props.upcomingHeats.get(0).size + props.upcomingHeats.get(1).size;
-        this.state = { top: 0 }
+        let heatCount = props.upcomingHeats.get(0).size + props.upcomingHeats.get(1).size,
+            resultCount = props.previousHeats.get(0).size + props.previousHeats.get(1).size;
+
+        this.state = { top: 0, resultTop: 0 };
         setInterval(() => {
             this.setState({
-                top: (this.state.top + 1) % heatCount
+                top: (this.state.top + 1) % heatCount,
+                resultTop: (this.state.resultTop + 1) % resultCount
             });
         }, 5000);
 
@@ -230,19 +240,22 @@ export class Spectate extends React.Component {
     }
 
     renderLastHeatsScores() {
+        let { previousHeats } = this.props;
+
         return d.div(
             {className: "last-heat-score"},
 
             d.div(
                 {className: "last-heat-results"},
-                React.createElement(
-                    TinyHeatResults,
-                    {heat: this.props.heats.get(0)}
-                ),
-                React.createElement(
-                    TinyHeatResults,
-                    {heat: this.props.heats.get(0)}
-                )
+
+                previousHeats.map(bank => {
+                    return bank.map((h, i) => {
+                        return React.createElement(
+                            TinyHeatResults,
+                            {key: i, heat: h}
+                        );
+                    })
+                })
             )
         );
     }
