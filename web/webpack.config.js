@@ -11,7 +11,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 let isProd = args.prod;
 let isDev = args.dev;
 
-let entry = ["./src/site.js"];
+let entry = ["babel-polyfill", "./src/site.js"];
 let devtool;
 
 if (isDev) {
