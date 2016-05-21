@@ -97,3 +97,10 @@ export function getUpcomingHeats(event_id) {
         promise: api => api.get(`events/${event_id}/upcoming_heats`)
     };
 }
+
+export function getPreviousHeats(event_id) {
+    return {
+        type: "GET_PREVIOUS_HEATS",
+        promise: api => api.get(`events/${event_id}/previous_heats`)
+    };
+}

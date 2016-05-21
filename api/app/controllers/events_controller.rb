@@ -27,6 +27,10 @@ class EventsController < ApplicationController
     render json: upcoming_heats_json
   end
 
+  def previous_heats
+    render json: previous_heats_json
+  end
+
   def add_athlete
     params = add_athlete_params
     athlete = User.where('lower(name) = ?', params[:name].downcase).first_or_create do |user|
@@ -130,6 +134,28 @@ class EventsController < ApplicationController
       params.require(:swap_athletes).permit(from: [:heat_id, :position], to: [:heat_id, :position])
     end
 
+    def previous_heats_json
+      {
+          id: @event.id,
+          heats: @event.previous_heats.map { |bank|
+            bank.map { |heat|
+              {
+                  id: heat.id,
+                  division: heat.event_division.division.name,
+                  round: heat.round,
+                  number: heat.position.next,
+                  start_time: heat.start_time,
+                  result: heat.result,
+                  athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
+                    athlete = athlete_heat.athlete
+                    [athlete.id, {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}]
+                  }.to_h
+              } if heat
+            }
+          }
+      }
+    end
+
     def upcoming_heats_json
       {
           id: @event.id,
@@ -141,8 +167,6 @@ class EventsController < ApplicationController
                   round: heat.round,
                   number: heat.position.next,
                   start_time: heat.start_time,
-                  scores: user_signed_in? ? heat.scores_for(current_user.id) : nil,
-                  result: heat.result,
                   athletes: heat.athlete_heats.includes(:athlete).map { |athlete_heat|
                     athlete = athlete_heat.athlete
                     [athlete.id, {id: athlete.id, name: athlete.name, image: athlete.image, position: athlete_heat.position}]

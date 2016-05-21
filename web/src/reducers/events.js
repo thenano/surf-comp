@@ -37,6 +37,10 @@ export function reducer(state = defaultState, action) {
         return state
             .setIn(["upcoming_heats", action.res.data.id], Immutable.fromJS(action.res.data.heats))
             .setIn(["meta", `@@loaded/upcoming_heats/${action.res.data.id}`], true);
+    case "GET_PREVIOUS_HEATS":
+        return state
+            .setIn(["previous_heats", action.res.data.id], Immutable.fromJS(action.res.data.heats))
+            .setIn(["meta", `@@loaded/previous_heats/${action.res.data.id}`], true);
     case "START_NEXT_HEATS":
     case "END_CURRENT_HEATS":
         return state

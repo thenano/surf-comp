@@ -73,6 +73,16 @@ class Event < ApplicationRecord
     ]
   end
 
+  def previous_heats
+    bank_1 = schedule[0][0..current_schedule_index] || []
+    bank_2 = schedule[1][0..current_schedule_index] || []
+
+    [
+        bank_1.map { |index| heat_for_bank_and_index(0, index) },
+        bank_2.map { |index| heat_for_bank_and_index(1, index) }
+    ]
+  end
+
   def heat_for_bank_and_index(bank, schedule_index)
     heat_id = schedule[bank][schedule_index]
 

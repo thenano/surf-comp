@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       put 'swap_athletes', on: :member
       get 'current_heats', on: :member
       get 'upcoming_heats', on: :member
+      get 'previous_heats', on: :member
 
       patch 'start_next_heats', on: :member
       patch 'end_current_heats', on: :member
