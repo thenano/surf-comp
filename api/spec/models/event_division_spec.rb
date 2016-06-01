@@ -606,15 +606,14 @@ RSpec.describe EventDivision, :type => :model do
   end
 
   describe '#end_heat' do
+
     def score_and_end_heat(heat)
-      heat.scores = {
-          1 => {'judge': [1, 2]},
-          2 => {'judge': [4, 4]},
-          3 => {'judge': [4, 3]},
-          4 => {'judge': [10, 10]},
-          5 => {'judge': [7, 7]},
-          6 => {'judge': [6, 5]}
-      }
+      [1, 2].each_with_index {|score, index| heat.scores.create({athlete_id: 1, judge_id: 7, wave: index, score: score})}
+      [4, 4].each_with_index {|score, index| heat.scores.create({athlete_id: 2, judge_id: 7, wave: index, score: score})}
+      [4, 3].each_with_index {|score, index| heat.scores.create({athlete_id: 3, judge_id: 7, wave: index, score: score})}
+      [10, 10].each_with_index {|score, index| heat.scores.create({athlete_id: 4, judge_id: 7, wave: index, score: score})}
+      [7, 7].each_with_index {|score, index| heat.scores.create({athlete_id: 5, judge_id: 7, wave: index, score: score})}
+      [6, 5].each_with_index {|score, index| heat.scores.create({athlete_id: 6, judge_id: 7, wave: index, score: score})}
 
       division.end_heat!(heat)
     end
@@ -722,7 +721,7 @@ RSpec.describe EventDivision, :type => :model do
         now = Time.now
         allow(Time).to receive(:now).and_return(now)
         score_and_end_heat(division.heats.last)
-        expect(division.heats.last.time).to eq(now.utc)
+        expect(division.heats.last.end_time).to eq(now.utc)
       end
     end
 
@@ -785,13 +784,11 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'progresses the first 3 of the first heat into the final' do
         heat = division.heats.first
-        heat.scores = {
-            1 => {'judge': [1, 2]},
-            2 => {'judge': [4, 4]},
-            3 => {'judge': [4, 3]},
-            4 => {'judge': [10, 10]},
-            5 => {'judge': [7, 7]},
-        }
+        [1, 2].each_with_index {|score, index| heat.scores.create({athlete_id: 1, judge_id: 7, wave: index, score: score})}
+        [4, 4].each_with_index {|score, index| heat.scores.create({athlete_id: 2, judge_id: 7, wave: index, score: score})}
+        [4, 3].each_with_index {|score, index| heat.scores.create({athlete_id: 3, judge_id: 7, wave: index, score: score})}
+        [10, 10].each_with_index {|score, index| heat.scores.create({athlete_id: 4, judge_id: 7, wave: index, score: score})}
+        [7, 7].each_with_index {|score, index| heat.scores.create({athlete_id: 5, judge_id: 7, wave: index, score: score})}
         division.end_heat!(heat)
 
         final = division.heats.where(round: 'Final').first
@@ -808,12 +805,10 @@ RSpec.describe EventDivision, :type => :model do
 
       it 'progresses the first and only 2 of the last heat into the final' do
         heat = division.heats.second
-        heat.scores = {
-            1 => {'judge': [1, 2]},
-            3 => {'judge': [4, 3]},
-            4 => {'judge': [10, 10]},
-            5 => {'judge': [7, 7]},
-        }
+        [1, 2].each_with_index {|score, index| heat.scores.create({athlete_id: 1, judge_id: 7, wave: index, score: score})}
+        [4, 3].each_with_index {|score, index| heat.scores.create({athlete_id: 3, judge_id: 7, wave: index, score: score})}
+        [10, 10].each_with_index {|score, index| heat.scores.create({athlete_id: 4, judge_id: 7, wave: index, score: score})}
+        [7, 7].each_with_index {|score, index| heat.scores.create({athlete_id: 5, judge_id: 7, wave: index, score: score})}
         division.end_heat!(heat)
 
         final = division.heats.where(round: 'Final').first
