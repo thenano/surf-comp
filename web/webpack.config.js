@@ -20,24 +20,32 @@ if (isDev) {
 }
 
 if (isProd) {
-    entry.unshift("babel-polyfill")
+    entry.unshift("babel-polyfill");
 }
 
 let plugins = [
-    new ExtractTextPlugin(isProd ? '[name].[hash].css' : '[name].css'),
-
+    new ExtractTextPlugin('[name].[hash].css'),
     new HtmlWebpackPlugin({
-        template: './src/index.html',
+        template: './src/index.ejs',
         inject: 'body',
         chunks: 'app'
     })
 ];
 
+if (isDev) {
+    plugins.push(
+        new webpack.DefinePlugin({
+            'FACEBOOK_APP_ID': '1569714466676200'
+        })
+    );
+}
+
 if (isProd) {
     plugins.push(
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"'
+            'process.env.NODE_ENV': '"production"',
+            'FACEBOOK_APP_ID': '1569119533402360'
         }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -56,7 +64,7 @@ module.exports = {
     output: {
         path: buildPath,
         publicPath: '/',
-        filename: isProd ? '[name].[hash].js' : '[name].js'
+        filename: '[name].[hash].js'
     },
 
     module: {
